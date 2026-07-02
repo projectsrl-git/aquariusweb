@@ -1,0 +1,723 @@
+diff --git a/.claude/2026-07-02-war-packaging-and-chat-workflow.md b/.claude/2026-07-02-war-packaging-and-chat-workflow.md
+new file mode 100644
+index 0000000..677d7c4
+--- /dev/null
++++ b/.claude/2026-07-02-war-packaging-and-chat-workflow.md
+@@ -0,0 +1,61 @@
++# 2026-07-02 — WAR packaging (Tomcat 9) + chat workflow bootstrap
++
++## Problem / goal
++1. The app was packaged as an executable JAR with embedded Tomcat; production
++   deployment target is an **external Tomcat 9**. Convert to WAR and remove
++   embedded-container leftovers.
++2. Bootstrap the repository for its first **public GitHub** commit: sanitize
++   secrets, add ignore/attribute files, and establish the patch-based chat
++   workflow (`CLAUDE.md` + `.claude/`).
++
++## Approach & key decisions
++- **WAR conversion** (minimal, canonical):
++  - `pom.xml`: `<packaging>war</packaging>`; `spring-boot-starter-tomcat`
++    added with scope `provided` (excluded from the WAR, still available so
++    `mvn spring-boot:run` keeps working in dev — deliberate: we did NOT
++    remove `main()`, it is the standard dual-mode setup, not dead code).
++  - `AquariusApplication` now `extends SpringBootServletInitializer` and
++    overrides `configure()`.
++  - `finalName=AquariusWeb` (pre-existing) → `target/AquariusWeb.war` →
++    context path `/AquariusWeb`. All templates/JS already use context-relative
++    URLs (`@{...}`, `request.getContextPath()`), verified by grep.
++  - Removed `server.port` (belongs to Tomcat now).
++- **Secrets sanitization** (public repo): `application.properties` rewritten
++  in English; tenant DB defaults changed from real LAN host/credentials to
++  non-functional `CHANGE_ME` placeholders; real values come from env vars
++  (Tomcat `setenv`) or the new gitignored
++  `config/application-local.properties` (`spring.config.import=optional:...`).
++  Runtime paths (H2 data dir, logs) parameterized via `${AQUARIUSWEB_HOME:.}`
++  so Tomcat deployments can point them at a writable directory.
++  Stale comments referring to Flyway migrators corrected to the actual
++  `SqlMigrationRunner` classes. Security logging DEBUG → INFO.
++- **Repo bootstrap**: `.gitignore` (target, data, logs, IDE, local overrides,
++  `COMMIT_MSG.txt`), `.gitattributes` (LF normalization — prerequisite of the
++  patch workflow), `CLAUDE.md` (full memory bridge: mission, stack, domain
++  knowledge, pitfalls, roadmap), `.claude/README.md` (working agreement:
++  patch + `COMMIT_MSG.txt` per change, docs updated in the same diff).
++
++## Files touched
++- `pom.xml` — packaging war, provided tomcat starter, English description.
++- `src/main/java/com/aquarius/AquariusApplication.java` — servlet initializer.
++- `src/main/resources/application.properties` — rewritten (see above).
++- NEW: `CLAUDE.md`, `.claude/README.md`, `.claude/2026-07-02-war-packaging-and-chat-workflow.md`,
++  `.gitignore`, `.gitattributes`.
++
++## Compatibility
++- Dev flow changes: `java -jar target/AquariusWeb.jar` is replaced by
++  `mvn spring-boot:run` (or deploying the WAR). Local DB settings must be
++  provided once via `config/application-local.properties` (gitignored) or env
++  vars, since tracked defaults are now placeholders.
++- No behavioural change in application code paths; URLs unchanged
++  (context-relative everywhere).
++
++## Not verified in sandbox (confirm on deploy)
++- Real `mvn clean package` and WAR startup under Tomcat 9.
++- H2/logs directory creation under `${AQUARIUSWEB_HOME}` on the target machine.
++
++## Security note (raised to the owner)
++`LegacyPasswordVerifier` documents the legacy Caesar +3 password scheme; in a
++public repo this is a disclosure. Decision pending: keep repo private vs
++accept (DB access already implies full compromise). Web-side auth additionally
++uses bcrypt credentials in the system DB.
+diff --git a/.claude/README.md b/.claude/README.md
+new file mode 100644
+index 0000000..c2fb31f
+--- /dev/null
++++ b/.claude/README.md
+@@ -0,0 +1,91 @@
++# Working agreement — AquariusWeb chat sessions (patch delivery)
++
++Adapted from the general chat-workflow template. Project context lives in the
++repo (`CLAUDE.md` is the map); chat sessions implement changes and deliver
++patches; the human applies, builds, deploys and commits.
++
++Chat language: Italian. Everything that lands in the repo — code, comments,
++`.claude/*.md`, `CLAUDE.md`, `COMMIT_MSG.txt` — is **English**.
++Exception: user-facing UI strings are Italian *business* language by design
++(product copy for warehouse/accounting staff, not developer jargon).
++
++Repo: `<REPO_URL>` (fill in after first push) — default branch `main`,
++base package `com.aquarius`.
++
++## 0. What chat can and cannot do (honesty first)
++- No live access to the working copy: work happens on a sandbox copy
++  (re-cloned from `<REPO_URL>` each turn once the repo is public, or restored
++  from the last known state).
++- The sandbox has **no SQL Server, no Tomcat, no real Maven build**.
++  Verification is static: Java brace/paren balance scan, `node --check` on
++  inline `<script>` blocks and static `.js`, grep checks for the hard
++  constraints below. Real build (`mvn clean package`), browser behaviour and
++  live-DB queries are confirmed by the human on deploy — the delivery note
++  must say explicitly what was NOT verified.
++- Deliverables are **git-diff patches**, never commits, never full archives.
++
++## 1. Start of every task — re-align on the current HEAD
++HEAD moves between turns (the human commits). Before generating each patch:
++1. Get the current state (clone `<REPO_URL>`, or ask for `CLAUDE.md` +
++   relevant `.claude/*.md` if unreachable).
++2. Read `CLAUDE.md` and skim `.claude/` for specs relevant to the task.
++3. Verify the patch applies on the real current HEAD (§3f).
++
++## 2. Hard constraints (project-specific)
++- **Plug&play (prime directive)**: legacy tables are never altered; writes to
++  legacy rows only via explicit field whitelists; new tables prefixed
++  `aq_web_` and created via `SqlMigrationRunner` scripts.
++- Tenant-side `@Transactional` must name `tenantTransactionManager`.
++- Global CSS in `layout.html` only (child `<head>` styles are discarded).
++- No fragment parameter named `title`; **no recursive Thymeleaf fragments
++  with parameters** — use the JSON + client-component pattern (aq-tree).
++- Legacy date columns (`MOV_DT*`) are varchar `yyyy/MM/dd`: bind params as
++  strings in that format; date-column selection by SQL-text substitution from
++  a fixed enum, never a runtime `CASE`; no `TRY_CONVERT` in production SQL.
++- **No secrets in tracked files** (public repo): env placeholders +
++  gitignored `config/application-local.properties` only.
++- New Maven dependencies: only mainstream, justified in the change doc.
++- WAR packaging invariants: `spring-boot-starter-tomcat` stays `provided`;
++  `AquariusApplication` keeps both `configure()` and `main()`.
++
++## 3. Per-task workflow
++Each change ships as **one `.zip`** containing exactly a git-diff
++**`.patch`** and a loose **`COMMIT_MSG.txt`**:
++
++a. **Implement** minimally and focused.
++b. **Docs in the same change**: create `.claude/YYYY-MM-DD-<slug>.md`
++   (problem/goal, approach, files touched, key decisions & trade-offs,
++   compatibility notes) and **update `CLAUDE.md`** (status tables, new
++   conventions, remove stale info).
++c. **Verify in sandbox** and report honestly: Java static scan, `node --check`
++   on every touched template's inline scripts, grep the §2 constraints
++   against the diff.
++d. **Patch = `git diff` of the changed files only** (code + `.claude/` doc +
++   `CLAUDE.md`). Nothing generated, no runtime data.
++e. **`COMMIT_MSG.txt` is a loose file, NOT inside the diff** (it changes
++   every turn and would break re-applying). Format: imperative subject
++   ≤ 72 chars, blank line, wrapped body, verification result at the end.
++f. **Prove it applies**: `git apply --check` (and `--stat`) against a clean
++   current HEAD before delivering.
++g. **Package**: zip `.patch` + `COMMIT_MSG.txt`, hand over. No full-source
++   archives from now on.
++
++## 4. Human side
++1. `git apply <file>.patch` from the repo root (the zip also carries
++   `COMMIT_MSG.txt` to the root; it is gitignored).
++2. `mvn clean package` → deploy `target/AquariusWeb.war` to Tomcat 9
++   (or `mvn spring-boot:run` for dev).
++3. `git commit -F COMMIT_MSG.txt`, push.
++4. Hard-refresh the browser after JS/template changes.
++
++## 5. Patch mechanics & gotchas
++- Repo is normalized to LF (`.gitattributes`), which removes CRLF apply
++  failures; if a plain apply fails on a CRLF working tree, use
++  `git apply --3way` or `git apply --cached` as fallback.
++- Multiple independent patches off the same base coexist, but each one must
++  be checked against the *current* HEAD.
++
++## 6. Reporting back (every turn)
++Short summary: what changed, files touched, verification output, what could
++NOT be verified in the sandbox, and the `git apply --check` result with the
++HEAD it was checked against.
+diff --git a/.gitattributes b/.gitattributes
+new file mode 100644
+index 0000000..4f4979d
+--- /dev/null
++++ b/.gitattributes
+@@ -0,0 +1,9 @@
++# Normalize to LF in the repository: removes CRLF-vs-LF patch apply failures
++# (see .claude/README.md, patch-based workflow).
++* text=auto eol=lf
++
++# Binary assets
++*.png binary
++*.jpg binary
++*.gif binary
++*.ico binary
+diff --git a/.gitignore b/.gitignore
+index 3eb96c6..a412bbc 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,23 +1,21 @@
++# Build
+ target/
+-.mvn/
+-mvnw
+-mvnw.cmd
++
++# Runtime data (H2 system DB, logs) -- never commit runtime state
++data/
++logs/
++*.log
++
++# Local machine-specific overrides (real DB URLs / credentials)
++config/application-local.properties
++
++# Commit message is delivered as a loose file per change, never tracked
++COMMIT_MSG.txt
+ 
+ # IDE
+ .idea/
+ *.iml
+ .vscode/
++.settings/
+ .project
+ .classpath
+-.settings/
+-
+-# OS
+-.DS_Store
+-Thumbs.db
+-
+-# Application
+-logs/
+-*.log
+-
+-# Spring Boot
+-HELP.md
+diff --git a/CLAUDE.md b/CLAUDE.md
+new file mode 100644
+index 0000000..3a5cf80
+--- /dev/null
++++ b/CLAUDE.md
+@@ -0,0 +1,211 @@
++# CLAUDE.md — AquariusWeb
++
++> **Read this first.** This file is the memory bridge between chat sessions and
++> the repository. It records the mission, the architecture, the legacy domain
++> knowledge painfully reverse-engineered from the VFP sources, and the hard
++> constraints. Keep it TRUE: every change must update it (see `.claude/README.md`
++> for the working agreement).
++
++---
++
++## 1. Mission
++
++**AquariusWeb is the progressive re-dressing of a 20+ year old Visual FoxPro
++ERP ("Aquarius", by Project S.r.l.) as a modern Java web application — without
++ever stopping or breaking the legacy system.**
++
++Strategy **"1.3 plug&play"**, the project's prime directive:
++
++- The web app runs **in parallel** with the VFP client, **on the same SQL
++  Server database**.
++- Legacy tables (`CONTI`, `U_MAG_MO`, `PARA`, `res_oper`, `tbl_menu`, …) are
++  **read** (and occasionally updated field-by-field via explicit whitelists)
++  but their **structure is NEVER altered**. No new columns, no triggers, no
++  index changes on legacy objects.
++- Every new table the web app needs is prefixed **`aq_web_`** and created via
++  the custom migration runner.
++- Functionality is migrated **slice by slice** (one VFP form/flow at a time),
++  each slice usable in production while the rest stays on VFP.
++
++The VFP source (forms `.scx/.sct`, programs `.prg`, menus) is on GitHub:
++`https://github.com/projectsrl-git/aquarius` — it is the **authority** on
++business rules. When in doubt, read the VFP source, do not guess.
++(Analysis technique: `.SCT` files are binary-ish; extract strings with
++`re.findall(rb'[\x20-\x7e\r\n\t]{8,}', data)` and look for `ControlSource`,
++`Caption`, `M.<FIELD>` patterns. `.PRG` files are plain text.)
++
++## 2. Stack & deployment
++
++| Layer | Choice | Notes |
++|---|---|---|
++| Runtime | Java 17, Spring Boot **2.7.18** (javax.*) | Boot 3 impossible: needs Hibernate 6, whose SQLServer2012 support is gone |
++| Packaging | **WAR on external Tomcat 9** | `spring-boot-starter-tomcat` is `provided`; `AquariusApplication extends SpringBootServletInitializer`. `mvn spring-boot:run` still works for dev. `finalName=AquariusWeb` → context path `/AquariusWeb` |
++| View | Thymeleaf + layout decorator (`layout.html`), Bootstrap 5 + Bootstrap Icons (CDN), Chart.js (CDN) | |
++| Tenant DBs | SQL Server 2012 via **jTDS 1.3.1** | legacy, read-mostly |
++| System DB | H2 file-based, `MODE=MSSQLServer` | tenants, super-admins, web credentials, app version |
++| Migrations | **custom `SqlMigrationRunner`** (~150 LOC) | NOT Flyway (Community ≥7 dropped SQL Server 2012). `V<n>__<desc>.sql` under `db/migration/{system,tenant}` |
++| Excel | Apache POI 5.2.5 (SXSSF) | warehouse valuation export |
++
++**Configuration**: `application.properties` contains NO real hosts/credentials
++(public repo). Everything sensitive is `${ENV_VAR:CHANGE_ME}`. Real values go
++in env vars (Tomcat `setenv`) or the gitignored
++`config/application-local.properties` (loaded via `spring.config.import`).
++Runtime files (H2 data, logs) live under `${AQUARIUSWEB_HOME:.}`.
++
++## 3. Architecture map (packages under `com.aquarius`)
++
++- **`multitenancy`** — `TenantContext` (ThreadLocal), `TenantRoutingDataSource`
++  (AbstractRoutingDataSource keyed by tenant id), `TenantsProperties` (binds
++  `aquarius.tenants.*`). Tenant chosen in the login combobox, carried by
++  `TenantRequestFilter`/`TenantAwareAuthenticationFilter`.
++- **`config`** — two manually-defined persistence units:
++  `SystemDataSourceConfig` (H2, JdbcTemplate-oriented) and
++  `TenantDataSourceConfig` (`tenantDataSource`, `tenantEntityManagerFactory`,
++  `tenantTransactionManager` — every tenant-side `@Transactional` must name
++  it). `SqlMigrationRunner` + `SystemMigrationsConfig` + `TenantMigrationsRunner`.
++  `SecurityConfig`, `WebMvcConfig` (registers `FiscalContextInterceptor`).
++- **`security`** — legacy login against `res_oper`:
++  `AquariusAuthenticationProvider` + `LegacyPasswordVerifier` (the legacy
++  password scheme is a Caesar +3 shift — see §7 Security). Web-specific
++  credentials in system DB (`WebUserCredentialsRepository`). Principal:
++  `AquariusPrincipal` (username, tenant display name).
++- **`context`** — `FiscalContext`: session-scoped (CGLIB proxy) bean = the
++  modern `PUB_ANNO`/`PUB_CODSOC`. Auto-set to current year by
++  `FiscalContextInterceptor` (silent; redirects to `/select-year` ONLY if no
++  year exists in PARA). Year switchable from the sidebar badge.
++- **`service`** — `MenuService` (see §4), `BreadcrumbService` (DFS over the
++  menu tree → crumbs for any URL), `FiscalYearService` (years from PARA prefix
++  `ANN`+society), `ParameterCategoryCatalog` (340 PARA categories from
++  `data/param-categories.csv`, auto-extracted from VFP PARAGEST calls),
++  `AccountTreeService` (§5 PDC), `WarehouseValuationService`/`ExcelExporter`
++  (§6), `TenantService`, `AppVersionService`, `CustomReportService`.
++- **`controller`** — one per slice + `GlobalModelAdvice` (injects
++  `appVersion`, `currentFiscalYear`, … into every model).
++- **`entity`** — tenant: `Customer`, `Account`, `ParameterItem`,
++  `OperatorUser`, `LegacyMenu`, `CustomReport`; system: `Tenant`,
++  `SuperAdmin`, `WebUserCredentials`. Legacy entities are WIDE: always
++  `@DynamicUpdate` + explicit `copyEditableFields()` whitelist on save
++  (never bind the whole entity from the form).
++- **`repository`** — Spring Data JPA on the tenant EM; plain-SQL DAOs
++  (`NamedParameterJdbcTemplate` on `@Qualifier("tenantDataSource")`) where
++  window functions/CTEs are needed (`WarehouseValuationDao`).
++
++## 4. The menu system (how VFP forms map to URLs)
++
++Legacy `tbl_menu` drives the sidebar. `MenuService`:
++- parses each row's `COMANDO` (`do form form\menu_cli000 linked`, PARAGEST
++  invocations, submenu openers) and authorization column `UTENTI`
++  (`.SER.AMB.` dotted user list);
++- `FORM_TO_URL` map: VFP form name → web URL (e.g. `menu_cli000` → `/clienti`,
++  `menu_pdc000` → `/conti/tree`). Extend it as slices land;
++- PARAGEST commands auto-map to `/parametri/{prefix}`;
++- `injectSyntheticEntries()` adds web-only entries at the top of an L1 menu
++  (currently: parametri, contabilita, magazzino) — remember to also extend
++  `hasSyntheticEntries()`.
++
++## 5. Domain knowledge (hard-won, do not re-derive)
++
++### Fiscal year & society
++- `PUB_ANNO` (VFP global) ≙ `FiscalContext.fiscalYear`. Fiscal years live in
++  **PARA** with code `ANN` + **society code (2 ch)** + **year (4 ch)**, e.g.
++  `ANN012026`. Parse = last 4 chars.
++- `PUB_CODSOC` is effectively always `'01'` — meaningless for multi-tenancy
++  (that's the tenant DB) but REQUIRED in every legacy filter
++  (`CON_SOC='01'`, …). Default in `FiscalContext.societyCode`.
++
++### Piano dei conti (CONTI) — positional hierarchy
++- The hierarchy is **positional on fixed-length zero-padded codes**, NOT via
++  `CON_CODPADRE` (empty in real data). Segment lengths come from
++  **`U_AZI_AN.AZI_MASTRO` / `AZI_SOTTOG`** (per society; VFP defaults 3/5;
++  APPLILIB sets `PUB_MASTRO = AZI_MASTRO + 1` as cut position).
++- Classification: non-zero prefix ≤ mastroLen → mastro; ≤ sottogLen →
++  sottogruppo; else conto. Parent = fixed-length prefix cut, zero-padded.
++- Implemented in `AccountTreeService` (cascade: positional → `CON_CODPADRE` →
++  dot-pattern → zero-strip; diagnostics logged). Payload via
++  `GET /conti/tree-data` (flat `[id,code,descr,type,posbil,level,parentIdx]`),
++  rendered client-side by the reusable **`static/js/aq-tree.js`** component
++  (lazy DOM, live filter, expand-to-level, `#c=CODE` deep links). Reuse this
++  pattern for any future hierarchy (cost centers, BOMs).
++
++### Warehouse (U_MAG_MO / U_MAG_GG / u_vva_ch)
++- `MOV_SEGNO` (`'+'/'-'`) carries the sign; stock at a date = signed sum of
++  movements. `U_MAG_GG` holds only CURRENT stock and can have **multiple rows
++  per article** (pre-aggregate before joining).
++- `MOV_DTDOCU`/`MOV_DTREGI` are **varchar `yyyy/MM/dd`**, with some dirty
++  rows. Rules: bind date params as strings in the same format (lexicographic
++  compare is correct + SARGable); never `TRY_CONVERT` in production queries
++  (data cleanup is the customer's job); the date-column selector is
++  substituted in the SQL text from enum `DateBase{DOCU,REGI}` — **never a
++  runtime `CASE`** (type-coercion trap).
++- Currency: `MOV_PREACQ` is in `MOV_VALUTA`; rate = as-of join on `u_vva_ch`
++  (`OUTER APPLY TOP 1 … WHERE VVA_DATA <= mov_date ORDER BY VVA_DATA DESC`).
++  Conversion applies to ALL currencies (EUR has rate 1). Always multiply.
++- FIFO valuation dashboard: `/magazzino/valorizzazione` (+ `/dati`, `/strati`,
++  `/prezzi`, `/articoli`, `/export`). Metrics in
++  `WarehouseValuationService` (KPI, ABC/Pareto, anomaly panel, price
++  volatility + linear-regression 6-month projection — ALWAYS presented to
++  users as an indication, not a forecast).
++
++### Misc legacy conventions
++- Legacy char columns are space-padded → `safeTrim` everywhere.
++- Legacy login: operator codes like `SER`, password Caesar +3
++  (`LegacyPasswordVerifier`).
++- H2 system DB runs in MSSQL mode: use `SELECT TOP 1`, not `LIMIT`.
++
++## 6. Slices implemented so far
++
++| Slice | URLs | Notes |
++|---|---|---|
++| Login + tenant switch | `/login` | legacy `res_oper` + web credentials |
++| Dashboard + sidebar menu | `/` | menu from `tbl_menu`, fiscal-year badge |
++| Customers (form framework) | `/clienti…` | 19 tabs mirroring `MENU_CLI000` (7 active + placeholders); reusable `fragments/form-shell.html`, `page-header.html`, `FormTab`, `BreadcrumbService` |
++| Parameters (PARA) | `/parametri…` | 340 categories catalog, generic CRUD |
++| Fiscal year context | `/select-year` | PUB_ANNO analog, silent auto-set |
++| Chart of accounts | `/conti`, `/conti/tree`, detail/edit | positional tree, aq-tree.js |
++| Warehouse valuation | `/magazzino/valorizzazione` | FIFO + FX + Pareto + Excel |
++| Custom reports | `/custom-reports…` | self-service SQL reports (foundation for "Project-JDBCapy") |
++
++## 7. Security notes (PUBLIC repository!)
++
++- **No credentials/hosts in tracked files.** Enforced via env placeholders +
++  gitignored local override. Re-check every patch.
++- `LegacyPasswordVerifier` necessarily documents that legacy VFP passwords
++  are a Caesar +3 shift. **This is a disclosure**: anyone with DB access can
++  decode operator passwords. Flagged to the owner; mitigations: keep the repo
++  private, or accept the risk knowing DB access is already the crown jewels.
++  Web-side logins additionally use bcrypt credentials in the system DB.
++- Never commit `data/` (H2 files contain credential hashes) or `logs/`.
++
++## 8. Known Thymeleaf/Spring pitfalls (cost real debugging time)
++
++1. `<style>` blocks in a child template's `<head>` are **discarded** by the
++   layout decorator → global CSS lives in `layout.html`.
++2. A fragment parameter named `title` clashes with the `~{::title}` selector.
++3. **Recursive fragments with parameters are forbidden** (they explode with
++   null params even when defined in a separate file; `th:if` guards are not a
++   primary fix). For trees/recursion: JSON endpoint + client-side component
++   (the aq-tree pattern).
++4. Tenant-side `@Transactional` must specify
++   `transactionManager = "tenantTransactionManager"`.
++5. Wide legacy entities: `@DynamicUpdate` + explicit editable-field copy.
++
++## 9. Roadmap (next slices, in rough priority order)
++
++1. **Suppliers** (`menu_for000`) — twin of customers, reuse the form-shell
++   framework as-is.
++2. **Prima nota** (`menu_prima_nota.scx`) — the accounting god-form: header +
++   current row + rows grid + IVA section + deadlines; needs PDC picker
++   (reuse `/conti/tree-data`), TOP/CPA/IVA parameter lookups.
++3. Registrazioni contabili list (`menu_registrazioni_contabili.scx`).
++4. Authorization flags per operator (`_ANACLI_VIS/INS/MOD/ANN` pattern from
++   `UTENTI` column).
++5. PARA-driven dropdown lookups inside forms.
++6. Situazioni contabili (mastrino/partitari/scadenziari — report-style).
++
++## 10. Working agreement
++
++Chat sessions deliver **git patches, not archives** — one zip per change with
++`<date>-<slug>.patch` + loose `COMMIT_MSG.txt`. Every change also adds
++`.claude/YYYY-MM-DD-<slug>.md` and updates this file. Full rules:
++**`.claude/README.md`**. Repo language: **English** (chat can be Italian; UI
++strings are Italian business language — that is product copy, not repo prose).
+diff --git a/pom.xml b/pom.xml
+index 698fde3..f373d3b 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -14,8 +14,9 @@
+     <groupId>com.aquarius</groupId>
+     <artifactId>aquarius-web</artifactId>
+     <version>0.1.0-SNAPSHOT</version>
++    <packaging>war</packaging>
+     <name>AquariusWeb</name>
+-    <description>AquariusWeb — porting in Java/Spring del gestionale ERP Aquarius VFP (multi-tenant)</description>
++    <description>AquariusWeb — modern web front-end for the Aquarius ERP (VFP), running in parallel on the same SQL Server database (multi-tenant, plug&amp;play strategy)</description>
+ 
+     <properties>
+         <java.version>17</java.version>
+@@ -30,11 +31,22 @@
+     </properties>
+ 
+     <dependencies>
+-        <!-- Web + Thymeleaf (stesso stack di CReaM) -->
++        <!-- Web + Thymeleaf -->
+         <dependency>
+             <groupId>org.springframework.boot</groupId>
+             <artifactId>spring-boot-starter-web</artifactId>
+         </dependency>
++        <!--
++          WAR deployment: the servlet container is provided by the external
++          Tomcat 9 instance. Marking the embedded Tomcat as "provided" keeps
++          it available for `mvn spring-boot:run` during development but
++          excludes it from the WAR (Tomcat 9 supplies javax.servlet 4.0).
++        -->
++        <dependency>
++            <groupId>org.springframework.boot</groupId>
++            <artifactId>spring-boot-starter-tomcat</artifactId>
++            <scope>provided</scope>
++        </dependency>
+         <dependency>
+             <groupId>org.springframework.boot</groupId>
+             <artifactId>spring-boot-starter-thymeleaf</artifactId>
+diff --git a/src/main/java/com/aquarius/AquariusApplication.java b/src/main/java/com/aquarius/AquariusApplication.java
+index eb30f1a..a8c2161 100644
+--- a/src/main/java/com/aquarius/AquariusApplication.java
++++ b/src/main/java/com/aquarius/AquariusApplication.java
+@@ -4,28 +4,45 @@ import org.springframework.boot.SpringApplication;
+ import org.springframework.boot.autoconfigure.SpringBootApplication;
+ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
++import org.springframework.boot.builder.SpringApplicationBuilder;
++import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
++import org.springframework.cache.annotation.EnableCaching;
+ 
+ /**
+- * Entry point dell'applicazione web AquariusWeb.
++ * AquariusWeb entry point.
+  *
+- * Le auto-configurazioni escluse:
++ * <p>Packaged as a WAR and deployed under an external Tomcat 9
++ * ({@link SpringBootServletInitializer} bootstraps the app when the servlet
++ * container starts). The {@code main()} method is kept so that
++ * {@code mvn spring-boot:run} still works for local development — the
++ * embedded Tomcat is on the classpath with {@code provided} scope.</p>
+  *
+- *  - {@link DataSourceAutoConfiguration} + {@link HibernateJpaAutoConfiguration}:
+- *    definiamo manualmente DUE EntityManager (system, tenant routing) nei
+- *    rispettivi @Configuration class.
++ * <p>Excluded auto-configurations:</p>
++ * <ul>
++ *   <li>{@link DataSourceAutoConfiguration} + {@link HibernateJpaAutoConfiguration}:
++ *       we define TWO EntityManagers manually (system H2 + tenant routing
++ *       SQL Server) in their respective {@code @Configuration} classes.</li>
++ * </ul>
+  *
+- * Le migrazioni di schema sono gestite da un mini-migratore custom
+- * (vedi {@code config/SqlMigrationRunner}), NON Flyway. Motivo: Flyway
+- * Community (da 7.0 in poi) ha rimosso il supporto a SQL Server 2008/2012,
+- * che è quello che il cliente ha in produzione.
++ * <p>Schema migrations are handled by a small custom runner
++ * (see {@code config/SqlMigrationRunner}), NOT Flyway: Flyway Community
++ * dropped SQL Server 2008/2012 support from v7 onward, and 2012 is what
++ * runs in production.</p>
+  */
+ @SpringBootApplication(exclude = {
+     DataSourceAutoConfiguration.class,
+     HibernateJpaAutoConfiguration.class
+ })
+-@org.springframework.cache.annotation.EnableCaching
+-public class AquariusApplication {
++@EnableCaching
++public class AquariusApplication extends SpringBootServletInitializer {
+ 
++    /** WAR bootstrap: called by the external servlet container (Tomcat 9). */
++    @Override
++    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
++        return builder.sources(AquariusApplication.class);
++    }
++
++    /** Dev bootstrap: {@code mvn spring-boot:run} (embedded Tomcat, provided scope). */
+     public static void main(String[] args) {
+         SpringApplication.run(AquariusApplication.class, args);
+     }
+diff --git a/src/main/resources/application.properties b/src/main/resources/application.properties
+index 9f395d9..7112bfc 100644
+--- a/src/main/resources/application.properties
++++ b/src/main/resources/application.properties
+@@ -1,103 +1,114 @@
+-# ════════════════════════════════════════════════════════════════════════
+-#  Aquarius — Web edition
+-#  Configurazione multi-tenant: 1 SYSTEM DB centrale + N TENANT DBs
++# ============================================================================
++#  AquariusWeb -- configuration
++#  Multi-tenant layout: 1 central SYSTEM DB + N legacy TENANT DBs.
++#
++#  DEPLOYMENT MODEL: WAR under external Tomcat 9. There is no server.port
++#  here -- the HTTP connector belongs to Tomcat. For local development use
++#  `mvn spring-boot:run` (embedded Tomcat, provided scope, default port 8080).
++#
++#  SECRETS POLICY (public repository): this file contains NO real hosts or
++#  credentials. Every sensitive value is an ${ENV_VAR:placeholder}. Provide
++#  real values via:
++#    - environment variables (Tomcat: CATALINA_BASE/bin/setenv.bat|sh), or
++#    - an untracked local override file (see spring.config.import below).
++# ============================================================================
+ 
+-# ─── METADATA APP ────────────────────────────────────────────────────────
+-# Risolti a build-time da Maven resource filtering (vedi pom.xml).
+-# Esposti in runtime via AppVersionService.
++# --- APP METADATA -----------------------------------------------------------
++# Resolved at build time by Maven resource filtering (see pom.xml),
++# exposed at runtime by AppVersionService.
+ app.version=@project.version@
+ app.build-time=@maven.build.timestamp@
+-# ════════════════════════════════════════════════════════════════════════
+ 
+-# ─── SERVER ──────────────────────────────────────────────────────────────
+-server.port=8080
+ spring.application.name=AquariusWeb
+ 
+-# ─── SYSTEM DATASOURCE ──────────────────────────────────────────────────
+-# Contiene metadata multi-tenant: tabella tenants + super_admins.
+-# In dev: H2 file-based (persistente fra riavvii, niente setup esterno).
+-# In prod: spostare su SQL Server / Postgres dedicato.
+-aquarius.system.datasource.url=jdbc:h2:file:./data/aquarius_system;MODE=MSSQLServer;DB_CLOSE_ON_EXIT=FALSE
++# --- LOCAL OVERRIDES (untracked) ---------------------------------------------
++# Optional file for machine-specific settings (real DB URLs, credentials).
++# It is gitignored. Path is relative to the JVM working directory; under
++# Tomcat prefer plain environment variables in setenv.
++spring.config.import=optional:file:./config/application-local.properties
++
++# --- HOME DIRECTORY -----------------------------------------------------------
++# Base directory for runtime artifacts (H2 system DB files, logs).
++# Default "." = JVM working directory. Under Tomcat set it explicitly, e.g.:
++#   set "CATALINA_OPTS=-DAQUARIUSWEB_HOME=C:\aquariusweb"
++# (referenced below via ${AQUARIUSWEB_HOME:.})
++
++# --- SYSTEM DATASOURCE --------------------------------------------------------
++# Holds multi-tenant metadata: tenants table + super_admins + web credentials.
++# Dev: file-based H2 (persistent across restarts, zero external setup).
++# Prod: move to a dedicated SQL Server / Postgres when needed.
++aquarius.system.datasource.url=jdbc:h2:file:${AQUARIUSWEB_HOME:.}/data/aquarius_system;MODE=MSSQLServer;DB_CLOSE_ON_EXIT=FALSE
+ aquarius.system.datasource.username=sa
+ aquarius.system.datasource.password=
+ aquarius.system.datasource.driver-class-name=org.h2.Driver
+ 
+-# ─── TENANT DATASOURCES ─────────────────────────────────────────────────
+-# Una entry per ogni società. La chiave (es. "impresind") diventa il tenant id
+-# usato dal TenantRoutingDataSource e visualizzato nella combobox di login.
+-#
+-# IMPORTANTE: in produzione le credenziali NON vanno in chiaro qui.
+-# Spostarle in variabili d'ambiente o secret store (Vault, AWS Secrets Manager).
+-# Esempio: aquarius.tenants.impresind.password=${IMPRESIND_DB_PWD}
++# --- TENANT DATASOURCES -------------------------------------------------------
++# One entry per company. The key (e.g. "impresind") becomes the tenant id used
++# by TenantRoutingDataSource and shown in the login combobox.
++# All values are env-var driven; the defaults below are NON-FUNCTIONAL
++# placeholders on purpose (public repository).
+ 
+-# Tenant 1 — Impresind
++# Tenant 1 -- Impresind
+ aquarius.tenants.impresind.name=Impresind
+-aquarius.tenants.impresind.url=${IMPRESIND_DB_URL:jdbc:jtds:sqlserver://192.168.50.35:1433/IMPRESIND_TEST}
+-aquarius.tenants.impresind.username=${IMPRESIND_DB_USER:sviluppo}
+-aquarius.tenants.impresind.password=${IMPRESIND_DB_PWD:sviluppo}
++aquarius.tenants.impresind.url=${IMPRESIND_DB_URL:jdbc:jtds:sqlserver://localhost:1433/CHANGE_ME}
++aquarius.tenants.impresind.username=${IMPRESIND_DB_USER:CHANGE_ME}
++aquarius.tenants.impresind.password=${IMPRESIND_DB_PWD:CHANGE_ME}
+ aquarius.tenants.impresind.driver-class-name=net.sourceforge.jtds.jdbc.Driver
+ 
+-# Tenant 2 — Tremonti
+-#
+-# TEMPORANEO: puntiamo allo stesso DB fisico di Impresind (IMPRESIND_TEST) per
+-# poter testare il routing del tenant. La selezione "Tremonti" nella combobox
+-# di login funzionerà a livello applicativo (TenantContext, sidebar, ecc.) ma
+-# vedrai gli stessi dati di Impresind perché il DB è lo stesso.
+-# Quando avrai un DB Tremonti reale, basta valorizzare TREMONTI_DB_URL nell'env
+-# (o cambiare il default qui sotto) per separare i due tenant fisicamente.
++# Tenant 2 -- Tremonti
++# NOTE: until a real Tremonti DB exists, point TREMONTI_DB_URL at the same
++# physical DB as Impresind to exercise the tenant routing. The "Tremonti"
++# selection then works at application level (TenantContext, sidebar) while
++# showing the same data.
+ aquarius.tenants.tremonti.name=Tremonti
+-aquarius.tenants.tremonti.url=${TREMONTI_DB_URL:jdbc:jtds:sqlserver://192.168.50.35:1433/IMPRESIND_TEST}
+-aquarius.tenants.tremonti.username=${TREMONTI_DB_USER:sviluppo}
+-aquarius.tenants.tremonti.password=${TREMONTI_DB_PWD:sviluppo}
++aquarius.tenants.tremonti.url=${TREMONTI_DB_URL:jdbc:jtds:sqlserver://localhost:1433/CHANGE_ME}
++aquarius.tenants.tremonti.username=${TREMONTI_DB_USER:CHANGE_ME}
++aquarius.tenants.tremonti.password=${TREMONTI_DB_PWD:CHANGE_ME}
+ aquarius.tenants.tremonti.driver-class-name=net.sourceforge.jtds.jdbc.Driver
+ 
+-# Tenant preselezionato nella combobox di login
++# Tenant preselected in the login combobox
+ aquarius.default-tenant=impresind
+ 
+-# ─── JPA / HIBERNATE per i tenant ───────────────────────────────────────
++# --- JPA / HIBERNATE (tenant side) ---------------------------------------------
+ aquarius.tenant.jpa.database-platform=org.hibernate.dialect.SQLServer2012Dialect
+-# "none": Hibernate NON valida lo schema all'avvio. Best-effort: se un tenant
+-# DB è irraggiungibile l'app parte ugualmente, le query falliranno solo quando
+-# qualcuno proverà a usarlo.
+-# Lo schema delle tabelle aq_web_* è creato da Flyway (vedi TenantFlywayMigrator).
+-# Le tabelle legacy le diamo per esistenti.
++# "none": Hibernate does NOT validate the schema at startup. Best effort: if a
++# tenant DB is unreachable the app still starts; queries fail only when someone
++# actually uses that tenant.
++# aq_web_* tables are created by the custom SqlMigrationRunner (see below).
++# Legacy tables are assumed to exist and are NEVER touched (plug&play rule).
+ aquarius.tenant.jpa.hibernate.ddl-auto=none
+ aquarius.tenant.jpa.show-sql=false
+ aquarius.tenant.jpa.properties.hibernate.format_sql=true
+ 
+-# HikariCP: query di validazione (raccomandato con jTDS)
++# HikariCP: validation query (recommended with jTDS, which has no isValid())
+ spring.datasource.hikari.connection-test-query=SELECT 1
+ spring.datasource.hikari.connection-timeout=30000
+ spring.datasource.hikari.maximum-pool-size=10
+ 
+-# ─── THYMELEAF ──────────────────────────────────────────────────────────
++# --- THYMELEAF ------------------------------------------------------------------
++# Dev convenience; set to true in production for template caching.
+ spring.thymeleaf.cache=false
+ spring.thymeleaf.encoding=UTF-8
+ 
+-# ─── FLYWAY ─────────────────────────────────────────────────────────────
+-# Spring Boot Flyway autoconfig è DISABILITATA (vedi AquariusApplication)
+-# perché abbiamo pinnato Flyway a 7.15.0 (l'ultima versione Community che
+-# supporta SQL Server 2008/2012).
+-#
+-# Le migrazioni sono orchestrate da:
+-#   - SystemFlywayMigrator → db/migration/system → SYSTEM DB (H2)
+-#   - TenantFlywayMigrator → db/migration/tenant → per ogni tenant configurato
+-#
+-# Convenzione naming: V<numero>__<descrizione>.sql, versioni crescenti.
++# --- SCHEMA MIGRATIONS ------------------------------------------------------------
++# NOT Flyway: Flyway Community >= 7 dropped SQL Server 2008/2012 support.
++# Migrations are orchestrated by a small custom runner:
++#   - SystemMigrationsConfig  -> db/migration/system  -> SYSTEM DB (H2)
++#   - TenantMigrationsRunner  -> db/migration/tenant  -> each configured tenant
++# Naming convention: V<number>__<description>.sql, ascending versions,
++# recorded in a history table (see config/SqlMigrationRunner).
+ 
+-# ─── LOGGING ────────────────────────────────────────────────────────────
+-logging.file.name=logs/aquarius.log
++# --- LOGGING -----------------------------------------------------------------------
++logging.file.name=${AQUARIUSWEB_HOME:.}/logs/aquarius.log
+ logging.file.max-size=10MB
+ logging.file.max-history=30
+ logging.level.com.aquarius=DEBUG
+-# Logging DEBUG temporaneo per diagnosticare problemi di autorizzazione.
+-# Tornaa a INFO quando il login funziona stabilmente.
+-logging.level.org.springframework.security=DEBUG
++logging.level.org.springframework.security=INFO
+ 
+-# ─── DEV CONVENIENCE ────────────────────────────────────────────────────
+-# Niente seed automatico: tutto passa da Flyway (vedi sopra).
+-# Il super-admin di default 'admin' (password: 'admin') è creato da
+-# db/migration/system/V2__seed_initial_tenants.sql.
+-# Le credenziali web di un operatore legacy 'admin' sono create da
+-# db/migration/tenant/V2__bootstrap_web_credentials_for_admin.sql se
+-# l'utente legacy esiste in res_oper.
++# --- BOOTSTRAP NOTES ----------------------------------------------------------------
++# No automatic seeding outside migrations:
++#   - default super-admin 'admin' (password 'admin') is created by
++#     db/migration/system/V2__seed_initial_tenants.sql;
++#   - web credentials for a legacy 'admin' operator are bootstrapped by
++#     db/migration/tenant/V2__bootstrap_web_credentials_for_admin.sql
++#     if that operator exists in res_oper.

@@ -1,0 +1,9 @@
+# Normalize to LF in the repository: removes CRLF-vs-LF patch apply failures
+# (see .claude/README.md, patch-based workflow).
+* text=auto eol=lf
+
+# Binary assets
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary

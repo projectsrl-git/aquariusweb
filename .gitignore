@@ -1,29 +1,21 @@
+# Build
 target/
-.mvn/
-mvnw
-mvnw.cmd
-*.war
-*.class
+
+# Runtime data (H2 system DB, logs) -- never commit runtime state
+data/
+logs/
+*.log
+
+# Local machine-specific overrides (real DB URLs / credentials)
+config/application-local.properties
+
+# Commit message is delivered as a loose file per change, never tracked
+COMMIT_MSG.txt
 
 # IDE
 .idea/
 *.iml
 .vscode/
+.settings/
 .project
 .classpath
-.settings/
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Application
-logs/
-*.log
-*.patch
-
-# Spring Boot
-HELP.md
-
-
-*.patch
