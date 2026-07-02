@@ -1,0 +1,34 @@
+Initial import: AquariusWeb, parallel web front-end for Aquarius ERP
+
+AquariusWeb progressively re-dresses the Aquarius Visual FoxPro ERP as a
+Java web application running in parallel on the same SQL Server database
+(plug&play strategy: legacy tables are read, never altered; new tables
+are prefixed aq_web_).
+
+Stack: Spring Boot 2.7.18 (Java 17), Thymeleaf + Bootstrap 5, jTDS to
+SQL Server 2012 tenant DBs, file-based H2 system DB, custom SQL
+migration runner (Flyway Community dropped SQL Server 2012). Packaged
+as a WAR for external Tomcat 9; `mvn spring-boot:run` for development.
+
+Slices included in this import:
+- multi-tenant login against legacy res_oper (+ bcrypt web credentials)
+- sidebar menu generated from legacy tbl_menu (FORM_TO_URL mapping,
+  PARAGEST auto-mapping, synthetic web-only entries)
+- customers registry with the reusable form-shell framework (19 tabs
+  mirroring MENU_CLI000)
+- parameters (PARA) generic CRUD over a 340-category catalog
+- fiscal-year session context (PUB_ANNO analog, silent auto-select)
+- chart of accounts with positional hierarchy from U_AZI_AN
+  (AZI_MASTRO/AZI_SOTTOG) and the reusable aq-tree.js component
+- warehouse valuation dashboard (FIFO layers, as-of currency
+  conversion, ABC/Pareto, data-quality panel, price-trend projection,
+  Excel export via POI)
+- self-service custom reports (foundation)
+
+Repository bootstrap: CLAUDE.md (project memory bridge), .claude/
+working agreement and per-change docs, LF normalization, gitignore.
+Secrets policy: tracked config holds env placeholders only; real values
+live in environment variables or gitignored local overrides.
+
+Verification: static Java scan and inline-JS syntax checks in sandbox;
+real Maven build and Tomcat 9 deployment to be confirmed on target.
