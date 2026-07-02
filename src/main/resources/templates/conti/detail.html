@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Conto — Dettaglio</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-bank',
+        title=${account.code},
+        subtitle=${account.description},
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <div th:if="${flashSuccess}" class="alert alert-success py-2 small mb-3">
+        <i class="bi bi-check-circle me-1"></i><span th:text="${flashSuccess}"></span>
+    </div>
+
+    <div class="d-flex gap-2 mb-3">
+        <a th:href="@{/conti/{id}/edit(id=${account.id})}" class="btn btn-primary btn-sm">
+            <i class="bi bi-pencil me-1"></i>Modifica
+        </a>
+        <a th:href="@{/conti/tree}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i>Torna all'albero
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <div class="text-muted small fw-bold">Società / Anno</div>
+                    <div class="font-monospace" th:text="${account.societyCode + ' / ' + account.fiscalYear}">00 / 2026</div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-muted small fw-bold">Codice</div>
+                    <div class="font-monospace text-primary" th:text="${account.code}">CODICE</div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-muted small fw-bold">Tipo</div>
+                    <div>
+                        <span th:if="${account.accountType == 'C'}">Clienti</span>
+                        <span th:if="${account.accountType == 'F'}">Fornitori</span>
+                        <span th:if="${account.accountType == 'I'}">IVA</span>
+                        <span th:if="${account.accountType == 'O'}">Conti d'ordine</span>
+                        <span th:if="${account.accountType == 'P'}">Corrispettivi</span>
+                        <span th:if="${account.accountType == 'A' or account.accountType == null}" class="text-muted">—</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-muted small fw-bold">Posizione bilancio</div>
+                    <div>
+                        <span th:if="${account.balancePosition == 'P'}">Patrimoniale</span>
+                        <span th:if="${account.balancePosition == 'E'}">Economico</span>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="text-muted small fw-bold">Descrizione</div>
+                    <div th:text="${account.description ?: '—'}">descrizione</div>
+                </div>
+
+                <div class="col-md-3" th:if="${account.vatNumber}">
+                    <div class="text-muted small fw-bold">Partita IVA</div>
+                    <div class="font-monospace" th:text="${account.vatNumber}">12345678901</div>
+                </div>
+                <div class="col-md-3" th:if="${account.currency}">
+                    <div class="text-muted small fw-bold">Valuta</div>
+                    <div class="font-monospace" th:text="${account.currency}">EUR</div>
+                </div>
+                <div class="col-md-3" th:if="${account.parentCode}">
+                    <div class="text-muted small fw-bold">Codice padre</div>
+                    <div class="font-monospace" th:text="${account.parentCode}">padre</div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-muted small fw-bold">Nodo gerarchia</div>
+                    <div>
+                        <span th:if="${account.isParent != null and account.isParent}"
+                              class="badge bg-info-subtle text-info border">Mastro</span>
+                        <span th:unless="${account.isParent != null and account.isParent}"
+                              class="badge bg-light text-secondary border">Foglia</span>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${account.totalDebit != null or account.totalCredit != null}" class="mt-4">
+                <h6 class="text-muted small text-uppercase mb-2" style="letter-spacing:1.5px">Saldi</h6>
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <div class="text-muted small fw-bold">Saldo iniziale</div>
+                        <div class="font-monospace text-end"
+                             th:text="${#numbers.formatDecimal(account.initialBalance ?: 0, 1, 'POINT', 2, 'COMMA') + ' €'}">0,00 €</div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-muted small fw-bold">Totale dare</div>
+                        <div class="font-monospace text-end"
+                             th:text="${#numbers.formatDecimal(account.totalDebit ?: 0, 1, 'POINT', 2, 'COMMA') + ' €'}">0,00 €</div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-muted small fw-bold">Totale avere</div>
+                        <div class="font-monospace text-end"
+                             th:text="${#numbers.formatDecimal(account.totalCredit ?: 0, 1, 'POINT', 2, 'COMMA') + ' €'}">0,00 €</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section></body>
+</html>

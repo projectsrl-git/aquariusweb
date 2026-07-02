@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Modifica parametro – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-pencil-square',
+        title=|Modifica parametro ${item.codice}|,
+        subtitle=${category.description},
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <form th:action="@{/parametri/{p}/{id}(p=${category.prefix},id=${item.id})}"
+          method="post" th:object="${item}">
+
+        <div class="card border-0 shadow-sm mb-3">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold">Categoria</label>
+                        <input type="text" class="form-control form-control-sm font-monospace bg-light"
+                               th:value="${category.prefix}" readonly>
+                        <small class="text-muted" th:text="${category.description}">descr</small>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold">Codice completo</label>
+                        <input type="text" class="form-control form-control-sm font-monospace bg-light"
+                               th:value="${item.codice}" readonly>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small fw-bold">Valore</label>
+                        <input type="text" class="form-control form-control-sm font-monospace bg-light"
+                               th:value="${value}" readonly>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small fw-bold">Stato</label>
+                        <div class="form-check form-switch mt-1">
+                            <input class="form-check-input" type="checkbox"
+                                   th:field="*{disattivo}" id="disattivoSwitch">
+                            <label class="form-check-label small" for="disattivoSwitch">
+                                <span th:if="${item.disattivo == null or !item.disattivo}" class="text-success">Attivo</span>
+                                <span th:if="${item.disattivo != null and item.disattivo}" class="text-muted">Disattivo</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3 mt-1">
+                    <div class="col-md-12">
+                        <label class="form-label small fw-bold">Descrizione *</label>
+                        <input type="text" th:field="*{descri}" maxlength="200" required
+                               class="form-control form-control-sm">
+                    </div>
+                </div>
+
+                <div class="row g-3 mt-1">
+                    <div class="col-md-12">
+                        <label class="form-label small fw-bold">Campo "LIBERA"
+                            <span class="text-muted fw-normal">— stringa custom (max 250 caratteri)</span>
+                        </label>
+                        <input type="text" th:field="*{libera}" maxlength="250"
+                               class="form-control form-control-sm font-monospace">
+                        <small class="text-muted">
+                            Campo VFP polimorfico: per alcune categorie contiene flag posizionali,
+                            per altre è testo libero. Modificare con attenzione.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <a th:href="@{/parametri/{p}(p=${category.prefix})}" class="btn btn-outline-secondary">
+                <i class="bi bi-x-circle me-1"></i>Annulla
+            </a>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle me-1"></i>Salva modifiche
+            </button>
+        </div>
+    </form>
+
+</section></body>
+</html>

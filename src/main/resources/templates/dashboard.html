@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Dashboard – Aquarius</title></head>
+<body><section>
+
+    <div class="page-header">
+        <h1><i class="bi bi-house-door me-2"></i>Dashboard</h1>
+        <div class="breadcrumb">Benvenuto in Aquarius — versione web</div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-bottom-0 pt-3">
+                    <h6 class="text-uppercase text-muted mb-0" style="letter-spacing:1.5px;font-size:.7rem">
+                        <i class="bi bi-person-badge me-1"></i>Sessione corrente
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm mb-0">
+                        <tbody>
+                        <tr>
+                            <th class="text-muted small" style="width:120px">Operatore</th>
+                            <td><code th:text="${principal.username}">—</code></td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted small">Nome esteso</th>
+                            <td th:text="${principal.fullName ?: '—'}">—</td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted small">Società</th>
+                            <td>
+                                <span class="badge bg-info-subtle text-info-emphasis"
+                                      th:text="${principal.tenantDisplayName}">—</span>
+                                <code class="text-muted small ms-1" th:text="'(' + ${principal.tenantId} + ')'">(id)</code>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted small">Ruoli</th>
+                            <td>
+                                <span class="badge bg-secondary-subtle text-secondary-emphasis me-1"
+                                      th:each="r : ${principal.authorities}"
+                                      th:text="${r.authority}">ROLE_USER</span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-bottom-0 pt-3">
+                    <h6 class="text-uppercase text-muted mb-0" style="letter-spacing:1.5px;font-size:.7rem">
+                        <i class="bi bi-arrow-repeat me-1"></i>Migrazione VFP → Spring
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0 small">
+                        <li class="py-1"><i class="bi bi-check-circle-fill text-success me-1"></i>Slice 0: Scaffolding Spring Boot</li>
+                        <li class="py-1"><i class="bi bi-check-circle-fill text-success me-1"></i>Slice 1: Login multi-tenant (3 campi)</li>
+                        <li class="py-1"><i class="bi bi-arrow-right-circle text-primary me-1"></i>Slice 2: Importazione menu da <code>tbl_menu</code></li>
+                        <li class="py-1"><i class="bi bi-circle text-muted me-1"></i>Slice 3+: forme di business</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-info mt-4 small">
+        <i class="bi bi-info-circle me-2"></i>
+        Questa è la <strong>slice verticale 0+1</strong> del porting: login multi-tenant funzionante con
+        routing DataSource al DB della società scelta. Le voci anagrafiche/gestionali nella sidebar
+        sono placeholder per le prossime slice.
+    </div>
+
+</section></body>
+</html>

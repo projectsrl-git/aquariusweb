@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<!--
+  Fragment ricorsivo per un singolo nodo dell'albero piano dei conti.
+  In file separato perché Thymeleaf, se trova fragment con parametri
+  *dentro* il template chiamante, prova a renderizzarli inline (con
+  parametri = null) durante il parsing, e va in eccezione.
+
+  Uso:
+    <ul>
+      <li th:each="n : ${roots}"
+          th:replace="~{fragments/account-tree-node :: treeNode(${n})}"></li>
+    </ul>
+-->
+<body>
+
+<li th:fragment="treeNode(node)"
+    th:if="${node != null and node.account != null}"
+    th:data-code="${node.account.code}"
+    th:data-descr="${node.account.description}"
+    class="acc-node">
+
+    <div class="acc-row" th:classappend="${node.hasChildren()} ? 'is-parent' : 'is-leaf'">
+        <!-- Toggle expand/collapse -->
+        <span class="acc-toggle"
+              th:if="${node.hasChildren()}"
+              th:attr="data-bs-toggle='collapse', data-bs-target='#' + ${node.domId()}"
+              aria-expanded="false">
+            <i class="bi bi-chevron-right"></i>
+        </span>
+        <span class="acc-toggle-spacer" th:unless="${node.hasChildren()}"></span>
+
+        <!-- Icona (cartella per parent, pallino per leaf) -->
+        <i class="bi me-2 text-muted"
+           th:classappend="${node.hasChildren()} ? 'bi-folder2' : 'bi-circle-fill small-icon'"></i>
+
+        <!-- Codice + descrizione -->
+        <a th:href="@{/conti/{id}(id=${node.account.id})}"
+           class="acc-link text-decoration-none">
+            <code class="text-primary fw-bold" th:text="${node.account.code}">CODICE</code>
+            <span class="acc-descr ms-2" th:text="${node.account.description ?: '—'}">descr</span>
+        </a>
+
+        <!-- Badge classificazione -->
+        <span th:if="${node.account.balancePosition == 'P'}"
+              class="badge bg-info-subtle text-info border border-info-subtle ms-2"
+              title="Patrimoniale">P</span>
+        <span th:if="${node.account.balancePosition == 'E'}"
+              class="badge bg-warning-subtle text-warning border border-warning-subtle ms-2"
+              title="Economico">E</span>
+        <span th:if="${node.account.accountType == 'C'}"
+              class="badge bg-primary-subtle text-primary border ms-1"
+              title="Conto clienti">CLI</span>
+        <span th:if="${node.account.accountType == 'F'}"
+              class="badge bg-success-subtle text-success border ms-1"
+              title="Conto fornitori">FOR</span>
+        <span th:if="${node.account.accountType == 'I'}"
+              class="badge bg-secondary-subtle text-muted border ms-1"
+              title="Conto IVA">IVA</span>
+    </div>
+
+    <!-- Figli (ricorsione: lo stesso fragment richiamato sui children) -->
+    <ul th:if="${node.hasChildren()}"
+        th:id="${node.domId()}"
+        class="acc-children collapse">
+        <li th:each="child : ${node.children}"
+            th:replace="~{fragments/account-tree-node :: treeNode(${child})}"></li>
+    </ul>
+</li>
+
+</body>
+</html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Conto — Modifica</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-pencil-square',
+        title=|Modifica conto ${account.code}|,
+        subtitle=${account.description},
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <form th:action="@{/conti/{id}(id=${account.id})}" method="post" th:object="${account}">
+
+        <div class="form-shell">
+
+            <div th:replace="~{fragments/form-shell :: navTabs(${formTabs})}"></div>
+
+            <div class="form-shell-content">
+                <div class="tab-content">
+
+                    <!-- ━━━ TAB INFORMAZIONI PRINCIPALI ━━━ -->
+                    <div class="tab-pane fade show active" id="tab-info">
+                        <h6 class="section-title">Informazioni principali</h6>
+
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Conto</label>
+                                <input type="text" class="form-control form-control-sm font-monospace bg-light"
+                                       th:value="${account.code}" readonly>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Codice padre</label>
+                                <input type="text" class="form-control form-control-sm font-monospace bg-light"
+                                       th:value="${account.parentCode}" readonly>
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="isParentChk"
+                                           th:checked="${account.isParent != null and account.isParent}" disabled>
+                                    <label class="form-check-label small" for="isParentChk">
+                                        Conto padre (mastro)
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Esercizio</label>
+                                <input type="text" class="form-control form-control-sm font-monospace bg-light"
+                                       th:value="${account.fiscalYear}" readonly>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-1">
+                            <div class="col-md-12">
+                                <label class="form-label small fw-bold">Descrizione *</label>
+                                <input type="text" th:field="*{description}" maxlength="80" required
+                                       class="form-control form-control-sm">
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-1">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Tipo conto</label>
+                                <div class="d-flex gap-3 flex-wrap pt-1">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" th:field="*{accountType}" value="C" id="tipoC">
+                                        <label class="form-check-label small" for="tipoC">Clienti</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" th:field="*{accountType}" value="F" id="tipoF">
+                                        <label class="form-check-label small" for="tipoF">Fornitori</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" th:field="*{accountType}" value="I" id="tipoI">
+                                        <label class="form-check-label small" for="tipoI">IVA</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" th:field="*{accountType}" value="O" id="tipoO">
+                                        <label class="form-check-label small" for="tipoO">Conti d'ordine</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" th:field="*{accountType}" value="P" id="tipoP">
+                                        <label class="form-check-label small" for="tipoP">Corrispettivi</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" th:field="*{accountType}" value="A" id="tipoA">
+                                        <label class="form-check-label small" for="tipoA">Altro</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Posizione bilancio</label>
+                                <div class="d-flex gap-3 pt-1">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" th:field="*{balancePosition}" value="P" id="posP">
+                                        <label class="form-check-label small" for="posP">Patrimoniale</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" th:field="*{balancePosition}" value="E" id="posE">
+                                        <label class="form-check-label small" for="posE">Economico</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-1">
+                            <div class="col-md-4">
+                                <div class="form-check pt-3">
+                                    <input class="form-check-input" type="checkbox" th:field="*{hasVat}" id="ivaSn">
+                                    <label class="form-check-label small" for="ivaSn">Conto IVA</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Partita IVA</label>
+                                <input type="text" th:field="*{vatNumber}" maxlength="11"
+                                       class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Valuta</label>
+                                <input type="text" th:field="*{currency}" maxlength="3"
+                                       class="form-control form-control-sm font-monospace text-uppercase">
+                            </div>
+                        </div>
+
+                        <!-- Centri di costo -->
+                        <h6 class="section-title mt-4">Centri di costo</h6>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" th:field="*{costCenterEnabled}" id="cdcSn">
+                            <label class="form-check-label small" for="cdcSn">Gestione centri di costo attiva</label>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-md-4 d-flex gap-2">
+                                <input type="text" th:field="*{costCenter0}" maxlength="13"
+                                       class="form-control form-control-sm font-monospace" placeholder="C.costo 1">
+                                <input type="number" step="0.01" th:field="*{costCenterPercent1}"
+                                       class="form-control form-control-sm text-end" style="max-width:90px" placeholder="%">
+                            </div>
+                            <div class="col-md-4 d-flex gap-2">
+                                <input type="text" th:field="*{costCenter1}" maxlength="13"
+                                       class="form-control form-control-sm font-monospace" placeholder="C.costo 2">
+                                <input type="number" step="0.01" th:field="*{costCenterPercent2}"
+                                       class="form-control form-control-sm text-end" style="max-width:90px" placeholder="%">
+                            </div>
+                            <div class="col-md-4 d-flex gap-2">
+                                <input type="text" th:field="*{costCenter2}" maxlength="13"
+                                       class="form-control form-control-sm font-monospace" placeholder="C.costo 3">
+                                <input type="number" step="0.01" th:field="*{costCenterPercent3}"
+                                       class="form-control form-control-sm text-end" style="max-width:90px" placeholder="%">
+                            </div>
+                            <div class="col-md-4 d-flex gap-2">
+                                <input type="text" th:field="*{costCenter3}" maxlength="13"
+                                       class="form-control form-control-sm font-monospace" placeholder="C.costo 4">
+                                <input type="number" step="0.01" th:field="*{costCenterPercent4}"
+                                       class="form-control form-control-sm text-end" style="max-width:90px" placeholder="%">
+                            </div>
+                            <div class="col-md-4 d-flex gap-2">
+                                <input type="text" th:field="*{costCenter4}" maxlength="13"
+                                       class="form-control form-control-sm font-monospace" placeholder="C.costo 5">
+                                <input type="number" step="0.01" th:field="*{costCenterPercent5}"
+                                       class="form-control form-control-sm text-end" style="max-width:90px" placeholder="%">
+                            </div>
+                        </div>
+
+                        <!-- Bilancio CEE -->
+                        <h6 class="section-title mt-4">Bilancio CEE</h6>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Codice riga dare CEE</label>
+                                <input type="text" th:field="*{ceeDareCode}" maxlength="8"
+                                       class="form-control form-control-sm font-monospace text-uppercase">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Codice riga avere CEE</label>
+                                <input type="text" th:field="*{ceeAvereCode}" maxlength="8"
+                                       class="form-control form-control-sm font-monospace text-uppercase">
+                            </div>
+                        </div>
+
+                        <!-- R.A.P. / I.N.P.S. -->
+                        <h6 class="section-title mt-4">R.A.P. — I.N.P.S.</h6>
+                        <div class="row g-2">
+                            <div class="col-md-4"><div class="form-check"><input class="form-check-input" type="checkbox" th:field="*{isAdvanceAccount}"  id="cAnt"><label class="form-check-label small" for="cAnt">Conto anticipazioni</label></div></div>
+                            <div class="col-md-4"><div class="form-check"><input class="form-check-input" type="checkbox" th:field="*{isRapSubject}"     id="cRapS"><label class="form-check-label small" for="cRapS">Conto soggetto RAP</label></div></div>
+                            <div class="col-md-4"><div class="form-check"><input class="form-check-input" type="checkbox" th:field="*{isInpsSubject}"    id="cInpsS"><label class="form-check-label small" for="cInpsS">Conto soggetto INPS</label></div></div>
+                            <div class="col-md-4"><div class="form-check"><input class="form-check-input" type="checkbox" th:field="*{isWelfareAccount}" id="cPrev"><label class="form-check-label small" for="cPrev">Conto previdenza</label></div></div>
+                            <div class="col-md-4"><div class="form-check"><input class="form-check-input" type="checkbox" th:field="*{isRapAccount}"     id="cRap"><label class="form-check-label small" for="cRap">Conto RAP</label></div></div>
+                            <div class="col-md-4"><div class="form-check"><input class="form-check-input" type="checkbox" th:field="*{isInpsAccount}"    id="cInps"><label class="form-check-label small" for="cInps">Conto INPS</label></div></div>
+                            <div class="col-md-4"><div class="form-check"><input class="form-check-input" type="checkbox" th:field="*{isStampDutyAccount}" id="cBol"><label class="form-check-label small" for="cBol">Conto bolli</label></div></div>
+                        </div>
+                    </div>
+
+                    <!-- ━━━ TAB ALTRI DATI ━━━ -->
+                    <div class="tab-pane fade" id="tab-altri">
+                        <h6 class="section-title">Altri dati</h6>
+
+                        <!-- Bilancio Sole 24 Ore -->
+                        <h6 class="text-muted small text-uppercase mt-3 mb-2"
+                            style="letter-spacing:1.5px">Bilancio Sole 24 Ore</h6>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Codice raggruppamento dare</label>
+                                <input type="text" th:field="*{sole24DareCode}" maxlength="8"
+                                       class="form-control form-control-sm font-monospace text-uppercase">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Codice raggruppamento avere</label>
+                                <input type="text" th:field="*{sole24AvereCode}" maxlength="8"
+                                       class="form-control form-control-sm font-monospace text-uppercase">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Codice raggruppamento Aquarius (CLASS9)</label>
+                                <input type="text" th:field="*{aquariusGroup}" maxlength="13"
+                                       class="form-control form-control-sm font-monospace text-uppercase">
+                            </div>
+                        </div>
+
+                        <!-- Ammortamenti / Cespiti -->
+                        <h6 class="text-muted small text-uppercase mt-4 mb-2"
+                            style="letter-spacing:1.5px">Ammortamenti — Cespiti</h6>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Categoria ammortamento</label>
+                                <input type="text" th:field="*{amortizationCategory}" maxlength="10"
+                                       class="form-control form-control-sm font-monospace">
+                                <small class="text-muted">Da anagrafica conti</small>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Codice anagrafica cespite</label>
+                                <input type="text" th:field="*{assetRegistryCode}" maxlength="16"
+                                       class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Categoria generale</label>
+                                <input type="text" th:field="*{generalCategory}" maxlength="6"
+                                       class="form-control form-control-sm font-monospace">
+                            </div>
+                        </div>
+
+                        <!-- Altri flag -->
+                        <h6 class="text-muted small text-uppercase mt-4 mb-2"
+                            style="letter-spacing:1.5px">Comportamento</h6>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" th:field="*{noOrderNumberCheck}" id="noComm">
+                            <label class="form-check-label small" for="noComm">
+                                Non controllare presenza numero commessa in prima nota
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Placeholder Saldi / Movimenti -->
+                    <div class="tab-pane fade" id="tab-saldi">
+                        <div th:replace="~{fragments/form-shell :: placeholderContent(
+                            'Saldi mensili',
+                            'Dare/avere progressivi mese per mese, saldo iniziale, totale corrente e anno precedente.',
+                            'CON_DA01..12, CON_AV01..12, PRE_DA01..12, PRE_AV01..12, CON_SALDOI')}"></div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-mov">
+                        <div th:replace="~{fragments/form-shell :: placeholderContent(
+                            'Movimenti contabili',
+                            'Storico movimenti del conto — verrà collegato alla slice prima nota.',
+                            'MOV_CONT JOIN CONTI ON MOV_CONTO = CON_CONTO')}"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div th:replace="~{fragments/form-shell :: footer('/conti/' + ${account.id})}"></div>
+
+    </form>
+
+</section></body>
+</html>

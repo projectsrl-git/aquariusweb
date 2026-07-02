@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Selezione anno contabile – Aquarius</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body { background: linear-gradient(135deg, #0c4a6e 0%, #075985 100%); min-height: 100vh;
+               display: flex; align-items: center; }
+        .year-card { max-width: 480px; width: 100%; background: white;
+                     border-radius: 1rem; padding: 2.5rem 3rem;
+                     box-shadow: 0 20px 60px rgba(0,0,0,.3); }
+        .year-card h1 { color: #0c4a6e; font-weight: 600; font-size: 1.5rem; }
+        .year-card .subtitle { color: #6c757d; font-size: .9rem; margin-bottom: 2rem; }
+        .year-pill { display: block; padding: .85rem 1rem; border: 2px solid #e9ecef;
+                     border-radius: .55rem; margin-bottom: .5rem; cursor: pointer;
+                     transition: all .15s ease; }
+        .year-pill:hover { border-color: #0c4a6e; background: #f8f9fa; }
+        .year-pill.selected { border-color: #0c4a6e; background: #0c4a6e; color: white; }
+        .year-pill input[type="radio"] { display: none; }
+        .year-pill .y-code { font-weight: 700; font-size: 1.05rem; font-family: monospace; }
+        .year-pill .y-descr { font-size: .85rem; opacity: .85; }
+        .year-pill .y-default-badge { background: #dcfce7; color: #166534; padding: .15rem .5rem;
+                                       border-radius: .25rem; font-size: .7rem;
+                                       margin-left: .5rem; font-weight: 600; }
+        .year-pill.selected .y-default-badge { background: white; color: #0c4a6e; }
+    </style>
+</head>
+<body>
+
+<div class="container d-flex justify-content-center">
+    <div class="year-card">
+
+        <div class="d-flex align-items-center gap-3 mb-3">
+            <i class="bi bi-calendar3" style="font-size:2rem;color:#0c4a6e"></i>
+            <div>
+                <h1 class="mb-0">Anno contabile</h1>
+                <div class="subtitle">Seleziona l'esercizio su cui operare</div>
+            </div>
+        </div>
+
+        <div th:if="${flashError}" class="alert alert-danger py-2 small" th:text="${flashError}"></div>
+
+        <div th:if="${noYears}" class="alert alert-warning small">
+            <i class="bi bi-exclamation-triangle me-1"></i>
+            Nessun anno contabile configurato in <code>PARA</code> (categoria <code>ANN</code>).
+            Configura almeno un anno contabile prima di operare sulla contabilità.
+            <div class="mt-2">
+                <a th:href="@{/parametri/ANN}" class="btn btn-sm btn-outline-primary">
+                    Configura anni contabili
+                </a>
+            </div>
+        </div>
+
+        <form th:unless="${noYears}" method="post" th:action="@{/select-year}" id="yearForm">
+            <input type="hidden" name="redirect" th:value="${param.redirect}">
+
+            <div th:each="y : ${years}">
+                <label class="year-pill"
+                       th:classappend="${y.year == preselected} ? 'selected' : ''"
+                       th:for="${'year-' + y.year}">
+                    <input type="radio" name="year"
+                           th:id="${'year-' + y.year}"
+                           th:value="${y.year}"
+                           th:checked="${y.year == preselected}">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="y-code" th:text="${y.year}">2026</span>
+                            <span class="y-default-badge"
+                                  th:if="${y.year == preselected}">selezionato</span>
+                        </div>
+                        <div class="y-descr text-end" th:text="${y.description}">Esercizio 2026</div>
+                    </div>
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 mt-3 py-2">
+                <i class="bi bi-arrow-right-circle me-1"></i>Continua
+            </button>
+        </form>
+
+        <div class="text-center mt-3">
+            <a th:href="@{/logout}" class="text-muted small text-decoration-none">
+                <i class="bi bi-box-arrow-left me-1"></i>Esci e cambia utente
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Aggiorna la classe .selected al click su una pill
+    document.querySelectorAll('.year-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+            document.querySelectorAll('.year-pill').forEach(p => p.classList.remove('selected'));
+            pill.classList.add('selected');
+        });
+    });
+</script>
+</body>
+</html>

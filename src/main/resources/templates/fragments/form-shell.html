@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<!--
+  Fragment "form-shell" — building block riusabili per i form di entity in
+  stile Aquarius. Layout: vertical tabs sulla sinistra + tab content sulla
+  destra + sticky footer in basso.
+
+  Il CSS è caricato globalmente da layout.html (classi .form-shell, .form-shell-nav,
+  .form-shell-content, .form-footer).
+
+  Pattern d'uso (vedi clienti/edit.html):
+
+    <form th:action="..." method="post" th:object="...">
+      <div class="form-shell">
+        <div th:replace="~{fragments/form-shell :: navTabs(${formTabs})}"></div>
+        <div class="form-shell-content">
+          <div class="tab-content">
+            <div class="tab-pane fade show active" id="tab-anag">...</div>
+            <div class="tab-pane fade" id="tab-iva">...</div>
+            ...
+          </div>
+        </div>
+      </div>
+      <div th:replace="~{fragments/form-shell :: footer('/clienti/' + ${customer.id})}"></div>
+    </form>
+
+  - tabs: List<FormTab> (id, label, icon, active, placeholder)
+  - backUrl: URL del bottone Annulla
+-->
+<body>
+
+<!-- Nav verticale dei tab (sidebar sinistra del form-shell) ─────────────── -->
+<div th:fragment="navTabs(tabs)" class="form-shell-nav">
+    <div class="nav-section-label">Sezioni attive</div>
+    <ul class="nav nav-pills flex-column" role="tablist">
+        <li th:each="t : ${tabs}" th:if="${!t.placeholder}" class="nav-item" role="presentation">
+            <button type="button"
+                    class="nav-link"
+                    th:classappend="${t.active} ? 'active' : ''"
+                    data-bs-toggle="tab"
+                    th:attr="data-bs-target='#' + ${t.id}"
+                    role="tab">
+                <i class="bi" th:classappend="${t.icon}"></i>
+                <span th:text="${t.label}">Tab</span>
+            </button>
+        </li>
+    </ul>
+
+    <th:block th:if="${#lists.size(tabs.?[placeholder]) > 0}">
+        <div class="nav-section-label mt-3">Da migrare (slice future)</div>
+        <ul class="nav nav-pills flex-column" role="tablist">
+            <li th:each="t : ${tabs}" th:if="${t.placeholder}" class="nav-item" role="presentation">
+                <button type="button"
+                        class="nav-link placeholder-tab"
+                        data-bs-toggle="tab"
+                        th:attr="data-bs-target='#' + ${t.id}"
+                        role="tab">
+                    <i class="bi" th:classappend="${t.icon}"></i>
+                    <span th:text="${t.label}">Tab</span>
+                </button>
+            </li>
+        </ul>
+    </th:block>
+</div>
+
+<!-- Footer con bottoni Annulla / Salva ──────────────────────────────────── -->
+<div th:fragment="footer(backUrl)" class="form-footer">
+    <a th:href="@{${backUrl}}" class="btn btn-outline-secondary">
+        <i class="bi bi-x-circle me-1"></i>Annulla
+    </a>
+    <button type="submit" class="btn btn-primary">
+        <i class="bi bi-check-circle me-1"></i>Salva modifiche
+    </button>
+</div>
+
+<!-- Tab content "placeholder" riusabile per i tab non ancora migrati ───── -->
+<div th:fragment="placeholderContent(name, descrizione, campi)"
+     class="text-center py-5 text-muted">
+    <i class="bi bi-tools" style="font-size:2.5rem;opacity:.4"></i>
+    <h5 class="mt-3" th:text="${name}">Tab placeholder</h5>
+    <p class="small mx-auto" style="max-width:580px" th:text="${descrizione}">Descrizione.</p>
+    <div th:if="${campi != null and !#strings.isEmpty(campi)}"
+         class="small text-muted mt-3 font-monospace" style="max-width:580px;margin:0 auto"
+         th:text="${campi}">CLI_FOO, CLI_BAR</div>
+    <span class="badge bg-light text-secondary border mt-3">slice futura</span>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<!--
+  Fragment riusabile per gli header delle pagine.
+  Pattern: icona + titolo + breadcrumb + slot azioni (right-aligned).
+
+  Uso:
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon = 'bi-pencil-square',
+        title = 'Aggiornamento anagrafica',
+        subtitle = ${customer.businessName},
+        crumbs = ${breadcrumbs}
+    )}"></div>
+
+  Per azioni custom a destra, definire un fragment nel template chiamante e
+  passarlo come parametro `actions`. Vedi clienti/edit.html per esempio.
+-->
+<body>
+
+<!-- ── HEADER STANDARD (icona, titolo, sottotitolo, breadcrumb) ─────────── -->
+<div th:fragment="pageHeader(icon, title, subtitle, crumbs)" class="page-header-rich mb-4">
+
+    <!-- Breadcrumb (sopra il titolo) -->
+    <nav th:if="${crumbs != null and !crumbs.empty}" aria-label="breadcrumb" class="mb-1">
+        <ol class="breadcrumb mb-0" style="font-size:.78rem;background:transparent;padding:0">
+            <li class="breadcrumb-item"
+                th:each="c,it : ${crumbs}"
+                th:classappend="${it.last} ? 'active text-muted' : ''"
+                th:aria-current="${it.last} ? 'page' : null">
+                <a th:if="${c.url != null and !it.last}" th:href="@{${c.url}}" th:text="${c.label}">Sezione</a>
+                <span th:if="${c.url == null or it.last}" th:text="${c.label}" class="text-muted">Sezione</span>
+            </li>
+        </ol>
+    </nav>
+
+    <!-- Titolo principale -->
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <h1 class="mb-0 d-flex align-items-center">
+            <i th:if="${icon != null and !#strings.isEmpty(icon)}"
+               th:classappend="${icon}" class="bi me-2"
+               style="color:var(--aq-primary,#0c4a6e)"></i>
+            <span th:text="${title}">Titolo</span>
+        </h1>
+        <!-- Slot azioni (a destra, riempito dal template chiamante) -->
+        <div class="page-actions"></div>
+    </div>
+
+    <!-- Sottotitolo (subito sotto, attenuato) -->
+    <div th:if="${subtitle != null and !#strings.isEmpty(subtitle)}"
+         class="text-muted small mt-1"
+         th:text="${subtitle}">Sottotitolo</div>
+
+</div>
+
+</body>
+</html>

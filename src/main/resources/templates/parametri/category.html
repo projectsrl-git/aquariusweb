@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title th:text="|${category.description} – Parametri|">Categoria – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-list-ul',
+        title=${category.description},
+        subtitle=|Categoria parametri ${category.prefix} — ${items.totalElements} record|,
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <div th:if="${flashSuccess}" class="alert alert-success py-2 small mb-3">
+        <i class="bi bi-check-circle me-1"></i><span th:text="${flashSuccess}"></span>
+    </div>
+
+    <div class="d-flex gap-3 mb-3 align-items-end flex-wrap">
+        <form method="get" th:action="@{/parametri/{p}(p=${category.prefix})}" class="flex-grow-1" autocomplete="off">
+            <div class="input-group" style="max-width:500px">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" name="q" th:value="${q}" class="form-control form-control-sm"
+                       placeholder="Cerca per codice o descrizione…">
+                <button type="submit" class="btn btn-primary btn-sm">Cerca</button>
+                <a th:if="${q != ''}" th:href="@{/parametri/{p}(p=${category.prefix})}"
+                   class="btn btn-outline-secondary btn-sm"><i class="bi bi-x"></i></a>
+            </div>
+        </form>
+        <div class="text-muted small">
+            Prefisso: <code class="text-primary" th:text="${category.prefix}">TOP</code>
+            · Lung. codice: <code th:text="${category.codLen}">4</code>
+        </div>
+    </div>
+
+    <div th:if="${items.empty}" class="alert alert-info">
+        <i class="bi bi-info-circle me-1"></i>
+        Nessun parametro trovato in questa categoria.
+        <span th:if="${q != ''}">Prova a rimuovere il filtro.</span>
+    </div>
+
+    <div th:unless="${items.empty}" class="card border-0 shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover table-sm mb-0 small">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width:140px">Codice</th>
+                        <th style="width:80px">Valore</th>
+                        <th>Descrizione</th>
+                        <th style="width:80px" class="text-center">Stato</th>
+                        <th style="width:60px"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="p : ${items.content}">
+                        <td class="font-monospace text-primary" th:text="${p.codice}">CODICE</td>
+                        <td class="font-monospace text-muted small"
+                            th:text="${catalog.extractValue(p.codice, category)}">0001</td>
+                        <td th:text="${p.descri ?: '—'}">descrizione</td>
+                        <td class="text-center">
+                            <span th:if="${p.disattivo == null or !p.disattivo}"
+                                  class="badge bg-success-subtle text-success border border-success-subtle">attivo</span>
+                            <span th:if="${p.disattivo != null and p.disattivo}"
+                                  class="badge bg-secondary-subtle text-muted border">disattivo</span>
+                        </td>
+                        <td>
+                            <a th:href="@{/parametri/{p}/{id}/edit(p=${category.prefix},id=${p.id})}"
+                               class="btn btn-sm btn-outline-primary py-0 px-2">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Paginazione ─────────────────────────────────────────────────── -->
+    <nav th:if="${items.totalPages > 1}" class="mt-3 d-flex justify-content-between align-items-center">
+        <span class="text-muted small">
+            Pagina <span th:text="${items.number + 1}">1</span> di <span th:text="${items.totalPages}">10</span>
+            · <span th:text="${items.totalElements}">123</span> record totali
+        </span>
+        <ul class="pagination pagination-sm mb-0">
+            <li class="page-item" th:classappend="${items.first} ? 'disabled' : ''">
+                <a class="page-link" th:href="@{/parametri/{p}(p=${category.prefix},q=${q},page=${items.number - 1})}">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+            </li>
+            <li class="page-item" th:classappend="${items.last} ? 'disabled' : ''">
+                <a class="page-link" th:href="@{/parametri/{p}(p=${category.prefix},q=${q},page=${items.number + 1})}">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+</section></body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Parametri – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-sliders',
+        title='Parametri di sistema',
+        subtitle=|${totalCount} categorie configurabili|,
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <form method="get" th:action="@{/parametri}" class="mb-4" autocomplete="off">
+        <div class="input-group" style="max-width:600px">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" name="q" th:value="${q}" class="form-control"
+                   placeholder="Cerca categoria per nome o codice (es. IVA, top, fornitor, listini)…">
+            <button type="submit" class="btn btn-primary">Cerca</button>
+            <a th:if="${q != ''}" th:href="@{/parametri}" class="btn btn-outline-secondary">
+                <i class="bi bi-x"></i>
+            </a>
+        </div>
+    </form>
+
+    <!-- Risultati search ─────────────────────────────────────────────── -->
+    <div th:if="${filtered}">
+        <h6 class="text-muted small text-uppercase mb-3" style="letter-spacing:1.5px">
+            Risultati ricerca <span th:text="${'(' + #lists.size(filteredCategories) + ')'}"></span>
+        </h6>
+        <div th:if="${filteredCategories.empty}" class="alert alert-warning small">
+            Nessuna categoria trovata per "<span th:text="${q}"></span>".
+        </div>
+        <div class="row g-2">
+            <div th:each="c : ${filteredCategories}" class="col-md-6 col-lg-4">
+                <a th:href="@{/parametri/{p}(p=${c.prefix})}"
+                   class="text-decoration-none category-card">
+                    <code class="text-primary small fw-bold" th:text="${c.prefix}">TOP</code>
+                    <span class="small ms-2" th:text="${c.description}">descrizione</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Raggruppato per area ──────────────────────────────────────────── -->
+    <div th:unless="${filtered}">
+        <div th:each="area : ${byArea}" class="mb-4">
+            <h6 class="text-muted small text-uppercase mb-2" style="letter-spacing:1.5px">
+                <i class="bi bi-folder me-1"></i><span th:text="${area.key}">Area</span>
+                <span class="text-muted ms-2" th:text="${'(' + #lists.size(area.value) + ')'}">(N)</span>
+            </h6>
+            <div class="row g-2">
+                <div th:each="c : ${area.value}" class="col-md-6 col-lg-4">
+                    <a th:href="@{/parametri/{p}(p=${c.prefix})}"
+                       class="text-decoration-none category-card"
+                       th:title="${c.description}">
+                        <code class="text-primary small fw-bold" th:text="${c.prefix}">TOP</code>
+                        <span class="small ms-2" th:text="${c.description}">descrizione</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .category-card {
+            display: block;
+            padding: .55rem .75rem;
+            border: 1px solid #e9ecef;
+            border-radius: .35rem;
+            background: white;
+            color: #495057;
+            transition: all .15s ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .category-card:hover {
+            border-color: var(--aq-primary);
+            background: #f8f9fa;
+            color: #212529;
+        }
+        .category-card code { font-size: .75rem; }
+    </style>
+
+</section></body>
+</html>

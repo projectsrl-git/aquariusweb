@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Esegui query – Aquarius</title></head>
+<body><section>
+
+    <div class="page-header">
+        <h1>
+            <i th:class="${report.icon != null ? report.icon : 'bi bi-table'}"
+               th:style="'color:' + ${report.color != null ? report.color : '#0ea5e9'}"></i>
+            <span th:text="${report.name}">Nome query</span>
+        </h1>
+        <div class="breadcrumb">
+            <a th:href="@{/custom-reports}">Query personalizzate</a> /
+            <span th:text="${report.name}"></span>
+        </div>
+        <p class="text-muted small mt-2" th:text="${report.description}">Descrizione</p>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-3" th:if="${!#lists.isEmpty(parameters)}">
+        <div class="card-header bg-white">
+            <h6 class="text-uppercase text-muted mb-0" style="letter-spacing:1.5px;font-size:.7rem">
+                <i class="bi bi-sliders me-1"></i>Parametri
+            </h6>
+        </div>
+        <div class="card-body">
+            <form id="paramForm" class="row g-2">
+                <div class="col-md-4" th:each="p : ${parameters}">
+                    <label class="form-label small fw-semibold" th:text="${p}">param</label>
+                    <input type="text" class="form-control form-control-sm" th:name="${p}">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <button type="button" id="btnExecute" class="btn btn-primary">
+            <i class="bi bi-play me-1"></i>Esegui query
+        </button>
+        <a th:href="@{/custom-reports/{id}/edit(id=${report.id})}" class="btn btn-outline-secondary">
+            <i class="bi bi-pencil me-1"></i>Modifica
+        </a>
+    </div>
+
+    <div id="results"></div>
+
+    <script th:inline="javascript">
+    const reportId = /*[[${report.id}]]*/ 0;
+
+    document.getElementById('btnExecute').addEventListener('click', async () => {
+        const params = {};
+        const form = document.getElementById('paramForm');
+        if (form) {
+            new FormData(form).forEach((v, k) => params[k] = v);
+        }
+
+        const csrfToken = document.querySelector('meta[name=_csrf]')?.content;
+        const csrfHeader = document.querySelector('meta[name=_csrf_header]')?.content;
+        const headers = {'Content-Type': 'application/json'};
+        if (csrfToken && csrfHeader) headers[csrfHeader] = csrfToken;
+
+        document.getElementById('results').innerHTML =
+            '<div class="text-muted"><i class="bi bi-hourglass-split"></i> Esecuzione in corso...</div>';
+
+        const res = await fetch('/custom-reports/' + reportId + '/execute', {
+            method: 'POST', headers, body: JSON.stringify(params)
+        });
+        const data = await res.json();
+        renderResults(data);
+    });
+
+    function renderResults(data) {
+        const el = document.getElementById('results');
+        if (!data.success) {
+            el.innerHTML = '<div class="alert alert-danger">' +
+                '<strong>' + (data.errorType || 'Errore') + '</strong>: ' + (data.error || '') + '</div>';
+            return;
+        }
+
+        const cols = data.columns || [];
+        const rows = data.rows || [];
+
+        let html = '<div class="card shadow-sm border-0">';
+        html += '<div class="card-header bg-white d-flex justify-content-between align-items-center">';
+        html += '<h6 class="text-uppercase text-muted mb-0" style="letter-spacing:1.5px;font-size:.7rem">';
+        html += '<i class="bi bi-table me-1"></i>Risultato — ' + data.rowCount + ' righe</h6>';
+        html += '<button class="btn btn-sm btn-outline-secondary" onclick="exportCsv()">';
+        html += '<i class="bi bi-download me-1"></i>CSV</button></div>';
+        html += '<div class="table-responsive"><table class="table table-sm table-hover mb-0">';
+        html += '<thead class="table-light"><tr>';
+        cols.forEach(c => html += '<th>' + escapeHtml(c) + '</th>');
+        html += '</tr></thead><tbody>';
+        rows.forEach(r => {
+            html += '<tr>';
+            cols.forEach(c => html += '<td>' + escapeHtml(r[c]) + '</td>');
+            html += '</tr>';
+        });
+        html += '</tbody></table></div></div>';
+        el.innerHTML = html;
+        window._lastResult = data;
+    }
+
+    function escapeHtml(v) {
+        if (v == null) return '';
+        return String(v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    function exportCsv() {
+        const d = window._lastResult;
+        if (!d) return;
+        const csv = [d.columns.join(',')].concat(
+            d.rows.map(r => d.columns.map(c => JSON.stringify(r[c] ?? '')).join(','))
+        ).join('\n');
+        const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'export.csv';
+        a.click();
+    }
+    </script>
+
+</section></body>
+</html>

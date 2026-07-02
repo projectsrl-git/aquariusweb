@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Aggiornamento anagrafica – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-pencil-square',
+        title='Aggiornamento anagrafica',
+        subtitle=${customer.businessName},
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <form th:action="@{/clienti/{id}(id=${customer.id})}" method="post" th:object="${customer}">
+
+        <div class="form-shell">
+
+            <!-- ── Nav verticale (sidebar) ─ generata dal fragment ───────── -->
+            <div th:replace="~{fragments/form-shell :: navTabs(${formTabs})}"></div>
+
+            <!-- ── Tab content (inline nel template) ─────────────────────── -->
+            <div class="form-shell-content">
+                <div class="tab-content">
+
+                    <!-- ━━━ TAB ANAGRAFICA (attivo all'apertura) ━━━ -->
+                    <div class="tab-pane fade show active" id="tab-anag">
+                        <h6 class="section-title">Anagrafica</h6>
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Società</label>
+                                <input type="text" class="form-control form-control-sm font-monospace bg-light" th:value="${customer.societyCode}" readonly>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Codice cliente</label>
+                                <input type="text" class="form-control form-control-sm font-monospace bg-light" th:value="${customer.code}" readonly>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Tipo soggetto</label>
+                                <select th:field="*{personType}" class="form-select form-select-sm">
+                                    <option value="">— non specificato —</option>
+                                    <option value="G">Persona Giuridica</option>
+                                    <option value="F">Persona Fisica</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row g-3 mt-1">
+                            <div class="col-md-8">
+                                <label class="form-label small fw-bold">Ragione sociale *</label>
+                                <input type="text" th:field="*{businessName}" maxlength="150" required class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">2ª denominazione</label>
+                                <input type="text" th:field="*{businessName2}" maxlength="80" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                        <div class="row g-3 mt-1">
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Partita IVA</label>
+                                <input type="text" th:field="*{vatNumber}" maxlength="11" pattern="[0-9]{11}" class="form-control form-control-sm font-monospace">
+                                <small class="text-muted">11 cifre</small>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Codice fiscale</label>
+                                <input type="text" th:field="*{taxCode}" maxlength="16" class="form-control form-control-sm font-monospace text-uppercase">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">P.IVA CEE/Extra CEE</label>
+                                <input type="text" th:field="*{vatCeeNumber}" maxlength="20" class="form-control form-control-sm font-monospace">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ━━━ TAB IVA ━━━ -->
+                    <div class="tab-pane fade" id="tab-iva">
+                        <h6 class="section-title">IVA / Fiscale</h6>
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Codice IVA</label>
+                                <input type="text" th:field="*{vatRateCode}" maxlength="3" class="form-control form-control-sm font-monospace text-uppercase">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Codice IVA alternativo</label>
+                                <input type="text" th:field="*{alternateVatCode}" maxlength="3" class="form-control form-control-sm font-monospace text-uppercase">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Ufficio IVA competente</label>
+                                <input type="text" th:field="*{taxOffice}" maxlength="30" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                        <div class="row g-3 mt-1">
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Sospensione imposta</label>
+                                <input type="text" th:field="*{suspendedTax}" maxlength="10" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Dichiarazione d'intento</label>
+                                <input type="text" th:field="*{exemptionCode}" maxlength="24" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Data dichiarazione</label>
+                                <input type="text" th:field="*{exemptionDate}" maxlength="10" placeholder="GG/MM/AAAA" class="form-control form-control-sm font-monospace">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ━━━ TAB CONTATTI ━━━ -->
+                    <div class="tab-pane fade" id="tab-cont">
+                        <h6 class="section-title">Contatti</h6>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Telefono</label>
+                                <input type="text" th:field="*{phone}" maxlength="30" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Fax</label>
+                                <input type="text" th:field="*{fax}" maxlength="30" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Telex / cellulare</label>
+                                <input type="text" th:field="*{telex}" maxlength="30" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                        <div class="row g-3 mt-1">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Email principale</label>
+                                <input type="email" th:field="*{email}" maxlength="100" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Email alternativa 1</label>
+                                <input type="email" th:field="*{emailAlt1}" maxlength="100" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Email alternativa 2</label>
+                                <input type="email" th:field="*{emailAlt2}" maxlength="100" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ━━━ TAB COMMERCIO ━━━ -->
+                    <div class="tab-pane fade" id="tab-comm">
+                        <h6 class="section-title">Commercio</h6>
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Agente</label>
+                                <input type="text" th:field="*{agent}" maxlength="3" class="form-control form-control-sm font-monospace text-uppercase">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Condizione pagamento</label>
+                                <input type="text" th:field="*{paymentTerms}" maxlength="3" class="form-control form-control-sm font-monospace text-uppercase">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Listino</label>
+                                <input type="text" th:field="*{priceList}" maxlength="1" class="form-control form-control-sm font-monospace text-uppercase">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Valuta</label>
+                                <input type="text" th:field="*{currency}" maxlength="3" class="form-control form-control-sm font-monospace text-uppercase">
+                            </div>
+                        </div>
+                        <div class="row g-3 mt-1">
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">% sconto</label>
+                                <input type="number" step="0.01" th:field="*{discountPercent}" class="form-control form-control-sm text-end">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Fido attivo</label>
+                                <select th:field="*{creditLimitEnabled}" class="form-select form-select-sm">
+                                    <option value="">—</option>
+                                    <option value="S">Sì</option>
+                                    <option value="N">No</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Importo fido</label>
+                                <input type="number" step="0.01" th:field="*{creditLimit}" class="form-control form-control-sm text-end">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Totale ordini</label>
+                                <input type="number" th:value="${customer.totalOrders}" readonly class="form-control form-control-sm text-end bg-light">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ━━━ TAB CONTI (banca) ━━━ -->
+                    <div class="tab-pane fade" id="tab-conti">
+                        <h6 class="section-title">Conti — Banca</h6>
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Codice banca</label>
+                                <input type="text" th:field="*{bankCode}" maxlength="10" class="form-control form-control-sm font-monospace text-uppercase">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">IBAN</label>
+                                <input type="text" th:field="*{iban}" maxlength="29" class="form-control form-control-sm font-monospace text-uppercase">
+                                <small class="text-muted">Max 29 caratteri</small>
+                            </div>
+                        </div>
+                        <div class="row g-3 mt-1">
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Codice ABI</label>
+                                <input type="text" th:field="*{abi}" maxlength="5" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Codice CAB</label>
+                                <input type="text" th:field="*{cab}" maxlength="5" class="form-control form-control-sm font-monospace">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ━━━ TAB INDIRIZZO ━━━ -->
+                    <div class="tab-pane fade" id="tab-indir">
+                        <h6 class="section-title">Indirizzo</h6>
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label class="form-label small fw-bold">Indirizzo</label>
+                                <input type="text" th:field="*{address}" maxlength="150" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label small fw-bold">CAP</label>
+                                <input type="text" th:field="*{zipCode}" maxlength="15" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                        <div class="row g-3 mt-1">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Località</label>
+                                <input type="text" th:field="*{city}" maxlength="150" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label small fw-bold">Provincia</label>
+                                <input type="text" th:field="*{province}" maxlength="2" class="form-control form-control-sm font-monospace text-uppercase">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label small fw-bold">Nazione</label>
+                                <input type="text" th:field="*{country}" maxlength="3" class="form-control form-control-sm font-monospace text-uppercase">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label small fw-bold">Zona</label>
+                                <input type="text" th:field="*{zone}" maxlength="3" class="form-control form-control-sm font-monospace text-uppercase">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ━━━ TAB ANNOTAZIONI (note) ━━━ -->
+                    <div class="tab-pane fade" id="tab-note">
+                        <h6 class="section-title">Annotazioni</h6>
+                        <textarea th:field="*{notes}" rows="14" class="form-control form-control-sm"
+                                  style="font-family:Menlo,Consolas,monospace;font-size:.8rem"></textarea>
+                    </div>
+
+                    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+                    <!--           TAB PLACEHOLDER (12 — slice future)            -->
+                    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+                    <div class="tab-pane fade" id="tab-vett">
+                        <div th:replace="~{fragments/form-shell :: placeholderContent(
+                            'Vettori',
+                            'Spedizionieri abituali, porto, mezzo di trasporto.',
+                            'CLI_VETTO1, CLI_VETTO2, CLI_VETTO3, CLI_PORTO, CLI_MEZZO')}"></div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-contab">
+                        <div th:replace="~{fragments/form-shell :: placeholderContent(
+                            'Contabili',
+                            'Mappatura sui conti di contabilità generale per fatturazione.',
+                            'CLI_CONTO1, CLI_CONTO2, CLI_CONTO3, CLI_CONTO4, CLI_CONTO5')}"></div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-postic">
+                        <div th:replace="~{fragments/form-shell :: placeholderContent(
+                            'Posticipi riba',
+                            'Posticipi scadenze ricevute bancarie per mese.',
+                            'CLI_GG1, CLI_GG2, CLI_BDAL, CLI_BAL, CLI_B2DAL, CLI_B2AL')}"></div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-fido">
+                        <div th:replace="~{fragments/form-shell :: placeholderContent(
+                            'Fido',
+                            'Fido residuo, scaduto, extra-fido, esposizione totale.',
+                            'CLI_CLFIDO, CLI_IMPFID, CLI_CLFID2 e fido calcolato run-time')}"></div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-rifcli">
+                        <div th:replace="~{fragments/form-shell :: placeholderContent(
+                            'Rif. cliente',
+                            'Codice di riferimento usato dal CLIENTE per le sue ordinazioni.',
+                            'CLI_RCXDIR, CLI_RCXNOM, CLI_RCXPRG, CLI_RCXPRO')}"></div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-web">
+                        <div th:replace="~{fragments/form-shell :: placeholderContent(
+                            'Web',
+                            'Credenziali web cliente per area riservata B2B.',
+                            'CLI_TRXDIR, CLI_TRXNOM, CLI_TRXPRG, CLI_TRXPRO')}"></div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-legali">
+                        <div th:replace="~{fragments/form-shell :: placeholderContent(
+                            'Legali',
+                            'Sede legale, dati persona fisica/giuridica per fattura elettronica.',
+                            'CLI_RAGDIR, CLI_INDEFF, CLI_CAPLEG, CLI_ESTNAZ, CLI_ESTNAS, CLI_ESTDOM, CLI_ESTCOM, CLI_CODFISA')}"></div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-prod">
+                        <div th:replace="~{fragments/form-shell :: placeholderContent(
+                            'Produzione',
+                            'Applicazione prodotto, codice imballo, classe critica.',
+                            'CLI_APPPRO, CLI_CODIMB, CLI_CRITIC, CLI_FLGRCQ')}"></div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-emails">
+                        <div th:replace="~{fragments/form-shell :: placeholderContent(
+                            'Gruppi E-mail',
+                            'Liste mail to / cc / ccn per invio documenti automatico.',
+                            'CLI_MAILTO, CLI_MAILCC, CLI_MAILCN (campi TEXT)')}"></div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-testi">
+                        <div th:replace="~{fragments/form-shell :: placeholderContent(
+                            'Testi automatici',
+                            'Testi default da inserire in documenti (ordini, DDT, fatture, fatture proforma).',
+                            'CLI_TXTORD, CLI_TXTBOL, CLI_TXTFAT, CLI_TXTFAP (campi TEXT)')}"></div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-fattu">
+                        <div th:replace="~{fragments/form-shell :: placeholderContent(
+                            'Fatturare a',
+                            'Cliente diverso a cui inviare la fattura (head-office, capogruppo).',
+                            'CLI_CODDES, CLI_GRUPPOAZ')}"></div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-intra">
+                        <div th:replace="~{fragments/form-shell :: placeholderContent(
+                            'Intrastat',
+                            'Dati per invio telematico disposizioni intrastat.',
+                            'CLI_NOCLDOG, CLI_CLDOG')}"></div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-rid">
+                        <div th:replace="~{fragments/form-shell :: placeholderContent(
+                            'Distinte RID',
+                            'Codici aggiuntivi per emissione distinte di incasso ricevute bancarie.',
+                            'CLI_FLRID, CLI_RAGRID, CLI_IBANRID, CLI_NOTRID, CLI_ALRID, CLI_GGRID')}"></div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-fe">
+                        <div th:replace="~{fragments/form-shell :: placeholderContent(
+                            'Fattura elettronica',
+                            'Codice destinatario SDI, PEC, regime fiscale per FE.',
+                            'CLI_TIPFAT, CLI_TRASME, CLI_RECDES, CLI_RECCOG, CLI_RECNOM, CLI_RECCDF, CLI_RECTIP, CLI_RECCAT')}"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div th:replace="~{fragments/form-shell :: footer('/clienti/' + ${customer.id})}"></div>
+
+    </form>
+
+</section></body>
+</html>

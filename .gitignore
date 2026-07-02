@@ -1,0 +1,28 @@
+target/
+.mvn/
+mvnw
+mvnw.cmd
+*.war
+*.class
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.project
+.classpath
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Application
+logs/
+*.log
+*.patch
+
+# Spring Boot
+HELP.md
+
+
