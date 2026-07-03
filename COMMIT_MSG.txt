@@ -1,20 +1,20 @@
-Add configurable per-environment logging via logback
+Fix context-path bugs breaking the app under a Tomcat context
 
-Replace Spring's logging.file.* with a dedicated logback-spring.xml whose
-output directory is driven by the property aquarius.log.dir. Precedence:
-AQUARIUS_LOG_DIR env var > -Daquarius.log.dir > per-profile value > ./logs.
+After login the app redirected to /dashboard and returned 404: under Tomcat
+it runs in the /aquariusweb context, but several absolute paths ignored it.
 
-Each environment gets its own directory (dev/sit/uat/prod under
-D:/logs/aquariusweb/<env>), so logs are easy to find and archive. Rotation
-is daily plus by size (10MB), archives gzipped under <dir>/archive/, kept
-90 days with a total size cap. A separate aquarius-error.log collects
-WARN/ERROR for fast triage; the console appender stays so catalina.out keeps
-mirroring output.
+- SecurityConfig: the login success handler used
+  res.sendRedirect("/dashboard"); HttpServletResponse.sendRedirect does not
+  prepend the context path. Now uses req.getContextPath() + "/dashboard".
+- Four JS fetch() calls used absolute URLs and would hit the server root
+  instead of the app: the sidebar menu loader (/api/menu/tree), custom-report
+  validate and execute, and the help chat. The menu loader now reads a new
+  <meta name="_ctx"> exposed by the layout; the three th:inline templates use
+  the Thymeleaf /*[[@{/...}]]*/ expression so the URL includes the context.
 
-This also makes the current post-login failure readable: with
-AQUARIUSWEB_HOME=".", the previous log path resolved against Tomcat's
-working directory and was effectively lost.
+Controller "redirect:/..." returns and Thymeleaf @{...} links were already
+correct (Spring/Thymeleaf add the context), as was FiscalContextInterceptor.
 
-Verification: logback XML validated, aquarius.log.dir resolves in every
-profile, git apply --check clean on a fresh clone of HEAD e67cd01. Runtime
-logging under Tomcat to be confirmed on target.
+Verification: Java brace scan, node --check on the inline-script templates,
+no remaining context-less absolute fetch in templates, and git apply --check
+clean on a fresh clone of HEAD e67cd01. Live login flow to confirm on deploy.

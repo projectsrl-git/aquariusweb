@@ -62,7 +62,7 @@
         document.getElementById('results').innerHTML =
             '<div class="text-muted"><i class="bi bi-hourglass-split"></i> Esecuzione in corso...</div>';
 
-        const res = await fetch('/custom-reports/' + reportId + '/execute', {
+        const res = await fetch(/*[[@{/custom-reports/}]]*/ '/custom-reports/' + reportId + '/execute', {
             method: 'POST', headers, body: JSON.stringify(params)
         });
         const data = await res.json();

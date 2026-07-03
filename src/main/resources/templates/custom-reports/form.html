@@ -105,7 +105,7 @@
         const headers = {'Content-Type': 'application/json'};
         if (csrfToken && csrfHeader) headers[csrfHeader] = csrfToken;
 
-        const res = await fetch('/custom-reports/validate', {
+        const res = await fetch(/*[[@{/custom-reports/validate}]]*/ '/custom-reports/validate', {
             method: 'POST', headers, body: JSON.stringify({sql})
         });
         const data = await res.json();

@@ -65,7 +65,7 @@
         const headers = {'Content-Type': 'application/json'};
         if (csrfToken && csrfHeader) headers[csrfHeader] = csrfToken;
 
-        const res = await fetch('/api/help/chat', {
+        const res = await fetch(/*[[@{/api/help/chat}]]*/ '/api/help/chat', {
             method: 'POST', headers, body: JSON.stringify({message: msg})
         });
         const data = await res.json();

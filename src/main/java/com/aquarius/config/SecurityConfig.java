@@ -51,8 +51,13 @@ public class SecurityConfig {
         TenantAwareAuthenticationFilter f = new TenantAwareAuthenticationFilter();
         f.setAuthenticationManager(am);
         f.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/login", "POST"));
-        // Redirect dopo successo: dashboard
-        f.setAuthenticationSuccessHandler((req, res, auth) -> res.sendRedirect("/dashboard"));
+        // Redirect dopo successo: dashboard. Usa il context path cosi' il
+        // redirect funziona quando l'app e' deployata sotto un context
+        // (es. /aquariusweb) e non solo alla root. sendRedirect() e' su
+        // HttpServletResponse puro e NON aggiunge il context da solo, quindi
+        // va anteposto esplicitamente req.getContextPath().
+        f.setAuthenticationSuccessHandler(
+            (req, res, auth) -> res.sendRedirect(req.getContextPath() + "/dashboard"));
         // Su fallimento: /login?error=...
         SimpleUrlAuthenticationFailureHandler fh = new SimpleUrlAuthenticationFailureHandler("/login?error");
         f.setAuthenticationFailureHandler(fh);
