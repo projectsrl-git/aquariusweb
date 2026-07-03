@@ -251,76 +251,602 @@
                     <!--           TAB PLACEHOLDER (12 — slice future)            -->
                     <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
                     <div class="tab-pane fade" id="tab-vett">
-                        <div th:replace="~{fragments/form-shell :: placeholderContent(
-                            'Vettori',
-                            'Spedizionieri abituali, porto, mezzo di trasporto.',
-                            'CLI_VETTO1, CLI_VETTO2, CLI_VETTO3, CLI_PORTO, CLI_MEZZO')}"></div>
+                        <h6 class="section-title">Vettori e spedizione</h6>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mezzo di trasporto</label>
+                                <input type="text" th:field="*{shipMethod}" maxlength="3" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Porto</label>
+                                <input type="text" th:field="*{shipPort}" maxlength="3" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Vettore 1</label>
+                                <input type="text" th:field="*{carrier1}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Vettore 2</label>
+                                <input type="text" th:field="*{carrier2}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Vettore 3</label>
+                                <input type="text" th:field="*{carrier3}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Codice imballo</label>
+                                <input type="text" th:field="*{packagingCode}" maxlength="3" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Spese incasso/imballo</label>
+                                <input type="number" step="0.01" th:field="*{packagingCharge}" class="form-control form-control-sm text-end">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Spedizione a cliente</label>
+                                <input type="text" th:field="*{shipToSelf}" maxlength="1" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Spese trasporto</label>
+                                <input type="number" step="0.01" th:field="*{transportCharge}" class="form-control form-control-sm text-end">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Note consegna</label>
+                                <input type="text" th:field="*{deliveryNote}" maxlength="50" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check mt-4">
+                                    <input type="checkbox" th:field="*{orderAsDdt}" class="form-check-input" id="f-orderAsDdt">
+                                    <label class="form-check-label small" for="f-orderAsDdt">Ordine come DDT</label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="tab-pane fade" id="tab-contab">
-                        <div th:replace="~{fragments/form-shell :: placeholderContent(
-                            'Contabili',
-                            'Mappatura sui conti di contabilità generale per fatturazione.',
-                            'CLI_CONTO1, CLI_CONTO2, CLI_CONTO3, CLI_CONTO4, CLI_CONTO5')}"></div>
+                        <h6 class="section-title">Contabili</h6>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Conto contabile 1</label>
+                                <input type="text" th:field="*{account1}" maxlength="13" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Conto contabile 2</label>
+                                <input type="text" th:field="*{account2}" maxlength="13" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Conto contabile 3</label>
+                                <input type="text" th:field="*{account3}" maxlength="13" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Conto contabile 4</label>
+                                <input type="text" th:field="*{account4}" maxlength="13" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Conto contabile 5</label>
+                                <input type="text" th:field="*{account5}" maxlength="13" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Centro di costo 1</label>
+                                <input type="text" th:field="*{costCenter1}" maxlength="13" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Centro di costo 2</label>
+                                <input type="text" th:field="*{costCenter2}" maxlength="13" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Centro di costo 3</label>
+                                <input type="text" th:field="*{costCenter3}" maxlength="13" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Centro di costo 4</label>
+                                <input type="text" th:field="*{costCenter4}" maxlength="13" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Centro di costo 5</label>
+                                <input type="text" th:field="*{costCenter5}" maxlength="13" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">% ripartizione 1</label>
+                                <input type="number" step="0.01" th:field="*{accountPct1}" class="form-control form-control-sm text-end">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">% ripartizione 2</label>
+                                <input type="number" step="0.01" th:field="*{accountPct2}" class="form-control form-control-sm text-end">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">% ripartizione 3</label>
+                                <input type="number" step="0.01" th:field="*{accountPct3}" class="form-control form-control-sm text-end">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">% ripartizione 4</label>
+                                <input type="number" step="0.01" th:field="*{accountPct4}" class="form-control form-control-sm text-end">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Conto incassi</label>
+                                <input type="text" th:field="*{collectionAccount}" maxlength="13" class="form-control form-control-sm">
+                            </div>
+                        </div>
                     </div>
                     <div class="tab-pane fade" id="tab-postic">
-                        <div th:replace="~{fragments/form-shell :: placeholderContent(
-                            'Posticipi riba',
-                            'Posticipi scadenze ricevute bancarie per mese.',
-                            'CLI_GG1, CLI_GG2, CLI_BDAL, CLI_BAL, CLI_B2DAL, CLI_B2AL')}"></div>
+                        <h6 class="section-title">Posticipi ricevute bancarie</h6>
+                        <p class="text-muted small mb-3">Blocchi e posticipi per periodo: intervalli (dal/al, formato GGMM) e giorni di posticipo per la generazione delle ricevute bancarie.</p>
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Blocco 1 dal</label>
+                                <input type="text" th:field="*{postpone1From}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Blocco 1 al</label>
+                                <input type="text" th:field="*{postpone1To}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Blocco 1 giorni</label>
+                                <input type="text" th:field="*{postpone1Days}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Blocco 2 dal</label>
+                                <input type="text" th:field="*{postpone2From}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Blocco 2 al</label>
+                                <input type="text" th:field="*{postpone2To}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Blocco 2 giorni</label>
+                                <input type="text" th:field="*{postpone2Days}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 01 dal</label>
+                                <input type="text" th:field="*{postponeM01From}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 01 al</label>
+                                <input type="text" th:field="*{postponeM01To}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 01 giorni</label>
+                                <input type="text" th:field="*{postponeM01Days}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 02 dal</label>
+                                <input type="text" th:field="*{postponeM02From}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 02 al</label>
+                                <input type="text" th:field="*{postponeM02To}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 02 giorni</label>
+                                <input type="text" th:field="*{postponeM02Days}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 03 dal</label>
+                                <input type="text" th:field="*{postponeM03From}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 03 al</label>
+                                <input type="text" th:field="*{postponeM03To}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 03 giorni</label>
+                                <input type="text" th:field="*{postponeM03Days}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 04 dal</label>
+                                <input type="text" th:field="*{postponeM04From}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 04 al</label>
+                                <input type="text" th:field="*{postponeM04To}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 04 giorni</label>
+                                <input type="text" th:field="*{postponeM04Days}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 05 dal</label>
+                                <input type="text" th:field="*{postponeM05From}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 05 al</label>
+                                <input type="text" th:field="*{postponeM05To}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 05 giorni</label>
+                                <input type="text" th:field="*{postponeM05Days}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 06 dal</label>
+                                <input type="text" th:field="*{postponeM06From}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 06 al</label>
+                                <input type="text" th:field="*{postponeM06To}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 06 giorni</label>
+                                <input type="text" th:field="*{postponeM06Days}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 07 dal</label>
+                                <input type="text" th:field="*{postponeM07From}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 07 al</label>
+                                <input type="text" th:field="*{postponeM07To}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 07 giorni</label>
+                                <input type="text" th:field="*{postponeM07Days}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 09 dal</label>
+                                <input type="text" th:field="*{postponeM09From}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 09 al</label>
+                                <input type="text" th:field="*{postponeM09To}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 09 giorni</label>
+                                <input type="text" th:field="*{postponeM09Days}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 10 dal</label>
+                                <input type="text" th:field="*{postponeM10From}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 10 al</label>
+                                <input type="text" th:field="*{postponeM10To}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 10 giorni</label>
+                                <input type="text" th:field="*{postponeM10Days}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 11 dal</label>
+                                <input type="text" th:field="*{postponeM11From}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 11 al</label>
+                                <input type="text" th:field="*{postponeM11To}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Mese 11 giorni</label>
+                                <input type="text" th:field="*{postponeM11Days}" maxlength="4" class="form-control form-control-sm font-monospace">
+                            </div>
+                        </div>
                     </div>
                     <div class="tab-pane fade" id="tab-fido">
-                        <div th:replace="~{fragments/form-shell :: placeholderContent(
-                            'Fido',
-                            'Fido residuo, scaduto, extra-fido, esposizione totale.',
-                            'CLI_CLFIDO, CLI_IMPFID, CLI_CLFID2 e fido calcolato run-time')}"></div>
+                        <h6 class="section-title">Fido e rischio</h6>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Classe fido</label>
+                                <input type="text" th:field="*{creditClass}" maxlength="1" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Importo fido</label>
+                                <input type="number" step="0.01" th:field="*{creditAmount}" class="form-control form-control-sm text-end">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Classe fido 2</label>
+                                <input type="text" th:field="*{creditClass2}" maxlength="1" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Importo fido 2</label>
+                                <input type="number" step="0.01" th:field="*{creditAmount2}" class="form-control form-control-sm text-end">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Classe rischio</label>
+                                <input type="text" th:field="*{riskClass}" maxlength="1" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check mt-4">
+                                    <input type="checkbox" th:field="*{creditCheckFlag}" class="form-check-input" id="f-creditCheckFlag">
+                                    <label class="form-check-label small" for="f-creditCheckFlag">Controllo fido attivo</label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="tab-pane fade" id="tab-rifcli">
-                        <div th:replace="~{fragments/form-shell :: placeholderContent(
-                            'Rif. cliente',
-                            'Codice di riferimento usato dal CLIENTE per le sue ordinazioni.',
-                            'CLI_RCXDIR, CLI_RCXNOM, CLI_RCXPRG, CLI_RCXPRO')}"></div>
+                        <h6 class="section-title">Referente cliente</h6>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Categoria referente</label>
+                                <input type="number" step="0.01" th:field="*{refCategory}" class="form-control form-control-sm text-end">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Cognome referente</label>
+                                <input type="text" th:field="*{refLastName}" maxlength="24" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Nome referente</label>
+                                <input type="text" th:field="*{refFirstName}" maxlength="20" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Cod. fiscale referente</label>
+                                <input type="text" th:field="*{refTaxCode}" maxlength="16" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Tipo referente</label>
+                                <input type="text" th:field="*{refType}" maxlength="1" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Descrizione referente</label>
+                                <input type="text" th:field="*{refDescription}" maxlength="30" class="form-control form-control-sm">
+                            </div>
+                        </div>
                     </div>
                     <div class="tab-pane fade" id="tab-web">
-                        <div th:replace="~{fragments/form-shell :: placeholderContent(
-                            'Web',
-                            'Credenziali web cliente per area riservata B2B.',
-                            'CLI_TRXDIR, CLI_TRXNOM, CLI_TRXPRG, CLI_TRXPRO')}"></div>
+                        <h6 class="section-title">Web e privacy</h6>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Home page</label>
+                                <input type="text" th:field="*{homePage}" maxlength="50" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Consenso privacy</label>
+                                <input type="text" th:field="*{privacyConsent}" maxlength="1" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Profilo web</label>
+                                <input type="text" th:field="*{webProfile}" maxlength="6" class="form-control form-control-sm">
+                            </div>
+                        </div>
                     </div>
                     <div class="tab-pane fade" id="tab-legali">
-                        <div th:replace="~{fragments/form-shell :: placeholderContent(
-                            'Legali',
-                            'Sede legale, dati persona fisica/giuridica per fattura elettronica.',
-                            'CLI_RAGDIR, CLI_INDEFF, CLI_CAPLEG, CLI_ESTNAZ, CLI_ESTNAS, CLI_ESTDOM, CLI_ESTCOM, CLI_CODFISA')}"></div>
+                        <h6 class="section-title">Sede legale</h6>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Ragione sociale legale</label>
+                                <input type="text" th:field="*{legalName}" maxlength="80" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">2ª denominazione legale</label>
+                                <input type="text" th:field="*{legalName2}" maxlength="80" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Indirizzo legale</label>
+                                <input type="text" th:field="*{legalAddress}" maxlength="80" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Località legale</label>
+                                <input type="text" th:field="*{legalCity}" maxlength="80" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">CAP legale</label>
+                                <input type="text" th:field="*{legalZip}" maxlength="10" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Provincia legale</label>
+                                <input type="text" th:field="*{legalProvince}" maxlength="2" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Nazione legale</label>
+                                <input type="text" th:field="*{legalCountry}" maxlength="3" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">P.IVA legale</label>
+                                <input type="text" th:field="*{legalVat}" maxlength="11" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Cod. fiscale legale</label>
+                                <input type="text" th:field="*{legalTaxCode}" maxlength="16" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">P.IVA CEE legale</label>
+                                <input type="text" th:field="*{legalVatCee}" maxlength="20" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check mt-4">
+                                    <input type="checkbox" th:field="*{hasLegalSeat}" class="form-check-input" id="f-hasLegalSeat">
+                                    <label class="form-check-label small" for="f-hasLegalSeat">Sede legale distinta</label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="tab-pane fade" id="tab-prod">
-                        <div th:replace="~{fragments/form-shell :: placeholderContent(
-                            'Produzione',
-                            'Applicazione prodotto, codice imballo, classe critica.',
-                            'CLI_APPPRO, CLI_CODIMB, CLI_CRITIC, CLI_FLGRCQ')}"></div>
+                        <h6 class="section-title">Produzione</h6>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="form-check mt-4">
+                                    <input type="checkbox" th:field="*{prodFlagUpd}" class="form-check-input" id="f-prodFlagUpd">
+                                    <label class="form-check-label small" for="f-prodFlagUpd">Aggiornamento</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check mt-4">
+                                    <input type="checkbox" th:field="*{prodFlagQc}" class="form-check-input" id="f-prodFlagQc">
+                                    <label class="form-check-label small" for="f-prodFlagQc">Controllo qualità</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check mt-4">
+                                    <input type="checkbox" th:field="*{prodFlagAbp}" class="form-check-input" id="f-prodFlagAbp">
+                                    <label class="form-check-label small" for="f-prodFlagAbp">Abbinamento produzione</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check mt-4">
+                                    <input type="checkbox" th:field="*{prodRotation}" class="form-check-input" id="f-prodRotation">
+                                    <label class="form-check-label small" for="f-prodRotation">Vendita a rotazione</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Descrizione rotazione</label>
+                                <input type="text" th:field="*{prodRotationDesc}" maxlength="40" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check mt-4">
+                                    <input type="checkbox" th:field="*{prodFlagLabel}" class="form-check-input" id="f-prodFlagLabel">
+                                    <label class="form-check-label small" for="f-prodFlagLabel">Etichetta</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check mt-4">
+                                    <input type="checkbox" th:field="*{prodFlagWeight}" class="form-check-input" id="f-prodFlagWeight">
+                                    <label class="form-check-label small" for="f-prodFlagWeight">Pesata</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Nota etichetta</label>
+                                <input type="text" th:field="*{prodLabelNote}" maxlength="30" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check mt-4">
+                                    <input type="checkbox" th:field="*{prodNoDisplay}" class="form-check-input" id="f-prodNoDisplay">
+                                    <label class="form-check-label small" for="f-prodNoDisplay">Non disponibile</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check mt-4">
+                                    <input type="checkbox" th:field="*{prodNoFinished}" class="form-check-input" id="f-prodNoFinished">
+                                    <label class="form-check-label small" for="f-prodNoFinished">Escludi finiti</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check mt-4">
+                                    <input type="checkbox" th:field="*{prodWeightOrder}" class="form-check-input" id="f-prodWeightOrder">
+                                    <label class="form-check-label small" for="f-prodWeightOrder">Peso su ordine</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check mt-4">
+                                    <input type="checkbox" th:field="*{prodWeightDdt}" class="form-check-input" id="f-prodWeightDdt">
+                                    <label class="form-check-label small" for="f-prodWeightDdt">Peso su DDT</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check mt-4">
+                                    <input type="checkbox" th:field="*{prodWeightInv}" class="form-check-input" id="f-prodWeightInv">
+                                    <label class="form-check-label small" for="f-prodWeightInv">Peso su fattura</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check mt-4">
+                                    <input type="checkbox" th:field="*{prodFullDelivery}" class="form-check-input" id="f-prodFullDelivery">
+                                    <label class="form-check-label small" for="f-prodFullDelivery">Evasione totale</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Giorni evasione</label>
+                                <input type="number" step="0.01" th:field="*{prodDeliveryDays}" class="form-control form-control-sm text-end">
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check mt-4">
+                                    <input type="checkbox" th:field="*{prodNotifyFlag}" class="form-check-input" id="f-prodNotifyFlag">
+                                    <label class="form-check-label small" for="f-prodNotifyFlag">Avviso</label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="tab-pane fade" id="tab-emails">
-                        <div th:replace="~{fragments/form-shell :: placeholderContent(
-                            'Gruppi E-mail',
-                            'Liste mail to / cc / ccn per invio documenti automatico.',
-                            'CLI_MAILTO, CLI_MAILCC, CLI_MAILCN (campi TEXT)')}"></div>
+                        <h6 class="section-title">Gruppi e-mail</h6>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">E-mail principale</label>
+                                <input type="text" th:field="*{emailGroup}" maxlength="100" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">E-mail gruppo 1</label>
+                                <input type="text" th:field="*{emailGroup1}" maxlength="100" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">E-mail gruppo 2</label>
+                                <input type="text" th:field="*{emailGroup2}" maxlength="100" class="form-control form-control-sm">
+                            </div>
+                        </div>
                     </div>
                     <div class="tab-pane fade" id="tab-testi">
-                        <div th:replace="~{fragments/form-shell :: placeholderContent(
-                            'Testi automatici',
-                            'Testi default da inserire in documenti (ordini, DDT, fatture, fatture proforma).',
-                            'CLI_TXTORD, CLI_TXTBOL, CLI_TXTFAT, CLI_TXTFAP (campi TEXT)')}"></div>
+                        <h6 class="section-title">Testi automatici documenti</h6>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Codice testo</label>
+                                <input type="text" th:field="*{textCode}" maxlength="3" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Testo su ordine</label>
+                                <textarea th:field="*{textOrder}" rows="3" class="form-control form-control-sm"
+                                          style="font-family:Menlo,Consolas,monospace;font-size:.78rem"></textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Testo su DDT</label>
+                                <textarea th:field="*{textDdt}" rows="3" class="form-control form-control-sm"
+                                          style="font-family:Menlo,Consolas,monospace;font-size:.78rem"></textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Testo su fattura</label>
+                                <textarea th:field="*{textInvoice}" rows="3" class="form-control form-control-sm"
+                                          style="font-family:Menlo,Consolas,monospace;font-size:.78rem"></textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Testo su proforma</label>
+                                <textarea th:field="*{textProforma}" rows="3" class="form-control form-control-sm"
+                                          style="font-family:Menlo,Consolas,monospace;font-size:.78rem"></textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Note tag</label>
+                                <textarea th:field="*{textTag}" rows="3" class="form-control form-control-sm"
+                                          style="font-family:Menlo,Consolas,monospace;font-size:.78rem"></textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Note speciali</label>
+                                <textarea th:field="*{textSpecial}" rows="3" class="form-control form-control-sm"
+                                          style="font-family:Menlo,Consolas,monospace;font-size:.78rem"></textarea>
+                            </div>
+                        </div>
                     </div>
                     <div class="tab-pane fade" id="tab-fattu">
-                        <div th:replace="~{fragments/form-shell :: placeholderContent(
-                            'Fatturare a',
-                            'Cliente diverso a cui inviare la fattura (head-office, capogruppo).',
-                            'CLI_CODDES, CLI_GRUPPOAZ')}"></div>
+                        <h6 class="section-title">Fatturare a</h6>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Cliente di fatturazione</label>
+                                <input type="number" step="0.01" th:field="*{invoiceToCode}" class="form-control form-control-sm text-end">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Tipo fatturazione</label>
+                                <input type="text" th:field="*{invoiceType}" maxlength="3" class="form-control form-control-sm font-monospace">
+                            </div>
+                        </div>
                     </div>
                     <div class="tab-pane fade" id="tab-intra">
-                        <div th:replace="~{fragments/form-shell :: placeholderContent(
-                            'Intrastat',
-                            'Dati per invio telematico disposizioni intrastat.',
-                            'CLI_NOCLDOG, CLI_CLDOG')}"></div>
+                        <h6 class="section-title">Intrastat</h6>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Nazionalità</label>
+                                <input type="text" th:field="*{intraNationality}" maxlength="3" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Nazione estera</label>
+                                <input type="text" th:field="*{intraCountry}" maxlength="3" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Luogo nascita estero</label>
+                                <input type="text" th:field="*{intraBirthPlace}" maxlength="10" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Comune nascita estero</label>
+                                <input type="text" th:field="*{intraBirthCity}" maxlength="40" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Domicilio estero</label>
+                                <input type="text" th:field="*{intraDomicile}" maxlength="3" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Provincia nascita</label>
+                                <input type="text" th:field="*{intraBirthProv}" maxlength="2" class="form-control form-control-sm font-monospace">
+                            </div>
+                        </div>
                     </div>
                     <div class="tab-pane fade" id="tab-rid">
                         <div th:replace="~{fragments/form-shell :: placeholderContent(
@@ -329,10 +855,16 @@
                             'CLI_FLRID, CLI_RAGRID, CLI_IBANRID, CLI_NOTRID, CLI_ALRID, CLI_GGRID')}"></div>
                     </div>
                     <div class="tab-pane fade" id="tab-fe">
-                        <div th:replace="~{fragments/form-shell :: placeholderContent(
-                            'Fattura elettronica',
-                            'Codice destinatario SDI, PEC, regime fiscale per FE.',
-                            'CLI_TIPFAT, CLI_TRASME, CLI_RECDES, CLI_RECCOG, CLI_RECNOM, CLI_RECCDF, CLI_RECTIP, CLI_RECCAT')}"></div>
+                        <h6 class="section-title">Fattura elettronica</h6>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="form-check mt-4">
+                                    <input type="checkbox" th:field="*{feAttachment}" class="form-check-input" id="f-feAttachment">
+                                    <label class="form-check-label small" for="f-feAttachment">Allega documento</label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                 </div>

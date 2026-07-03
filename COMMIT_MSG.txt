@@ -1,19 +1,25 @@
-Move identity block to top and add collapsible sidebar
+Complete customer registry tabs (18 of 19 active)
 
-Two sidebar UI changes, confined to layout.html.
+Turn the 12 placeholder tabs of the customer master form into real editable
+forms, matching the VFP MENU_CLI000 layout.
 
-1. The tenant + user + fiscal-year block moves from the footer to a new
-   .sidebar-identity section between the brand and the menu. The footer now
-   keeps only the Esci button and the app version.
+Fields were recovered from the VFP form (MENU_CLI000.SCT) and then
+cross-checked against the real schema (U_CLI_AN, 254 columns): only columns
+that actually exist were mapped. 123 fields added across 13 areas (Vettori,
+Contabili, Posticipi riba, Fido, Rif. cliente, Web, Legali, Produzione,
+Gruppi E-mail, Testi, Fatturare a, Intrastat, Fattura elettronica), typed
+from the schema (varchar/numeric/bit/text -> String/BigDecimal/Boolean/text).
 
-2. The sidebar can collapse to an icons-only rail. A toggle button in the
-   brand row switches a .collapsed class: width 260px -> 64px with the main
-   content margin following (animated). Collapsed mode hides all text labels,
-   centers icons, hides nested submenus, and shows tooltips (th:title) on each
-   item. The state is saved in sessionStorage and restored on load.
+Distinte RID stays a placeholder: none of the CLI_*RID columns from the VFP
+form exist in the current U_CLI_AN schema, so there is nothing to bind. It is
+documented rather than faked (plug&play rule: never invent legacy columns).
 
-No server-side or behavioural change.
+- Customer.java: +123 @Column fields.
+- CustomerController.java: 12 tabs marked active; copyEditableFields extended
+  with the 123 setters (whitelist save, @DynamicUpdate).
+- clienti/edit.html: 13 placeholder panes replaced with real fields by type.
 
-Verification: node --check on the layout script, aside/main confirmed as
-direct siblings, git apply --check clean on a fresh clone of HEAD cadec67.
-Visual behaviour to confirm on deploy.
+Verification: Java brace/paren scan, all 159 th:field map to entity
+properties, edit.html div balance 232/232 and 19 unique tab ids, git apply
+--check clean on a fresh clone of HEAD 7a03157. Live save round-trip to
+confirm on deploy.

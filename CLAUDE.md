@@ -158,7 +158,7 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
 |---|---|---|
 | Login + tenant switch | `/login` | legacy `res_oper` + web credentials |
 | Dashboard + sidebar menu | `/` | menu from `tbl_menu`, fiscal-year badge |
-| Customers (form framework) | `/clienti…` | 19 tabs mirroring `MENU_CLI000` (7 active + placeholders); reusable `fragments/form-shell.html`, `page-header.html`, `FormTab`, `BreadcrumbService` |
+| Customers (registry, near-complete) | `/clienti…` | 19 tabs mirroring `MENU_CLI000`, **18 active + 1 placeholder** (Distinte RID: CLI_*RID columns absent from U_CLI_AN). 163 entity fields, whitelist save. Reusable `fragments/form-shell.html`, `FormTab`, `BreadcrumbService` |
 | Parameters (PARA) | `/parametri…` | 340 categories catalog, generic CRUD |
 | Fiscal year context | `/select-year` | PUB_ANNO analog, silent auto-set |
 | Chart of accounts | `/conti`, `/conti/tree`, detail/edit | positional tree, aq-tree.js |
