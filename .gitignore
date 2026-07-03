@@ -26,3 +26,4 @@ COMMIT_MSG.txt
 # H2 database runtime files (never commit: contain data + credential hashes)
 *.mv.db
 *.trace.db
+*.patch

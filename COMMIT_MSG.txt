@@ -1,21 +1,20 @@
-Add Maven environment profiles and per-env secrets layout
+Add configurable per-environment logging via logback
 
-Select the target environment at build time with a Maven profile
-(-Pdev default, -Psit, -Puat, -Pprod). Each profile is filtered into
-application.properties (@env.name@ -> spring.profiles.active,
-@aquariusweb.home@ -> home dir) via resource filtering.
+Replace Spring's logging.file.* with a dedicated logback-spring.xml whose
+output directory is driven by the property aquarius.log.dir. Precedence:
+AQUARIUS_LOG_DIR env var > -Daquarius.log.dir > per-profile value > ./logs.
 
-Secrets never enter git. application.properties imports, at runtime,
-config/application-<active-profile>.properties, which is gitignored.
-A single versioned template (config/application-ENV.properties.template)
-documents the keys; copy it once per environment and fill in real URLs
-and credentials. Non-sensitive per-env overrides (Thymeleaf cache, log
-levels) live in versioned application-<env>.properties inside resources.
+Each environment gets its own directory (dev/sit/uat/prod under
+D:/logs/aquariusweb/<env>), so logs are easy to find and archive. Rotation
+is daily plus by size (10MB), archives gzipped under <dir>/archive/, kept
+90 days with a total size cap. A separate aquarius-error.log collects
+WARN/ERROR for fast triage; the console appender stays so catalina.out keeps
+mirroring output.
 
-.gitignore now ignores config/application-*.properties while keeping the
-template, plus H2 runtime db files. Also removes the dead recursive tree
-fragment that lingered after the aq-tree.js rework.
+This also makes the current post-login failure readable: with
+AQUARIUSWEB_HOME=".", the previous log path resolved against Tomcat's
+working directory and was effectively lost.
 
-Verification: only the placeholder template is staged (no real hosts or
-credentials); git apply --check clean on a fresh clone of HEAD 5cf893a.
-Maven filtering and Tomcat 9 run to be confirmed on target.
+Verification: logback XML validated, aquarius.log.dir resolves in every
+profile, git apply --check clean on a fresh clone of HEAD e67cd01. Runtime
+logging under Tomcat to be confirmed on target.
