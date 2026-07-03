@@ -19,3 +19,4 @@ COMMIT_MSG.txt
 .settings/
 .project
 .classpath
+*.patch
