@@ -1,0 +1,26 @@
+# ============================================================================
+#  SECRETS TEMPLATE -- copy to config/application-<env>.properties and fill in.
+#
+#  HOW TO USE (once per environment/machine):
+#    copy config\application-ENV.properties.template config\application-dev.properties
+#    ...then edit config\application-dev.properties with the real values.
+#
+#  The real config/application-*.properties files are GITIGNORED and never
+#  committed. Maven builds with -P<env> and Spring imports the matching file
+#  at runtime (spring.config.import in application.properties).
+#
+#  These keys OVERRIDE the placeholder defaults in application.properties.
+# ============================================================================
+
+# --- Impresind tenant -------------------------------------------------------
+IMPRESIND_DB_URL=jdbc:jtds:sqlserver://HOST:1433/DBNAME
+IMPRESIND_DB_USER=USERNAME
+IMPRESIND_DB_PWD=PASSWORD
+
+# --- Tremonti tenant --------------------------------------------------------
+TREMONTI_DB_URL=jdbc:jtds:sqlserver://HOST:1433/DBNAME
+TREMONTI_DB_USER=USERNAME
+TREMONTI_DB_PWD=PASSWORD
+
+# --- Optional: override the home directory for this environment --------------
+# AQUARIUSWEB_HOME=D:/aquariusweb

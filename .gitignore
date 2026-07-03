@@ -6,8 +6,10 @@ data/
 logs/
 *.log
 
-# Local machine-specific overrides (real DB URLs / credentials)
-config/application-local.properties
+# Per-environment secrets (real DB URLs / credentials) -- NEVER commit these.
+# Ignore every real secrets file but KEEP the versioned template.
+config/application-*.properties
+!config/application-*.properties.template
 
 # Commit message is delivered as a loose file per change, never tracked
 COMMIT_MSG.txt
@@ -20,3 +22,7 @@ COMMIT_MSG.txt
 .project
 .classpath
 *.patch
+
+# H2 database runtime files (never commit: contain data + credential hashes)
+*.mv.db
+*.trace.db

@@ -1,31 +1,21 @@
-Add warehouse valuation slice and reusable tree component
+Add Maven environment profiles and per-env secrets layout
 
-Brings the repository up to the real project state: two developed-but-
-uncommitted slices were missing from the initial import.
+Select the target environment at build time with a Maven profile
+(-Pdev default, -Psit, -Puat, -Pprod). Each profile is filtered into
+application.properties (@env.name@ -> spring.profiles.active,
+@aquariusweb.home@ -> home dir) via resource filtering.
 
-Chart of accounts (client-side rework):
-- reusable aq-tree.js/.css component (lazy DOM, live filter,
-  expand-to-level, deep links) fed by a new JSON endpoint
-  GET /conti/tree-data (AccountTreeApiController)
-- AccountTreeService rewritten to the exact VFP positional hierarchy,
-  segment lengths read from U_AZI_AN (AZI_MASTRO/AZI_SOTTOG, defaults 3/5)
-- AccountRepository gains a light TreeRow projection and the native
-  U_AZI_AN structure query; tree.html is now a thin shell
-- remove the old recursive Thymeleaf fragment (superseded, and it
-  exploded with null params)
+Secrets never enter git. application.properties imports, at runtime,
+config/application-<active-profile>.properties, which is gitignored.
+A single versioned template (config/application-ENV.properties.template)
+documents the keys; copy it once per environment and fill in real URLs
+and credentials. Non-sensitive per-env overrides (Thymeleaf cache, log
+levels) live in versioned application-<env>.properties inside resources.
 
-Warehouse valuation dashboard (/magazzino/valorizzazione):
-- FIFO valuation at a date over U_MAG_MO with as-of currency conversion
-  from u_vva_ch; date-column choice via DateBase enum SQL substitution
-  (no runtime CASE), date params bound as yyyy/MM/dd strings
-- KPI, ABC/Pareto, data-quality panel, 6-month price volatility with a
-  linear-regression projection (shown as an indication, not a forecast)
-- Excel export via Apache POI (SXSSF, 4 sheets)
-- synthetic "Valorizzazione a data" menu entry; dashboard CSS in layout
+.gitignore now ignores config/application-*.properties while keeping the
+template, plus H2 runtime db files. Also removes the dead recursive tree
+fragment that lingered after the aq-tree.js rework.
 
-Also records the repo URL in .claude/README.md.
-
-Verification: Java static scan, node --check on aq-tree.js, constraint
-greps (no runtime CASE, no secrets), and git apply --check clean on a
-fresh clone of HEAD 43a262a. Maven build and Tomcat 9 run to be
-confirmed on target.
+Verification: only the placeholder template is staged (no real hosts or
+credentials); git apply --check clean on a fresh clone of HEAD 5cf893a.
+Maven filtering and Tomcat 9 run to be confirmed on target.

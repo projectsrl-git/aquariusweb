@@ -30,6 +30,54 @@
         -->
     </properties>
 
+    <!--
+      Environment profiles. Select one at build time:
+        mvn clean package -Pdev     (default if none given)
+        mvn clean package -Psit
+        mvn clean package -Puat
+        mvn clean package -Pprod
+
+      Each profile sets two build-time properties that get filtered into
+      application.properties:
+        env.name          -> becomes spring.profiles.active
+        aquariusweb.home  -> becomes the default for AQUARIUSWEB_HOME
+
+      Secrets (tenant URLs + credentials) are NEVER here: they live in the
+      gitignored file  config/application-<env>.properties  which is imported
+      at runtime (see application.properties -> spring.config.import).
+    -->
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation><activeByDefault>true</activeByDefault></activation>
+            <properties>
+                <env.name>dev</env.name>
+                <aquariusweb.home>.</aquariusweb.home>
+            </properties>
+        </profile>
+        <profile>
+            <id>sit</id>
+            <properties>
+                <env.name>sit</env.name>
+                <aquariusweb.home>.</aquariusweb.home>
+            </properties>
+        </profile>
+        <profile>
+            <id>uat</id>
+            <properties>
+                <env.name>uat</env.name>
+                <aquariusweb.home>.</aquariusweb.home>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <env.name>prod</env.name>
+                <aquariusweb.home>.</aquariusweb.home>
+            </properties>
+        </profile>
+    </profiles>
+
     <dependencies>
         <!-- Web + Thymeleaf -->
         <dependency>
@@ -121,8 +169,33 @@
     </dependencies>
 
     <build>
-        <!-- target/AquariusWeb.jar invece di target/aquarius-web-<version>.jar -->
+        <!-- target/AquariusWeb.war invece di target/aquarius-web-<version>.war -->
         <finalName>AquariusWeb</finalName>
+
+        <!--
+          Resource filtering: substitutes @property@ placeholders in
+          application.properties at build time (Spring Boot convention uses
+          @...@ instead of ${...} to avoid clashing with Spring's own
+          ${...} property resolution). Only application.properties is
+          filtered; everything else is copied verbatim.
+        -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>application.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>application.properties</exclude>
+                </excludes>
+            </resource>
+        </resources>
+
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
