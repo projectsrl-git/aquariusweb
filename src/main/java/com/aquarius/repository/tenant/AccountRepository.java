@@ -12,6 +12,45 @@ import java.util.Optional;
 
 public interface AccountRepository extends JpaRepository<Account, String> {
 
+    /**
+     * Proiezione leggera per la costruzione dell'albero: solo le 7 colonne
+     * necessarie invece delle ~40 mappate sull'entity. Su 7000 record la
+     * differenza è sostanziale (niente hydration completa Hibernate).
+     */
+    interface TreeRow {
+        String getId();
+        String getCode();
+        String getDescription();
+        String getAccountType();
+        String getBalancePosition();
+        Boolean getIsParent();
+        String getParentCode();
+    }
+
+    @Query("""
+        SELECT a.id AS id, a.code AS code, a.description AS description,
+               a.accountType AS accountType, a.balancePosition AS balancePosition,
+               a.isParent AS isParent, a.parentCode AS parentCode
+        FROM Account a
+        WHERE a.fiscalYear = :year
+          AND a.societyCode = :society
+        ORDER BY a.code ASC
+        """)
+    List<TreeRow> findTreeRowsByYearAndSociety(@Param("year") String year,
+                                                @Param("society") String society);
+
+    /**
+     * Legge la configurazione della struttura del piano dei conti dalla
+     * anagrafica azienda {@code U_AZI_AN} — la stessa fonte usata dal VFP
+     * per popolare le variabili globali {@code PUB_MASTRO} e {@code PUB_SOTTOG}
+     * (vedi APPLILIB: {@code PUB_MASTRO = AZI_MASTRO + 1}).
+     *
+     * @return righe [AZI_MASTRO, AZI_SOTTOG] come Number, vuoto se assente.
+     */
+    @Query(value = "SELECT AZI_MASTRO, AZI_SOTTOG FROM U_AZI_AN WHERE AZI_CODSOC = :society",
+           nativeQuery = true)
+    List<Object[]> findPdcStructureRaw(@Param("society") String society);
+
     // ── Variante "default" (no filtering) — sconsigliata in produzione ──
     // Usata solo per debug/diagnostica. Per le pagine reali usare i metodi
     // ByYearAndSociety filtrati per anno contabile + società corrente.

@@ -9,12 +9,14 @@
     <div th:replace="~{fragments/page-header :: pageHeader(
         icon='bi-diagram-3',
         title='Piano dei conti',
-        subtitle=|Vista gerarchica · ${totalCount} conti caricati|,
+        subtitle='Vista gerarchica mastri → sottogruppi → conti',
         crumbs=${breadcrumbs}
     )}"></div>
 
+    <link rel="stylesheet" th:href="@{/css/aq-tree.css}">
+
     <!-- Toolbar -->
-    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
         <div class="btn-group btn-group-sm" role="group">
             <a th:href="@{/conti}" class="btn btn-outline-secondary">
                 <i class="bi bi-list-ul me-1"></i>Lista flat
@@ -24,118 +26,100 @@
             </a>
         </div>
         <div class="btn-group btn-group-sm" role="group">
-            <button type="button" class="btn btn-outline-primary" id="expandAllBtn">
-                <i class="bi bi-arrows-expand me-1"></i>Espandi tutto
+            <button type="button" class="btn btn-outline-primary" id="btnMastri"
+                    title="Mostra i mastri espansi (sottogruppi visibili)">Mastri</button>
+            <button type="button" class="btn btn-outline-primary" id="btnSottog"
+                    title="Espandi fino ai sottogruppi (conti visibili)">Sottogruppi</button>
+            <button type="button" class="btn btn-outline-primary" id="btnTutto">
+                <i class="bi bi-arrows-expand me-1"></i>Tutto
             </button>
-            <button type="button" class="btn btn-outline-secondary" id="collapseAllBtn">
-                <i class="bi bi-arrows-collapse me-1"></i>Comprimi tutto
+            <button type="button" class="btn btn-outline-secondary" id="btnComprimi">
+                <i class="bi bi-arrows-collapse me-1"></i>Comprimi
             </button>
         </div>
     </div>
 
     <!-- Search -->
-    <div class="mb-3">
-        <div class="input-group" style="max-width:500px">
+    <div class="mb-2">
+        <div class="input-group" style="max-width:520px">
             <span class="input-group-text"><i class="bi bi-search"></i></span>
             <input type="text" id="treeFilter" class="form-control form-control-sm"
-                   placeholder="Filtra per codice o descrizione (filtro live)…">
+                   placeholder="Filtra per codice o descrizione (live)…" autocomplete="off">
             <button type="button" class="btn btn-outline-secondary btn-sm" id="clearFilter">
                 <i class="bi bi-x"></i>
             </button>
         </div>
     </div>
 
+    <!-- Struttura rilevata (popolata da JS dai meta del payload) -->
+    <div id="structureInfo" class="text-muted mb-2" style="font-size:.75rem"></div>
+
     <!-- Albero -->
     <div class="card border-0 shadow-sm">
         <div class="card-body py-2">
-            <ul class="account-tree" id="accountTree">
-                <li th:each="node : ${roots}"
-                    th:replace="~{fragments/account-tree-node :: treeNode(${node})}"></li>
-            </ul>
+            <div id="treeLoading" class="aqt-loading">
+                <span class="spinner"></span> Caricamento piano dei conti…
+            </div>
+            <div id="accountTree" style="display:none"></div>
         </div>
     </div>
 
-    <style>
-        .account-tree, .account-tree ul { list-style: none; padding-left: 0; margin: 0; }
-        .account-tree .acc-children { padding-left: 1.4rem; border-left: 1px dashed #dee2e6;
-                                       margin-left: .55rem; }
-        .acc-row { padding: .25rem .5rem; border-radius: .3rem; display: flex; align-items: center;
-                   font-size: .85rem; transition: background .12s ease; }
-        .acc-row:hover { background: #f1f5f9; }
-        .acc-row.is-parent { font-weight: 500; }
-        .acc-row.is-leaf  { font-weight: 400; }
-        .acc-toggle { display: inline-flex; width: 18px; height: 18px; align-items: center;
-                      justify-content: center; cursor: pointer; color: #6c757d;
-                      transition: transform .15s ease; user-select: none; }
-        .acc-toggle:hover { color: var(--aq-primary); }
-        .acc-toggle[aria-expanded="true"] { transform: rotate(90deg); color: var(--aq-primary); }
-        .acc-toggle-spacer { display: inline-block; width: 18px; }
-        .acc-link { color: #212529; }
-        .acc-link:hover .acc-descr { color: var(--aq-primary); }
-        .acc-descr { color: #495057; }
-        .small-icon { font-size: .35rem; vertical-align: middle; }
-        .acc-node.hidden { display: none; }
-    </style>
-
+    <script th:src="@{/js/aq-tree.js}"></script>
     <script th:inline="javascript">
-        document.addEventListener('DOMContentLoaded', function () {
-            const tree = document.getElementById('accountTree');
+        document.addEventListener('DOMContentLoaded', async function () {
+            const treeDataUrl = /*[[@{/conti/tree-data}]]*/ '/conti/tree-data';
+            const contoBaseUrl = /*[[@{/conti/}]]*/ '/conti/';
 
-            tree.addEventListener('show.bs.collapse', e => {
-                const toggle = document.querySelector(`[data-bs-target="#${e.target.id}"]`);
-                if (toggle) toggle.setAttribute('aria-expanded', 'true');
-            });
-            tree.addEventListener('hide.bs.collapse', e => {
-                const toggle = document.querySelector(`[data-bs-target="#${e.target.id}"]`);
-                if (toggle) toggle.setAttribute('aria-expanded', 'false');
-            });
-
-            document.getElementById('expandAllBtn').addEventListener('click', () => {
-                tree.querySelectorAll('.acc-children').forEach(el => {
-                    el.classList.add('show');
-                    const toggle = document.querySelector(`[data-bs-target="#${el.id}"]`);
-                    if (toggle) toggle.setAttribute('aria-expanded', 'true');
-                });
-            });
-            document.getElementById('collapseAllBtn').addEventListener('click', () => {
-                tree.querySelectorAll('.acc-children').forEach(el => {
-                    el.classList.remove('show');
-                    const toggle = document.querySelector(`[data-bs-target="#${el.id}"]`);
-                    if (toggle) toggle.setAttribute('aria-expanded', 'false');
-                });
-            });
-
-            const input = document.getElementById('treeFilter');
-            const clearBtn = document.getElementById('clearFilter');
-
-            function applyFilter() {
-                const q = input.value.trim().toLowerCase();
-                if (!q) {
-                    tree.querySelectorAll('.acc-node').forEach(n => n.classList.remove('hidden'));
-                    return;
-                }
-                tree.querySelectorAll('.acc-node').forEach(n => n.classList.add('hidden'));
-                tree.querySelectorAll('.acc-node').forEach(n => {
-                    const code = (n.dataset.code || '').toLowerCase();
-                    const descr = (n.dataset.descr || '').toLowerCase();
-                    if (code.includes(q) || descr.includes(q)) {
-                        let cur = n;
-                        while (cur && cur.classList.contains('acc-node')) {
-                            cur.classList.remove('hidden');
-                            const parentUl = cur.parentElement;
-                            if (parentUl && parentUl.classList.contains('acc-children')) {
-                                parentUl.classList.add('show');
-                                const t = document.querySelector(`[data-bs-target="#${parentUl.id}"]`);
-                                if (t) t.setAttribute('aria-expanded', 'true');
-                            }
-                            cur = parentUl ? parentUl.parentElement : null;
-                        }
-                    }
-                });
+            let payload;
+            try {
+                const resp = await fetch(treeDataUrl, { headers: { 'Accept': 'application/json' } });
+                if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                payload = await resp.json();
+            } catch (err) {
+                document.getElementById('treeLoading').innerHTML =
+                    '<i class="bi bi-exclamation-triangle text-danger me-2"></i>' +
+                    'Errore nel caricamento dei dati: ' + err.message;
+                return;
             }
 
-            input.addEventListener('input', applyFilter);
-            clearBtn.addEventListener('click', () => { input.value = ''; applyFilter(); });
+            document.getElementById('treeLoading').style.display = 'none';
+            const container = document.getElementById('accountTree');
+            container.style.display = '';
+
+            const tree = AqTree.mount(container, payload, {
+                href: id => contoBaseUrl + encodeURIComponent(id)
+            });
+
+            // Riga informativa: struttura + numeri + tempi
+            const m = payload.meta;
+            if (m && m.structure) {
+                document.getElementById('structureInfo').innerHTML =
+                    '<i class="bi bi-cpu me-1"></i>' +
+                    'Struttura <code>' + m.structure.source + '</code>: ' +
+                    'mastro <b>' + m.structure.mastroLen + '</b> + ' +
+                    'sottogruppo <b>' + m.structure.sottogLen + '</b> car. — ' +
+                    (m.levels.mastri || 0) + ' mastri · ' +
+                    (m.levels.sottogruppi || 0) + ' sottogruppi · ' +
+                    (m.levels.conti || 0) + ' conti' +
+                    ' <span class="ms-2 opacity-50">(query ' + m.queryMillis + 'ms, build ' + m.buildMillis + 'ms)</span>';
+            }
+
+            // Controlli toolbar
+            document.getElementById('btnMastri').addEventListener('click', () => tree.expandToLevel(1));
+            document.getElementById('btnSottog').addEventListener('click', () => tree.expandToLevel(2));
+            document.getElementById('btnTutto').addEventListener('click', () => tree.expandAll());
+            document.getElementById('btnComprimi').addEventListener('click', () => {
+                document.getElementById('treeFilter').value = '';
+                tree.collapseAll();
+            });
+
+            // Filtro live
+            const input = document.getElementById('treeFilter');
+            input.addEventListener('input', () => tree.filter(input.value));
+            document.getElementById('clearFilter').addEventListener('click', () => {
+                input.value = '';
+                tree.filter('');
+            });
         });
     </script>
 

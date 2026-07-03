@@ -9,12 +9,12 @@ Chat language: Italian. Everything that lands in the repo — code, comments,
 Exception: user-facing UI strings are Italian *business* language by design
 (product copy for warehouse/accounting staff, not developer jargon).
 
-Repo: `<REPO_URL>` (fill in after first push) — default branch `main`,
+Repo: `https://github.com/projectsrl-git/aquariusweb` (fill in after first push) — default branch `main`,
 base package `com.aquarius`.
 
 ## 0. What chat can and cannot do (honesty first)
 - No live access to the working copy: work happens on a sandbox copy
-  (re-cloned from `<REPO_URL>` each turn once the repo is public, or restored
+  (re-cloned from `https://github.com/projectsrl-git/aquariusweb` each turn once the repo is public, or restored
   from the last known state).
 - The sandbox has **no SQL Server, no Tomcat, no real Maven build**.
   Verification is static: Java brace/paren balance scan, `node --check` on
@@ -26,7 +26,7 @@ base package `com.aquarius`.
 
 ## 1. Start of every task — re-align on the current HEAD
 HEAD moves between turns (the human commits). Before generating each patch:
-1. Get the current state (clone `<REPO_URL>`, or ask for `CLAUDE.md` +
+1. Get the current state (clone `https://github.com/projectsrl-git/aquariusweb`, or ask for `CLAUDE.md` +
    relevant `.claude/*.md` if unreachable).
 2. Read `CLAUDE.md` and skim `.claude/` for specs relevant to the task.
 3. Verify the patch applies on the real current HEAD (§3f).

@@ -1,0 +1,115 @@
+/* aq-tree.css — stili del componente tree-view riusabile */
+
+.aqt-root, .aqt-children { list-style: none; padding-left: 0; margin: 0; }
+.aqt-children {
+    padding-left: 1.35rem;
+    margin-left: .6rem;
+    border-left: 1px dashed #dee2e6;
+}
+
+.aqt-row {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .26rem .5rem;
+    border-radius: .3rem;
+    font-size: .85rem;
+    transition: background .12s ease;
+}
+.aqt-row:hover { background: #f1f5f9; }
+
+/* Gerarchia visiva per livello */
+.aqt-lvl1 > .aqt-row { font-weight: 600; }
+.aqt-lvl2 > .aqt-row { font-weight: 500; }
+.aqt-lvl3 > .aqt-row { font-weight: 400; }
+.aqt-lvl1 > .aqt-row .aqt-code { font-size: .85rem; }
+
+.aqt-toggle {
+    display: inline-flex;
+    width: 18px; height: 18px;
+    align-items: center; justify-content: center;
+    cursor: pointer;
+    color: #6c757d;
+    transition: transform .15s ease;
+    user-select: none;
+    flex-shrink: 0;
+}
+.aqt-toggle:hover { color: var(--aq-primary, #0c4a6e); }
+.aqt-toggle[aria-expanded="true"] { transform: rotate(90deg); color: var(--aq-primary, #0c4a6e); }
+.aqt-spacer { display: inline-block; width: 18px; flex-shrink: 0; }
+
+.aqt-icon { color: #94a3b8; flex-shrink: 0; }
+.aqt-dot  { color: #cbd5e1; font-size: .32rem; flex-shrink: 0; }
+
+.aqt-link {
+    text-decoration: none;
+    color: #212529;
+    display: inline-flex;
+    align-items: baseline;
+    gap: .55rem;
+    min-width: 0;
+}
+.aqt-code { color: var(--aq-primary, #0c4a6e); font-weight: 600; font-size: .78rem; }
+.aqt-descr {
+    color: #495057;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.aqt-link:hover .aqt-descr { color: var(--aq-primary, #0c4a6e); }
+
+.aqt-badge {
+    font-size: .6rem;
+    font-weight: 700;
+    padding: .12rem .4rem;
+    border-radius: .25rem;
+    border: 1px solid transparent;
+    flex-shrink: 0;
+}
+.aqt-b-pat { background: #e0f2fe; color: #0369a1; border-color: #bae6fd; }
+.aqt-b-eco { background: #fef9c3; color: #a16207; border-color: #fde68a; }
+.aqt-b-cli { background: #dbeafe; color: #1d4ed8; border-color: #bfdbfe; }
+.aqt-b-for { background: #dcfce7; color: #15803d; border-color: #bbf7d0; }
+.aqt-b-iva { background: #f3f4f6; color: #6b7280; border-color: #e5e7eb; }
+
+.aqt-count {
+    margin-left: auto;
+    font-size: .68rem;
+    color: #94a3b8;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+    padding-right: .25rem;
+}
+
+.aqt-notice {
+    font-size: .78rem;
+    color: #6c757d;
+    padding: .25rem .5rem;
+}
+
+mark { background: #fde68a; padding: 0 1px; border-radius: 2px; }
+
+.aqt-flash { animation: aqtFlash 2.2s ease; }
+@keyframes aqtFlash {
+    0%   { background: #fde68a; }
+    100% { background: transparent; }
+}
+
+/* Loading spinner */
+.aqt-loading {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    color: #6c757d;
+    font-size: .85rem;
+    padding: 2rem 1rem;
+    justify-content: center;
+}
+.aqt-loading .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid #e2e8f0;
+    border-top-color: var(--aq-primary, #0c4a6e);
+    border-radius: 50%;
+    animation: aqtSpin .8s linear infinite;
+}
+@keyframes aqtSpin { to { transform: rotate(360deg); } }

@@ -1,34 +1,31 @@
-Initial import: AquariusWeb, parallel web front-end for Aquarius ERP
+Add warehouse valuation slice and reusable tree component
 
-AquariusWeb progressively re-dresses the Aquarius Visual FoxPro ERP as a
-Java web application running in parallel on the same SQL Server database
-(plug&play strategy: legacy tables are read, never altered; new tables
-are prefixed aq_web_).
+Brings the repository up to the real project state: two developed-but-
+uncommitted slices were missing from the initial import.
 
-Stack: Spring Boot 2.7.18 (Java 17), Thymeleaf + Bootstrap 5, jTDS to
-SQL Server 2012 tenant DBs, file-based H2 system DB, custom SQL
-migration runner (Flyway Community dropped SQL Server 2012). Packaged
-as a WAR for external Tomcat 9; `mvn spring-boot:run` for development.
+Chart of accounts (client-side rework):
+- reusable aq-tree.js/.css component (lazy DOM, live filter,
+  expand-to-level, deep links) fed by a new JSON endpoint
+  GET /conti/tree-data (AccountTreeApiController)
+- AccountTreeService rewritten to the exact VFP positional hierarchy,
+  segment lengths read from U_AZI_AN (AZI_MASTRO/AZI_SOTTOG, defaults 3/5)
+- AccountRepository gains a light TreeRow projection and the native
+  U_AZI_AN structure query; tree.html is now a thin shell
+- remove the old recursive Thymeleaf fragment (superseded, and it
+  exploded with null params)
 
-Slices included in this import:
-- multi-tenant login against legacy res_oper (+ bcrypt web credentials)
-- sidebar menu generated from legacy tbl_menu (FORM_TO_URL mapping,
-  PARAGEST auto-mapping, synthetic web-only entries)
-- customers registry with the reusable form-shell framework (19 tabs
-  mirroring MENU_CLI000)
-- parameters (PARA) generic CRUD over a 340-category catalog
-- fiscal-year session context (PUB_ANNO analog, silent auto-select)
-- chart of accounts with positional hierarchy from U_AZI_AN
-  (AZI_MASTRO/AZI_SOTTOG) and the reusable aq-tree.js component
-- warehouse valuation dashboard (FIFO layers, as-of currency
-  conversion, ABC/Pareto, data-quality panel, price-trend projection,
-  Excel export via POI)
-- self-service custom reports (foundation)
+Warehouse valuation dashboard (/magazzino/valorizzazione):
+- FIFO valuation at a date over U_MAG_MO with as-of currency conversion
+  from u_vva_ch; date-column choice via DateBase enum SQL substitution
+  (no runtime CASE), date params bound as yyyy/MM/dd strings
+- KPI, ABC/Pareto, data-quality panel, 6-month price volatility with a
+  linear-regression projection (shown as an indication, not a forecast)
+- Excel export via Apache POI (SXSSF, 4 sheets)
+- synthetic "Valorizzazione a data" menu entry; dashboard CSS in layout
 
-Repository bootstrap: CLAUDE.md (project memory bridge), .claude/
-working agreement and per-change docs, LF normalization, gitignore.
-Secrets policy: tracked config holds env placeholders only; real values
-live in environment variables or gitignored local overrides.
+Also records the repo URL in .claude/README.md.
 
-Verification: static Java scan and inline-JS syntax checks in sandbox;
-real Maven build and Tomcat 9 deployment to be confirmed on target.
+Verification: Java static scan, node --check on aq-tree.js, constraint
+greps (no runtime CASE, no secrets), and git apply --check clean on a
+fresh clone of HEAD 43a262a. Maven build and Tomcat 9 run to be
+confirmed on target.

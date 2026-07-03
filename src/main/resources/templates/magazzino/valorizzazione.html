@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Valorizzazione magazzino – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-cash-stack',
+        title='Valorizzazione magazzino',
+        subtitle='Quanto vale la merce in giacenza a una data',
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <!-- ── Barra filtri (sticky) ─────────────────────────────────────── -->
+    <div class="vz-filter-bar">
+        <div class="row g-2 align-items-end">
+            <div class="col-auto">
+                <label class="form-label small fw-bold mb-1">Data valorizzazione</label>
+                <input type="date" id="fData" class="form-control form-control-sm" th:value="${oggi}">
+            </div>
+            <div class="col-auto">
+                <label class="form-label small fw-bold mb-1">Base di calcolo
+                    <i class="bi bi-info-circle vz-info-tip"
+                       title="Data documento: la data riportata sul documento di magazzino. Data registrazione: quando il movimento è stato inserito nel sistema."></i>
+                </label>
+                <div class="btn-group btn-group-sm d-block" role="group">
+                    <input type="radio" class="btn-check" name="fBase" id="baseDocu" value="DOCU" checked>
+                    <label class="btn btn-outline-primary" for="baseDocu">Data documento</label>
+                    <input type="radio" class="btn-check" name="fBase" id="baseRegi" value="REGI">
+                    <label class="btn btn-outline-primary" for="baseRegi">Data registrazione</label>
+                </div>
+            </div>
+            <div class="col-auto">
+                <label class="form-label small fw-bold mb-1">Magazzino</label>
+                <select id="fMag" class="form-select form-select-sm">
+                    <option th:each="m : ${magazzini}" th:value="${m}" th:text="${m}"
+                            th:selected="${m == defaultMag}"></option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <label class="form-label small fw-bold mb-1">Modalità</label>
+                <div class="btn-group btn-group-sm d-block" role="group">
+                    <input type="radio" class="btn-check" name="fMode" id="modeMag" value="MAG" checked>
+                    <label class="btn btn-outline-secondary" for="modeMag">Intero magazzino</label>
+                    <input type="radio" class="btn-check" name="fMode" id="modeArt" value="ART">
+                    <label class="btn btn-outline-secondary" for="modeArt">Singolo articolo</label>
+                </div>
+            </div>
+            <div class="col-auto" id="artWrap" style="display:none">
+                <label class="form-label small fw-bold mb-1">Articolo</label>
+                <input type="text" id="fArticolo" class="form-control form-control-sm font-monospace"
+                       list="artList" placeholder="Codice articolo…" autocomplete="off">
+                <datalist id="artList"></datalist>
+            </div>
+            <div class="col-auto ms-auto d-flex gap-2">
+                <button type="button" id="btnCalcola" class="btn btn-primary btn-sm">
+                    <i class="bi bi-play-fill me-1"></i>Calcola
+                </button>
+                <a id="btnExport" class="btn btn-outline-success btn-sm" href="#"
+                   title="Scarica in Excel: dati, metriche, anomalie e andamento prezzi">
+                    <i class="bi bi-file-earmark-excel me-1"></i>Excel
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Indicatore "as of" ────────────────────────────────────────── -->
+    <div id="asOfStrip" class="vz-asof" style="display:none">
+        <i class="bi bi-calendar-check me-1"></i>
+        Valorizzazione al <b id="asOfData">—</b> · magazzino <b id="asOfMag">—</b> ·
+        base <b id="asOfBase">—</b>
+        <span class="ms-2 opacity-50" id="asOfTip">
+            <i class="bi bi-info-circle vz-info-tip"
+               title="Valore calcolato con metodo FIFO: la giacenza è valorizzata ai prezzi dei carichi più recenti. I prezzi in valuta estera sono convertiti al cambio della data del movimento."></i>
+        </span>
+    </div>
+
+    <div id="loading" style="display:none" class="text-center text-muted py-5">
+        <div class="spinner-border spinner-border-sm me-2"></div> Calcolo in corso…
+    </div>
+    <div id="errBox" class="alert alert-danger py-2 small" style="display:none"></div>
+
+    <!-- ══════════════ VISTA MAGAZZINO ══════════════ -->
+    <div id="viewMag" style="display:none">
+
+        <!-- KPI -->
+        <div class="row g-2 mb-3" id="kpiRow"></div>
+
+        <div class="row g-3 mb-3">
+            <!-- Pareto -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm h-100"><div class="card-body">
+                    <h6 class="text-muted small text-uppercase mb-2" style="letter-spacing:1.5px">
+                        Dove si concentra il valore
+                        <i class="bi bi-info-circle vz-info-tip"
+                           title="Analisi ABC: pochi articoli rappresentano spesso gran parte del capitale immobilizzato. Classe A = articoli che insieme fanno l'80% del valore."></i>
+                    </h6>
+                    <div id="abcSummary" class="small text-muted mb-2"></div>
+                    <canvas id="chartPareto" height="110"></canvas>
+                </div></div>
+            </div>
+            <!-- Qualità del dato -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm h-100"><div class="card-body">
+                    <h6 class="text-muted small text-uppercase mb-2" style="letter-spacing:1.5px">
+                        Qualità del dato
+                        <i class="bi bi-info-circle vz-info-tip"
+                           title="Situazioni in cui il valore calcolato non è completo o affidabile. Clicca una voce per filtrare la tabella."></i>
+                    </h6>
+                    <div id="qualityPanel" class="d-flex flex-column gap-2"></div>
+                    <canvas id="chartAnomalie" height="140" class="mt-3"></canvas>
+                </div></div>
+            </div>
+        </div>
+
+        <!-- Volatilità prezzi -->
+        <div class="card border-0 shadow-sm mb-3"><div class="card-body">
+            <h6 class="text-muted small text-uppercase mb-2" style="letter-spacing:1.5px">
+                Come si muovono i prezzi d'acquisto (ultimi 6 mesi)
+                <i class="bi bi-info-circle vz-info-tip"
+                   title="Tendenza stimata dai carichi degli ultimi 6 mesi. È un'indicazione, non una previsione."></i>
+            </h6>
+            <div class="row g-3">
+                <div class="col-md-5" id="volSummary"></div>
+                <div class="col-md-7">
+                    <div class="small fw-bold text-muted mb-1">Articoli col prezzo più imprevedibile</div>
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0 vz-table" id="volTable">
+                            <thead class="table-light"><tr>
+                                <th>Articolo</th><th class="text-end">Prezzo medio</th>
+                                <th class="text-end">Oscillazione</th><th class="text-end">Tendenza/mese</th>
+                            </tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div></div>
+
+        <!-- Tabella articoli -->
+        <div class="card border-0 shadow-sm"><div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                <h6 class="text-muted small text-uppercase mb-0" style="letter-spacing:1.5px">
+                    Articoli in giacenza <span id="tblCount" class="ms-1"></span>
+                </h6>
+                <div class="input-group input-group-sm" style="max-width:340px">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" id="tblSearch" class="form-control" placeholder="Cerca articolo…">
+                    <select id="tblStato" class="form-select" style="max-width:170px">
+                        <option value="">Tutti gli stati</option>
+                    </select>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover table-sm mb-0 vz-table" id="mainTable">
+                    <thead class="table-light"><tr>
+                        <th data-k="codiceArticolo">Articolo <i class="bi bi-arrow-down-up small"></i></th>
+                        <th class="text-end" data-k="giacenza">Giacenza <i class="bi bi-arrow-down-up small"></i></th>
+                        <th class="text-end" data-k="qtaValorizzata">Qta valorizzata</th>
+                        <th class="text-end" data-k="prezzoMedio">Prezzo medio</th>
+                        <th class="text-end" data-k="valore">Valore <i class="bi bi-arrow-down-up small"></i></th>
+                        <th data-k="stato">Stato</th>
+                    </tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-2">
+                <span class="text-muted small" id="pgInfo"></span>
+                <div class="btn-group btn-group-sm">
+                    <button class="btn btn-outline-secondary" id="pgPrev"><i class="bi bi-chevron-left"></i></button>
+                    <button class="btn btn-outline-secondary" id="pgNext"><i class="bi bi-chevron-right"></i></button>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- ══════════════ VISTA SINGOLO ARTICOLO ══════════════ -->
+    <div id="viewArt" style="display:none">
+        <div class="row g-3 mb-3">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100"><div class="card-body">
+                    <h6 class="text-muted small text-uppercase mb-2" style="letter-spacing:1.5px">Scheda articolo</h6>
+                    <div id="artScheda"></div>
+                </div></div>
+            </div>
+            <div class="col-md-8">
+                <div class="card border-0 shadow-sm h-100"><div class="card-body">
+                    <h6 class="text-muted small text-uppercase mb-1" style="letter-spacing:1.5px">
+                        Andamento prezzo d'acquisto e tendenza
+                        <i class="bi bi-info-circle vz-info-tip"
+                           title="Punti = acquisti degli ultimi 6 mesi. Linea tratteggiata = proiezione stimata dalla tendenza recente: è un'indicazione, non una garanzia."></i>
+                    </h6>
+                    <div id="artOscBox" class="small text-muted mb-2"></div>
+                    <canvas id="chartPrezzi" height="90"></canvas>
+                </div></div>
+            </div>
+        </div>
+        <div class="card border-0 shadow-sm"><div class="card-body">
+            <h6 class="text-muted small text-uppercase mb-2" style="letter-spacing:1.5px">
+                Come si compone il valore (strati FIFO)
+                <i class="bi bi-info-circle vz-info-tip"
+                   title="La giacenza è attribuita ai carichi più recenti: ogni riga mostra un acquisto e quanta parte di esso è ancora in magazzino alla data scelta."></i>
+            </h6>
+            <div class="table-responsive">
+                <table class="table table-sm mb-0 vz-table">
+                    <thead class="table-light"><tr>
+                        <th>Data carico</th><th class="text-end">Qta caricata</th>
+                        <th>Valuta</th><th class="text-end">Prezzo originale</th>
+                        <th class="text-end">Cambio</th><th class="text-end">Prezzo in €</th>
+                        <th class="text-end">Ancora in giacenza</th><th class="text-end">Valore strato</th>
+                    </tr></thead>
+                    <tbody id="stratiBody"></tbody>
+                </table>
+            </div>
+        </div></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        const BASE = /*[[@{/magazzino/valorizzazione}]]*/ '/magazzino/valorizzazione';
+        const fmtEur = new Intl.NumberFormat('it-IT', {minimumFractionDigits:2, maximumFractionDigits:2});
+        const fmtQta = new Intl.NumberFormat('it-IT', {maximumFractionDigits:3});
+        const fmtPct = v => (v==null?'—':fmtEur.format(v)+'%');
+        const $  = id => document.getElementById(id);
+
+        const STATO_LABEL = {
+            'OK':'OK','GIACENZA_NEGATIVA':'Giacenza negativa','NON_VALORIZZATA':'Non valorizzata',
+            'VALORIZZAZIONE_PARZIALE':'Valorizzazione parziale','CAMBIO_MANCANTE':'Cambio mancante'
+        };
+        const QUALITY_HINT = {
+            'GIACENZA_NEGATIVA':'Scarichi superiori ai carichi: verificare movimenti mancanti.',
+            'NON_VALORIZZATA':'Giacenza presente ma senza carichi tracciati: rettifica senza prezzo?',
+            'VALORIZZAZIONE_PARZIALE':'I carichi tracciati non coprono tutta la giacenza.',
+            'CAMBIO_MANCANTE':'Manca il cambio per una valuta estera a quella data.'
+        };
+
+        let state = { righe: [], filtered: [], page: 0, pageSize: 25,
+                      sortKey: 'valore', sortDir: -1, charts: {} };
+
+        function params() {
+            const p = new URLSearchParams();
+            p.set('data', $('fData').value);
+            p.set('codmag', $('fMag').value);
+            p.set('base', document.querySelector('input[name=fBase]:checked').value);
+            const art = document.querySelector('input[name=fMode]:checked').value === 'ART'
+                ? $('fArticolo').value.trim() : '';
+            if (art) p.set('articolo', art);
+            return p;
+        }
+
+        function destroyChart(k) { if (state.charts[k]) { state.charts[k].destroy(); delete state.charts[k]; } }
+
+        async function calcola() {
+            $('errBox').style.display = 'none';
+            $('viewMag').style.display = 'none';
+            $('viewArt').style.display = 'none';
+            $('loading').style.display = '';
+            const isArt = document.querySelector('input[name=fMode]:checked').value === 'ART'
+                          && $('fArticolo').value.trim();
+            try {
+                const resp = await fetch(BASE + '/dati?' + params());
+                if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                const data = await resp.json();
+                renderAsOf(data.asOf);
+                if (isArt) await renderArticolo(data);
+                else renderMagazzino(data);
+            } catch (e) {
+                $('errBox').textContent = 'Errore nel calcolo: ' + e.message +
+                    '. Se persiste, potrebbero esserci date non valide nei movimenti (vedi assistenza).';
+                $('errBox').style.display = '';
+            } finally {
+                $('loading').style.display = 'none';
+            }
+            $('btnExport').href = BASE + '/export?' + params();
+        }
+
+        function renderAsOf(asOf) {
+            $('asOfData').textContent = new Date(asOf.data).toLocaleDateString('it-IT');
+            $('asOfMag').textContent = asOf.codmag;
+            $('asOfBase').textContent = asOf.base === 'DOCU' ? 'data documento' : 'data registrazione';
+            $('asOfStrip').style.display = '';
+        }
+
+        // ══════════ VISTA MAGAZZINO ══════════
+        function renderMagazzino(d) {
+            $('viewMag').style.display = '';
+            renderKpi(d.kpi);
+            renderPareto(d.abc);
+            renderQuality(d.anomalie, d.kpi);
+            renderVolatilita(d.volatilita);
+            state.righe = d.righe;
+            fillStatoFilter(d.anomalie);
+            applyTableFilter();
+        }
+
+        function kpiCard(label, value, sub, cls) {
+            return `<div class="col-6 col-md-4 col-xl-2"><div class="kpi-card ${cls||''}">
+                <div class="kpi-label">${label}</div>
+                <div class="kpi-value">${value}</div>
+                <div class="kpi-sub">${sub||''}</div></div></div>`;
+        }
+
+        function renderKpi(k) {
+            const covCls = k.coperturaPct >= 95 ? 'kpi-good' : (k.coperturaPct >= 80 ? 'kpi-warn' : 'kpi-bad');
+            $('kpiRow').innerHTML =
+                kpiCard('Valore magazzino', '€ ' + fmtEur.format(k.valoreTotale), 'metodo FIFO') +
+                kpiCard('Articoli in giacenza', k.articoliInGiacenza, '') +
+                kpiCard('Referenze valorizzate', k.referenzeValorizzate, 'con prezzo attribuito') +
+                kpiCard('Copertura', fmtPct(k.coperturaPct), 'giacenza con prezzo', covCls) +
+                kpiCard('Valore medio', '€ ' + fmtEur.format(k.valoreMedioReferenza), 'per referenza') +
+                kpiCard('Anomalie', k.numAnomalie, 'da verificare', k.numAnomalie>0?'kpi-warn':'kpi-good');
+        }
+
+        function renderPareto(abc) {
+            const sum = (abc.classi||[]).map(c =>
+                `<b>${c.classe}</b>: ${c.articoli} art. (${fmtPct(c.valorePct)} del valore)`).join(' · ');
+            $('abcSummary').innerHTML = sum || 'Nessun articolo con valore positivo.';
+            destroyChart('pareto');
+            if (!abc.paretoLabels || !abc.paretoLabels.length) return;
+            state.charts.pareto = new Chart($('chartPareto'), {
+                data: { labels: abc.paretoLabels,
+                    datasets: [
+                        { type:'bar', label:'Valore €', data:abc.paretoValori,
+                          backgroundColor:'#0c4a6e99', yAxisID:'y' },
+                        { type:'line', label:'% cumulata', data:abc.paretoCumPct,
+                          borderColor:'#b45309', pointRadius:2, yAxisID:'y2', tension:.2 }
+                    ]},
+                options: { responsive:true, plugins:{legend:{labels:{boxWidth:12,font:{size:10}}}},
+                    scales:{ y:{ticks:{font:{size:9}}},
+                             y2:{position:'right', min:0, max:100, ticks:{callback:v=>v+'%',font:{size:9}}},
+                             x:{ticks:{font:{size:8},maxRotation:60}} } }
+            });
+        }
+
+        function renderQuality(anomalie, kpi) {
+            const panel = $('qualityPanel');
+            panel.innerHTML = '';
+            let tot = 0;
+            for (const [stato, count] of Object.entries(anomalie)) {
+                if (stato === 'OK') continue;
+                tot += count;
+                const div = document.createElement('div');
+                div.className = 'quality-item';
+                div.innerHTML = `<div class="q-count text-warning">${count}</div>
+                    <div><div class="q-title">${STATO_LABEL[stato]||stato}</div>
+                    <div class="q-hint">${QUALITY_HINT[stato]||''}</div></div>`;
+                div.addEventListener('click', () => {
+                    $('tblStato').value = stato; applyTableFilter();
+                    $('mainTable').scrollIntoView({behavior:'smooth'});
+                });
+                panel.appendChild(div);
+            }
+            if (tot === 0) panel.innerHTML =
+                '<div class="text-success small"><i class="bi bi-check-circle me-1"></i>Nessuna anomalia: tutti i valori sono completi.</div>';
+
+            destroyChart('anomalie');
+            const entries = Object.entries(anomalie);
+            state.charts.anomalie = new Chart($('chartAnomalie'), {
+                type:'doughnut',
+                data:{ labels: entries.map(e=>STATO_LABEL[e[0]]||e[0]),
+                    datasets:[{ data: entries.map(e=>e[1]),
+                        backgroundColor:['#15803d','#94a3b8','#b91c1c','#b45309','#f59e0b'] }]},
+                options:{ plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:9}}}} }
+            });
+        }
+
+        function renderVolatilita(v) {
+            $('volSummary').innerHTML = `
+                <div class="d-flex gap-3 mb-2">
+                    <div class="kpi-card flex-fill"><div class="kpi-label">In aumento</div>
+                        <div class="kpi-value text-danger">↑ ${v.inAumento}</div></div>
+                    <div class="kpi-card flex-fill"><div class="kpi-label">In calo</div>
+                        <div class="kpi-value text-success">↓ ${v.inCalo}</div></div>
+                    <div class="kpi-card flex-fill"><div class="kpi-label">Stabili</div>
+                        <div class="kpi-value">${v.stabili}</div></div>
+                </div>
+                <div class="small text-muted">Variazione media stimata sui 6 mesi:
+                    <b>${fmtPct(v.variazioneMedia6mPct)}</b>
+                    <i class="bi bi-info-circle vz-info-tip"
+                       title="Media delle tendenze rilevate sui singoli articoli. Indicazione basata sugli acquisti recenti."></i></div>`;
+            const tb = $('volTable').querySelector('tbody');
+            tb.innerHTML = '';
+            for (const o of (v.topVolatili||[])) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td class="font-monospace">${o.codiceArticolo}</td>
+                    <td class="text-end">€ ${fmtEur.format(o.prezzoMedio6m)}</td>
+                    <td class="text-end">${o.coeffVariazione==null?'—':fmtEur.format(o.coeffVariazione*100)+'%'}</td>
+                    <td class="text-end ${o.trendMensile>0?'text-danger':'text-success'}">
+                        ${o.trendMensile>0?'+':''}${fmtEur.format(o.trendMensile)} €</td>`;
+                tr.style.cursor = 'pointer';
+                tr.addEventListener('click', () => openArticolo(o.codiceArticolo));
+                tb.appendChild(tr);
+            }
+        }
+
+        // ── Tabella con sort/filtro/paginazione ─────────────────────────
+        function fillStatoFilter(anomalie) {
+            const sel = $('tblStato');
+            sel.innerHTML = '<option value="">Tutti gli stati</option>';
+            for (const s of Object.keys(anomalie)) {
+                sel.innerHTML += `<option value="${s}">${STATO_LABEL[s]||s}</option>`;
+            }
+        }
+
+        function applyTableFilter() {
+            const q = $('tblSearch').value.trim().toLowerCase();
+            const st = $('tblStato').value;
+            state.filtered = state.righe.filter(r =>
+                (!q || r.codiceArticolo.toLowerCase().includes(q)) &&
+                (!st || r.stato === st));
+            const k = state.sortKey, dir = state.sortDir;
+            state.filtered.sort((a,b) => {
+                const va = a[k], vb = b[k];
+                if (va == null) return 1; if (vb == null) return -1;
+                return (typeof va === 'string' ? va.localeCompare(vb) : va - vb) * dir;
+            });
+            state.page = 0;
+            renderTablePage();
+        }
+
+        function renderTablePage() {
+            const start = state.page * state.pageSize;
+            const rows = state.filtered.slice(start, start + state.pageSize);
+            const tb = $('mainTable').querySelector('tbody');
+            tb.innerHTML = '';
+            for (const r of rows) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td class="font-monospace text-primary">${r.codiceArticolo}</td>
+                    <td class="text-end">${fmtQta.format(r.giacenza)}</td>
+                    <td class="text-end">${fmtQta.format(r.qtaValorizzata)}</td>
+                    <td class="text-end">${r.prezzoMedio==null?'—':'€ '+fmtEur.format(r.prezzoMedio)}</td>
+                    <td class="text-end fw-bold">€ ${fmtEur.format(r.valore)}</td>
+                    <td><span class="stato-badge stato-${r.stato}">${STATO_LABEL[r.stato]||r.stato}</span></td>`;
+                tr.addEventListener('click', () => openArticolo(r.codiceArticolo));
+                tb.appendChild(tr);
+            }
+            const tot = state.filtered.length;
+            $('tblCount').textContent = '(' + tot + ')';
+            $('pgInfo').textContent = tot === 0 ? 'Nessun articolo'
+                : `${start+1}–${Math.min(start+state.pageSize, tot)} di ${tot}`;
+            $('pgPrev').disabled = state.page === 0;
+            $('pgNext').disabled = start + state.pageSize >= tot;
+        }
+
+        $('tblSearch').addEventListener('input', applyTableFilter);
+        $('tblStato').addEventListener('change', applyTableFilter);
+        $('pgPrev').addEventListener('click', () => { state.page--; renderTablePage(); });
+        $('pgNext').addEventListener('click', () => { state.page++; renderTablePage(); });
+        document.querySelectorAll('#mainTable th[data-k]').forEach(th => {
+            th.style.cursor = 'pointer';
+            th.addEventListener('click', () => {
+                const k = th.dataset.k;
+                if (state.sortKey === k) state.sortDir *= -1;
+                else { state.sortKey = k; state.sortDir = k === 'codiceArticolo' ? 1 : -1; }
+                applyTableFilter();
+            });
+        });
+
+        // ══════════ VISTA ARTICOLO ══════════
+        function openArticolo(codice) {
+            document.getElementById('modeArt').checked = true;
+            $('artWrap').style.display = '';
+            $('fArticolo').value = codice;
+            calcola();
+        }
+
+        async function renderArticolo(d) {
+            $('viewArt').style.display = '';
+            const r = d.righe[0];
+            const o = (d.oscillazione||[])[0];
+            $('artScheda').innerHTML = !r
+                ? '<div class="text-muted small">Nessuna giacenza per questo articolo alla data scelta.</div>'
+                : `<div class="mb-2"><span class="font-monospace fs-5 text-primary">${r.codiceArticolo}</span>
+                     <span class="stato-badge stato-${r.stato} ms-2">${STATO_LABEL[r.stato]||r.stato}</span></div>
+                   <table class="table table-sm small mb-0">
+                     <tr><td class="text-muted">Giacenza</td><td class="text-end fw-bold">${fmtQta.format(r.giacenza)}</td></tr>
+                     <tr><td class="text-muted">Quantità valorizzata</td><td class="text-end">${fmtQta.format(r.qtaValorizzata)}</td></tr>
+                     <tr><td class="text-muted">Prezzo medio (FIFO)</td><td class="text-end">${r.prezzoMedio==null?'—':'€ '+fmtEur.format(r.prezzoMedio)}</td></tr>
+                     <tr><td class="text-muted">Valore</td><td class="text-end fw-bold">€ ${fmtEur.format(r.valore)}</td></tr>
+                   </table>`;
+
+            $('artOscBox').innerHTML = !o ? 'Nessun acquisto negli ultimi 6 mesi.'
+                : `${o.ncarichi ?? o.nCarichi} acquisti in 6 mesi · min € ${fmtEur.format(o.prezzoMin6m)} ·
+                   max € ${fmtEur.format(o.prezzoMax6m)} · medio € ${fmtEur.format(o.prezzoMedio6m)}
+                   ${o.trendMensile!=null ? ' · tendenza ' + (o.trendMensile>0?'+':'') + fmtEur.format(o.trendMensile) + ' €/mese' : ''}
+                   ${o.prezzoProiettato6m!=null ? ' · <b>indicativamente € ' + fmtEur.format(o.prezzoProiettato6m) + ' tra 6 mesi</b> <span class="opacity-75">(proiezione, non garanzia)</span>' : ''}`;
+
+            // Strati + grafico prezzi in parallelo
+            const [strati] = await Promise.all([
+                fetch(BASE + '/strati?' + params()).then(x => x.json()),
+                renderChartPrezzi(o)
+            ]);
+            const tb = $('stratiBody');
+            tb.innerHTML = '';
+            for (const s of strati) {
+                const inGiac = s.qtaResiduaInGiacenza > 0;
+                const valore = s.prezzoConvertito != null && s.qtaResiduaInGiacenza != null
+                    ? s.prezzoConvertito * s.qtaResiduaInGiacenza : null;
+                const tr = document.createElement('tr');
+                if (!inGiac) tr.className = 'opacity-50';
+                tr.innerHTML = `<td class="font-monospace">${s.dataCarico||'—'}</td>
+                    <td class="text-end">${fmtQta.format(s.qtaCarico)}</td>
+                    <td>${s.valuta||'—'}</td>
+                    <td class="text-end">${fmtEur.format(s.prezzoOriginale)}</td>
+                    <td class="text-end">${s.cambioApplicato==null?'<span class="text-danger" title="Cambio non trovato a questa data">—</span>':fmtEur.format(s.cambioApplicato)}</td>
+                    <td class="text-end">€ ${fmtEur.format(s.prezzoConvertito)}</td>
+                    <td class="text-end ${inGiac?'fw-bold':''}">${fmtQta.format(s.qtaResiduaInGiacenza)}</td>
+                    <td class="text-end ${inGiac?'fw-bold':''}">${valore==null?'—':'€ '+fmtEur.format(valore)}</td>`;
+                tb.appendChild(tr);
+            }
+            if (!strati.length) tb.innerHTML =
+                '<tr><td colspan="8" class="text-muted text-center py-3">Nessun carico registrato entro la data scelta.</td></tr>';
+        }
+
+        async function renderChartPrezzi(osc) {
+            destroyChart('prezzi');
+            // Scatter dei carichi = strati (tutti, anche non in giacenza)
+            const strati = await fetch(BASE + '/strati?' + params()).then(x => x.json());
+            const points = strati
+                .filter(s => s.dataCarico && s.prezzoConvertito != null)
+                .map(s => ({ x: s.dataCarico.replaceAll('/','-'), y: s.prezzoConvertito }))
+                .reverse();
+            const datasets = [{
+                type: 'scatter', label: 'Prezzi pagati',
+                data: points, backgroundColor: '#0c4a6e', pointRadius: 4
+            }];
+            if (osc && osc.prezzoProiettato6m != null && points.length >= 2) {
+                const last = points[points.length - 1];
+                const dataRif = document.getElementById('fData').value;
+                const proj = new Date(dataRif); proj.setMonth(proj.getMonth() + 6);
+                const projX = proj.toISOString().slice(0, 10);
+                datasets.push({
+                    type: 'line', label: 'Tendenza (indicativa)',
+                    data: [ last, { x: projX, y: osc.prezzoProiettato6m } ],
+                    borderColor: '#b45309', borderDash: [6, 4], pointRadius: 3, fill: false
+                });
+                if (osc.devStd6m != null) {
+                    datasets.push({
+                        type: 'line', label: 'Fascia di incertezza',
+                        data: [ last, { x: projX, y: osc.prezzoProiettato6m + osc.devStd6m } ],
+                        borderColor: '#f59e0b55', borderDash: [3,3], pointRadius: 0, fill: false });
+                    datasets.push({
+                        type: 'line', label: '',
+                        data: [ last, { x: projX, y: Math.max(0, osc.prezzoProiettato6m - osc.devStd6m) } ],
+                        borderColor: '#f59e0b55', borderDash: [3,3], pointRadius: 0, fill: '-1',
+                        backgroundColor: '#f59e0b18' });
+                }
+            }
+            state.charts.prezzi = new Chart($('chartPrezzi'), {
+                data: { datasets },
+                options: {
+                    parsing: true, responsive: true,
+                    plugins: { legend: { labels: { boxWidth: 12, font: { size: 10 },
+                        filter: item => item.text !== '' } } },
+                    scales: {
+                        x: { type: 'category',
+                             labels: [...new Set(datasets.flatMap(d => d.data.map(p => p.x)))].sort(),
+                             ticks: { font: { size: 9 }, maxRotation: 60 } },
+                        y: { ticks: { callback: v => '€ ' + fmtEur.format(v), font: { size: 9 } } }
+                    }
+                }
+            });
+        }
+
+        // ── Wiring filtri ────────────────────────────────────────────────
+        document.querySelectorAll('input[name=fMode]').forEach(r =>
+            r.addEventListener('change', () => {
+                $('artWrap').style.display = r.value === 'ART' && r.checked ? '' : 'none';
+            }));
+        let acTimer = null;
+        $('fArticolo').addEventListener('input', () => {
+            clearTimeout(acTimer);
+            acTimer = setTimeout(async () => {
+                const q = $('fArticolo').value.trim();
+                if (q.length < 2) return;
+                const arr = await fetch(BASE + '/articoli?q=' + encodeURIComponent(q) +
+                                        '&codmag=' + encodeURIComponent($('fMag').value)).then(x => x.json());
+                $('artList').innerHTML = arr.map(a => `<option value="${a}">`).join('');
+            }, 250);
+        });
+        $('btnCalcola').addEventListener('click', calcola);
+
+        // Primo caricamento: intero magazzino, oggi
+        calcola();
+    });
+    </script>
+
+</section></body>
+</html>

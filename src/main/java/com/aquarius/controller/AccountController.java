@@ -5,8 +5,6 @@ import com.aquarius.dto.FormTab;
 import com.aquarius.entity.tenant.Account;
 import com.aquarius.repository.tenant.AccountRepository;
 import com.aquarius.security.AquariusPrincipal;
-import com.aquarius.service.AccountTreeService;
-import com.aquarius.service.AccountTreeService.AccountNode;
 import com.aquarius.service.BreadcrumbService;
 import com.aquarius.service.BreadcrumbService.Crumb;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +34,6 @@ import java.util.List;
 public class AccountController {
 
     private final AccountRepository repository;
-    private final AccountTreeService treeService;
     private final BreadcrumbService breadcrumbService;
     private final FiscalContext fiscalContext;
 
@@ -61,16 +58,14 @@ public class AccountController {
     }
 
     /**
-     * Vista ad albero del piano dei conti.
+     * Vista ad albero del piano dei conti. La pagina è una shell: i dati
+     * arrivano via fetch da {@code /conti/tree-data} (vedi
+     * {@link AccountTreeApiController}) e il rendering è client-side con
+     * il componente riusabile {@code aq-tree.js}.
      */
     @GetMapping("/tree")
-    @Transactional(transactionManager = "tenantTransactionManager", readOnly = true)
     public String tree(Model model,
                        @AuthenticationPrincipal AquariusPrincipal principal) {
-        List<AccountNode> roots = treeService.buildTree();
-        model.addAttribute("roots", roots);
-        model.addAttribute("totalCount", treeService.countNodes(roots));
-
         List<Crumb> crumbs = new ArrayList<>(
             breadcrumbService.forUrl("/conti", principal.getUsername()));
         crumbs.add(new Crumb("Vista ad albero", null));

@@ -263,6 +263,15 @@ public class MenuService {
     private void injectSyntheticEntries(String l1Menu, List<MenuNode> children) {
         if (l1Menu == null) return;
         switch (l1Menu) {
+            case "magazzino" -> {
+                children.add(0, MenuNode.builder()
+                    .label("Valorizzazione a data")
+                    .icon("bi-cash-stack")
+                    .url("/magazzino/valorizzazione")
+                    .hasReachableLeaf(true)
+                    .build());
+                children.add(1, MenuNode.builder().separator(true).build());
+            }
             case "parametri" -> {
                 children.add(0, MenuNode.builder()
                     .label("Tutti i parametri")
@@ -293,7 +302,8 @@ public class MenuService {
     }
 
     private boolean hasSyntheticEntries(String l1Menu) {
-        return "parametri".equals(l1Menu) || "contabilita".equals(l1Menu);
+        return "parametri".equals(l1Menu) || "contabilita".equals(l1Menu)
+            || "magazzino".equals(l1Menu);
     }
 
     private MenuNode toNodeFromL2(LegacyMenu l2,
