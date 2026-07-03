@@ -22,6 +22,7 @@
             --aq-darker: #082f49;
             --aq-menu: #e0f2fe;
             --sidebar-w: 260px;
+            --sidebar-w-collapsed: 64px;
         }
         body { background: #f4f6fb; font-family: 'Segoe UI', system-ui, sans-serif; }
 
@@ -29,6 +30,7 @@
             width: var(--sidebar-w); min-height: 100vh; background: var(--aq-dark);
             position: fixed; top: 0; left: 0; z-index: 1000;
             display: flex; flex-direction: column;
+            transition: width .2s ease;
         }
         .sidebar-brand {
             padding: 1.15rem 1.2rem .9rem;
@@ -37,7 +39,21 @@
             display: flex;
             align-items: center;
             gap: .7rem;
+            position: relative;
         }
+        .sidebar-toggle {
+            margin-left: auto;
+            background: rgba(255,255,255,.08);
+            border: 1px solid rgba(255,255,255,.15);
+            color: rgba(255,255,255,.7);
+            width: 26px; height: 26px;
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; flex-shrink: 0;
+            transition: all .12s ease;
+        }
+        .sidebar-toggle:hover { background: rgba(255,255,255,.18); color: white; }
+        .sidebar-toggle i { font-size: .8rem; transition: transform .2s ease; }
         .sidebar-brand .brand-icon {
             width: 38px; height: 38px;
             border-radius: 9px;
@@ -115,16 +131,29 @@
             margin-top: .5rem;
         }
 
+        /* ── Blocco identità in alto (tenant + user + anno) ─────────────── */
+        .sidebar-identity {
+            padding: .7rem 1rem .75rem;
+            border-bottom: 1px solid rgba(255,255,255,.1);
+            background: rgba(0,0,0,.12);
+            display: flex; flex-direction: column; gap: .3rem;
+        }
+        .sidebar-identity .ident-tenant {
+            color: white; font-weight: 600; font-size: .85rem;
+            display: flex; align-items: center; gap: .4rem;
+        }
+        .sidebar-identity .ident-user {
+            color: rgba(255,255,255,.6); font-size: .72rem;
+            display: flex; align-items: center; gap: .4rem;
+        }
+        .sidebar-identity .ident-tenant i,
+        .sidebar-identity .ident-user i { width: 1rem; text-align: center; flex-shrink: 0; }
+
         .sidebar-foot {
             padding: .8rem 1rem;
             border-top: 1px solid rgba(255,255,255,.1);
             color: rgba(255,255,255,.6); font-size: .72rem;
         }
-        .sidebar-foot .tenant {
-            color: white; font-weight: 600; font-size: .82rem;
-            display: flex; align-items: center; gap: .35rem; margin-bottom: .15rem;
-        }
-        .sidebar-foot .user { font-size: .72rem; }
         .sidebar-foot .app-version {
             margin-top: .65rem;
             padding-top: .55rem;
@@ -139,6 +168,7 @@
         main.content {
             margin-left: var(--sidebar-w);
             padding: 1.5rem 2rem;
+            transition: margin-left .2s ease;
         }
         .page-header { border-bottom: 1px solid #e2e8f0; padding-bottom: 1rem; margin-bottom: 1.5rem; }
         .page-header h1 { font-size: 1.5rem; font-weight: 600; margin: 0; color: #0c4a6e; }
@@ -175,6 +205,48 @@
             border-color: rgba(255,255,255,.3);
         }
         .fiscal-year-badge .bi-chevron-right { opacity: .5; font-size: .65rem; }
+
+        /* ══ Modalità COMPRESSA (solo icone) ═══════════════════════════════ */
+        #sidebar.collapsed { width: var(--sidebar-w-collapsed); }
+        #sidebar.collapsed + main.content,
+        body.sidebar-collapsed main.content { margin-left: var(--sidebar-w-collapsed); }
+
+        /* Nascondi tutte le etichette testuali quando compressa */
+        #sidebar.collapsed .brand-text,
+        #sidebar.collapsed .menu-label,
+        #sidebar.collapsed .ident-label,
+        #sidebar.collapsed .nav-static-section,
+        #sidebar.collapsed .menu-chevron,
+        #sidebar.collapsed .menu-not-implemented { display: none; }
+
+        /* Brand: centra il logo, ruota la freccia del toggle */
+        #sidebar.collapsed .sidebar-brand { padding: 1.15rem 0 .9rem; justify-content: center; }
+        #sidebar.collapsed .sidebar-toggle {
+            margin-left: 0;
+            position: absolute; bottom: -13px; right: 8px;
+            background: var(--aq-dark);
+        }
+        #sidebar.collapsed .sidebar-toggle i { transform: rotate(180deg); }
+
+        /* Identità: solo icone centrate */
+        #sidebar.collapsed .sidebar-identity { padding: .6rem 0; align-items: center; }
+        #sidebar.collapsed .sidebar-identity .ident-tenant,
+        #sidebar.collapsed .sidebar-identity .ident-user { justify-content: center; gap: 0; }
+        #sidebar.collapsed .fiscal-year-badge {
+            justify-content: center; padding: .4rem 0; margin-top: .4rem;
+            width: 40px; margin-left: auto; margin-right: auto;
+        }
+
+        /* Voci di menu: icona centrata, niente padding-left dell'indent */
+        #sidebar.collapsed .menu-item { padding: .55rem 0; justify-content: center; }
+        #sidebar.collapsed .menu-item .menu-icon { width: auto; font-size: 1.05rem; }
+        #sidebar.collapsed .menu-children .menu-item { padding-left: 0; }
+        /* I sottomenu annidati non hanno senso da compressi: mostra solo il 1o livello */
+        #sidebar.collapsed .menu-children { display: none !important; }
+
+        /* Footer: solo icona Esci */
+        #sidebar.collapsed .sidebar-foot { padding: .8rem .3rem; }
+        #sidebar.collapsed .app-version { display: none; }
 
         /* ── Dashboard valorizzazione magazzino ─────────────────────────── */
         .vz-filter-bar {
@@ -299,11 +371,35 @@
             <strong>Aquarius</strong>
             <small>ERP · Web</small>
         </div>
+        <button type="button" id="sidebarToggle" class="sidebar-toggle"
+                title="Comprimi/espandi menu" aria-label="Comprimi menu">
+            <i class="bi bi-chevron-double-left"></i>
+        </button>
+    </div>
+
+    <!-- Blocco identità: tenant + utente + anno contabile, in alto -->
+    <div class="sidebar-identity" sec:authorize="isAuthenticated()">
+        <div class="ident-tenant" th:if="${#authentication.principal.tenantDisplayName != null}">
+            <i class="bi bi-building"></i>
+            <span class="ident-label" th:text="${#authentication.principal.tenantDisplayName}">—</span>
+        </div>
+        <div class="ident-user">
+            <i class="bi bi-person-circle"></i>
+            <span class="ident-label" th:text="${#authentication.principal.username}">user</span>
+        </div>
+        <a th:if="${currentFiscalYear != null}"
+           th:href="@{/select-year}"
+           class="fiscal-year-badge"
+           th:title="${currentFiscalYearDescription + ' — clicca per cambiare'}">
+            <i class="bi bi-calendar3"></i>
+            <span class="ident-label">Anno <span th:text="${currentFiscalYear}">YYYY</span></span>
+            <i class="bi bi-chevron-right ms-auto small ident-label"></i>
+        </a>
     </div>
 
     <nav class="sidebar-nav" id="dynamicMenu">
         <!-- top: dashboard fissa -->
-        <a class="menu-item" th:href="@{/dashboard}"
+        <a class="menu-item" th:href="@{/dashboard}" th:title="'Dashboard'"
            th:classappend="${#httpServletRequest.requestURI == '/dashboard'} ? 'active'">
             <span class="menu-icon"><i class="bi bi-house-door"></i></span>
             <span class="menu-label">Dashboard</span>
@@ -311,17 +407,17 @@
 
         <!-- dynamic tree placeholder -->
         <div id="menuTree">
-            <div class="menu-loading"><span class="menu-spinner"></span> Caricamento menu…</div>
+            <div class="menu-loading"><span class="menu-spinner"></span> <span class="menu-label">Caricamento menu…</span></div>
         </div>
 
         <!-- Strumenti (fissi, web-app only) -->
-        <div class="nav-static-section">Strumenti</div>
-        <a class="menu-item" th:href="@{/custom-reports}"
+        <div class="nav-static-section"><span class="menu-label">Strumenti</span></div>
+        <a class="menu-item" th:href="@{/custom-reports}" th:title="'Query personalizzate'"
            th:classappend="${#httpServletRequest.requestURI.startsWith('/custom-reports')} ? 'active'">
             <span class="menu-icon"><i class="bi bi-bar-chart-line"></i></span>
             <span class="menu-label">Query personalizzate</span>
         </a>
-        <a class="menu-item" th:href="@{/help}"
+        <a class="menu-item" th:href="@{/help}" th:title="'Assistente'"
            th:classappend="${#httpServletRequest.requestURI.startsWith('/help')} ? 'active'">
             <span class="menu-icon"><i class="bi bi-robot"></i></span>
             <span class="menu-label">Assistente</span>
@@ -329,28 +425,13 @@
     </nav>
 
     <div class="sidebar-foot" sec:authorize="isAuthenticated()">
-        <div class="tenant" th:if="${#authentication.principal.tenantDisplayName != null}">
-            <i class="bi bi-building"></i>
-            <span th:text="${#authentication.principal.tenantDisplayName}">—</span>
-        </div>
-        <div class="user">
-            <i class="bi bi-person-circle"></i>
-            <span th:text="${#authentication.principal.username}">user</span>
-        </div>
-        <a th:if="${currentFiscalYear != null}"
-           th:href="@{/select-year}"
-           class="fiscal-year-badge"
-           th:title="${currentFiscalYearDescription + ' — clicca per cambiare'}">
-            <i class="bi bi-calendar3 me-1"></i>
-            Anno <span th:text="${currentFiscalYear}">YYYY</span>
-            <i class="bi bi-chevron-right ms-auto small"></i>
-        </a>
-        <form th:action="@{/logout}" method="post" class="mt-2 mb-0">
-            <button type="submit" class="btn btn-sm btn-outline-light w-100" style="font-size:.7rem">
-                <i class="bi bi-box-arrow-right me-1"></i>Esci
+        <form th:action="@{/logout}" method="post" class="mb-0">
+            <button type="submit" class="btn btn-sm btn-outline-light w-100" style="font-size:.7rem"
+                    title="Esci">
+                <i class="bi bi-box-arrow-right"></i><span class="menu-label ms-1">Esci</span>
             </button>
         </form>
-        <div class="app-version" th:title="'Build: ' + ${appBuildTime}">
+        <div class="app-version menu-label" th:title="'Build: ' + ${appBuildTime}">
             <i class="bi bi-tag"></i> v<span th:text="${appVersion}">0.0.0</span>
         </div>
     </div>
@@ -457,6 +538,28 @@ function renderNode(node, depth) {
 
     return result;
 }
+
+// ─── Toggle compressione sidebar (persistito per sessione) ────────────
+(function initSidebarToggle() {
+    const sidebar = document.getElementById('sidebar');
+    const btn = document.getElementById('sidebarToggle');
+    if (!sidebar || !btn) return;
+
+    const KEY = 'aqSidebarCollapsed';
+    // Ripristina lo stato salvato (l'app gira su Tomcat: sessionStorage ok)
+    try {
+        if (sessionStorage.getItem(KEY) === '1') {
+            sidebar.classList.add('collapsed');
+            document.body.classList.add('sidebar-collapsed');
+        }
+    } catch (e) { /* storage non disponibile: ignora */ }
+
+    btn.addEventListener('click', function () {
+        const collapsed = sidebar.classList.toggle('collapsed');
+        document.body.classList.toggle('sidebar-collapsed', collapsed);
+        try { sessionStorage.setItem(KEY, collapsed ? '1' : '0'); } catch (e) {}
+    });
+})();
 </script>
 </body>
 </html>

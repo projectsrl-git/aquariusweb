@@ -1,18 +1,19 @@
-Fix sidebar menu links missing the context path
+Move identity block to top and add collapsible sidebar
 
-Clicking a dynamic menu item (e.g. Magazzino > Valorizzazione) navigated to
-/magazzino/valorizzazione and returned 404 instead of
-/aquariusweb/magazzino/valorizzazione.
+Two sidebar UI changes, confined to layout.html.
 
-The sidebar is rendered in JS from /api/menu/tree, where each node.url is an
-absolute server path. renderNode() assigned item.href = node.url verbatim, so
-under the Tomcat context the links pointed at the server root. The context
-helper existed but was scoped inside loadMenu() and invisible to renderNode().
+1. The tenant + user + fiscal-year block moves from the footer to a new
+   .sidebar-identity section between the brand and the menu. The footer now
+   keeps only the Esci button and the app version.
 
-Hoist it to script scope as MENU_CTX and prefix the href:
-item.href = MENU_CTX + node.url. The menu fetch keeps using it too. The chart
-of accounts tree already builds hrefs from @{/conti/}, so it was unaffected.
+2. The sidebar can collapse to an icons-only rail. A toggle button in the
+   brand row switches a .collapsed class: width 260px -> 64px with the main
+   content margin following (animated). Collapsed mode hides all text labels,
+   centers icons, hides nested submenus, and shows tooltips (th:title) on each
+   item. The state is saved in sessionStorage and restored on load.
 
-Verification: node --check on the menu script, no remaining JS absolute
-hrefs without context, git apply --check clean on a fresh clone of HEAD
-42d572b. Navigation to confirm on deploy.
+No server-side or behavioural change.
+
+Verification: node --check on the layout script, aside/main confirmed as
+direct siblings, git apply --check clean on a fresh clone of HEAD cadec67.
+Visual behaviour to confirm on deploy.
