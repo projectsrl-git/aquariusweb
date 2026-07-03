@@ -363,12 +363,15 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 // ─── Sidebar dinamica: carica /api/menu/tree e renderizza ─────────────
+// Context path (es. "/aquariusweb"), "" in dev alla root. Condiviso tra
+// loadMenu e renderNode: gli URL del menu arrivano dal server come path
+// assoluti (/magazzino/...) e vanno prefissati col context, altrimenti
+// sotto Tomcat puntano alla root del server e danno 404.
+const MENU_CTX = (document.querySelector('meta[name=_ctx]')?.content || '/').replace(/\/$/, '');
 (async function loadMenu() {
     const container = document.getElementById('menuTree');
-    // Context path (es. "/aquariusweb/") dal <meta name="_ctx">; "/" in dev.
-    const CTX = (document.querySelector('meta[name=_ctx]')?.content || '/').replace(/\/$/, '');
     try {
-        const res = await fetch(CTX + '/api/menu/tree', { credentials: 'same-origin' });
+        const res = await fetch(MENU_CTX + '/api/menu/tree', { credentials: 'same-origin' });
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const tree = await res.json();
         container.innerHTML = '';
@@ -399,7 +402,9 @@ function renderNode(node, depth) {
         item.classList.add('disabled');
     }
 
-    if (node.url) item.href = node.url;
+    // node.url arriva come path assoluto dal server (es. /magazzino/...):
+    // prefissa il context, altrimenti sotto Tomcat punta alla root -> 404.
+    if (node.url) item.href = MENU_CTX + node.url;
 
     // Icona
     const iconSpan = document.createElement('span');

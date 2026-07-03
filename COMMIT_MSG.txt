@@ -1,20 +1,18 @@
-Fix context-path bugs breaking the app under a Tomcat context
+Fix sidebar menu links missing the context path
 
-After login the app redirected to /dashboard and returned 404: under Tomcat
-it runs in the /aquariusweb context, but several absolute paths ignored it.
+Clicking a dynamic menu item (e.g. Magazzino > Valorizzazione) navigated to
+/magazzino/valorizzazione and returned 404 instead of
+/aquariusweb/magazzino/valorizzazione.
 
-- SecurityConfig: the login success handler used
-  res.sendRedirect("/dashboard"); HttpServletResponse.sendRedirect does not
-  prepend the context path. Now uses req.getContextPath() + "/dashboard".
-- Four JS fetch() calls used absolute URLs and would hit the server root
-  instead of the app: the sidebar menu loader (/api/menu/tree), custom-report
-  validate and execute, and the help chat. The menu loader now reads a new
-  <meta name="_ctx"> exposed by the layout; the three th:inline templates use
-  the Thymeleaf /*[[@{/...}]]*/ expression so the URL includes the context.
+The sidebar is rendered in JS from /api/menu/tree, where each node.url is an
+absolute server path. renderNode() assigned item.href = node.url verbatim, so
+under the Tomcat context the links pointed at the server root. The context
+helper existed but was scoped inside loadMenu() and invisible to renderNode().
 
-Controller "redirect:/..." returns and Thymeleaf @{...} links were already
-correct (Spring/Thymeleaf add the context), as was FiscalContextInterceptor.
+Hoist it to script scope as MENU_CTX and prefix the href:
+item.href = MENU_CTX + node.url. The menu fetch keeps using it too. The chart
+of accounts tree already builds hrefs from @{/conti/}, so it was unaffected.
 
-Verification: Java brace scan, node --check on the inline-script templates,
-no remaining context-less absolute fetch in templates, and git apply --check
-clean on a fresh clone of HEAD e67cd01. Live login flow to confirm on deploy.
+Verification: node --check on the menu script, no remaining JS absolute
+hrefs without context, git apply --check clean on a fresh clone of HEAD
+42d572b. Navigation to confirm on deploy.
