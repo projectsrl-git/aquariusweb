@@ -270,8 +270,6 @@ public class CustomerController {
         dst.setPostponeM11To(src.getPostponeM11To());
         dst.setPostponeM11Days(src.getPostponeM11Days());
         // tab-fido
-        dst.setCreditClass(src.getCreditClass());
-        dst.setCreditAmount(src.getCreditAmount());
         dst.setCreditClass2(src.getCreditClass2());
         dst.setCreditAmount2(src.getCreditAmount2());
         dst.setRiskClass(src.getRiskClass());
@@ -317,9 +315,6 @@ public class CustomerController {
         dst.setProdDeliveryDays(src.getProdDeliveryDays());
         dst.setProdNotifyFlag(src.getProdNotifyFlag());
         // tab-emails
-        dst.setEmailGroup(src.getEmailGroup());
-        dst.setEmailGroup1(src.getEmailGroup1());
-        dst.setEmailGroup2(src.getEmailGroup2());
         // tab-testi
         dst.setTextCode(src.getTextCode());
         dst.setTextOrder(src.getTextOrder());

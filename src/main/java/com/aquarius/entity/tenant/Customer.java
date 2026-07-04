@@ -314,10 +314,6 @@ public class Customer {
     private String postponeM11Days;
 
     // ── tab-fido ──
-    @Column(name = "CLI_CLFIDO", length = 1)
-    private String creditClass;
-    @Column(name = "CLI_IMPFID", precision = 9, scale = 2)
-    private BigDecimal creditAmount;
     @Column(name = "CLI_CLFID2", length = 1)
     private String creditClass2;
     @Column(name = "CLI_IMPFI2", precision = 9, scale = 2)
@@ -408,12 +404,6 @@ public class Customer {
     private Boolean prodNotifyFlag;
 
     // ── tab-emails ──
-    @Column(name = "CLI_EMAIL", length = 100)
-    private String emailGroup;
-    @Column(name = "CLI_EMAIL1", length = 100)
-    private String emailGroup1;
-    @Column(name = "CLI_EMAIL2", length = 100)
-    private String emailGroup2;
 
     // ── tab-testi ──
     @Column(name = "CLI_CODTXT", length = 3)
