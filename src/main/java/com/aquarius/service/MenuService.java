@@ -79,6 +79,8 @@ public class MenuService {
     private static final Map<String, String> FORM_TO_URL = Map.ofEntries(
         // Slice 3: Anagrafica clienti
         Map.entry("menu_cli000", "/clienti"),
+        // Slice: Anagrafica fornitori
+        Map.entry("menu_for000", "/fornitori"),
         // Slice 4: Piano dei conti
         Map.entry("menu_pdc000",          "/conti/tree"),
         Map.entry("menu_pdc000_treeview", "/conti/tree"),

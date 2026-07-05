@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Fornitore – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-truck',
+        title=${supplier.businessName},
+        subtitle='Fornitore ' + ${supplier.code},
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <div th:if="${flashSuccess}" class="alert alert-success py-2 small mb-3">
+        <i class="bi bi-check-circle me-1"></i><span th:text="${flashSuccess}"></span>
+    </div>
+
+    <div class="d-flex gap-2 mb-3">
+        <a th:href="@{/fornitori}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i>Torna alla lista
+        </a>
+        <a th:href="@{/fornitori/{id}/edit(id=${supplier.id})}" class="btn btn-primary btn-sm">
+            <i class="bi bi-pencil-square me-1"></i>Modifica anagrafica
+        </a>
+    </div>
+
+    <div class="row g-3 detail-cards">
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white">
+                    <h6 class="detail-card-title"><i class="bi bi-card-text me-1"></i>Anagrafica</h6>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0 small">
+                        <dt class="col-5 text-muted">Ragione sociale</dt>
+                        <dd class="col-7" th:text="${supplier.businessName ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">2ª denominazione</dt>
+                        <dd class="col-7" th:text="${supplier.businessName2 ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">P.IVA</dt>
+                        <dd class="col-7 font-monospace" th:text="${supplier.vatNumber ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">Codice fiscale</dt>
+                        <dd class="col-7 font-monospace" th:text="${supplier.taxCode ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">P.IVA CEE</dt>
+                        <dd class="col-7" th:text="${supplier.vatCee ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">Ricerca alternativa</dt>
+                        <dd class="col-7 font-monospace" th:text="${supplier.searchKey ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">Codice zona</dt>
+                        <dd class="col-7 font-monospace" th:text="${supplier.zone ?: '—'}">—</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6"
+             th:if="supplier.address != null or supplier.city != null or supplier.zipCode != null or supplier.province != null or supplier.country != null or supplier.phone != null or supplier.fax != null or supplier.telex != null or supplier.email != null">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white">
+                    <h6 class="detail-card-title"><i class="bi bi-geo-alt me-1"></i>Indirizzo e contatti</h6>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0 small">
+                        <dt class="col-5 text-muted">Indirizzo</dt>
+                        <dd class="col-7" th:text="${supplier.address ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">Località</dt>
+                        <dd class="col-7" th:text="${supplier.city ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">CAP</dt>
+                        <dd class="col-7 font-monospace" th:text="${supplier.zipCode ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">Provincia</dt>
+                        <dd class="col-7 font-monospace" th:text="${supplier.province ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">Nazione</dt>
+                        <dd class="col-7 font-monospace" th:text="${supplier.country ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">Telefono</dt>
+                        <dd class="col-7" th:text="${supplier.phone ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">Fax</dt>
+                        <dd class="col-7" th:text="${supplier.fax ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">Telex/portatile</dt>
+                        <dd class="col-7" th:text="${supplier.telex ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">E-mail</dt>
+                        <dd class="col-7" th:text="${supplier.email ?: '—'}">—</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6"
+             th:if="supplier.ceeCustomer != null">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white">
+                    <h6 class="detail-card-title"><i class="bi bi-receipt me-1"></i>IVA</h6>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0 small">
+                        <dt class="col-5 text-muted">Cliente CEE</dt>
+                        <dd class="col-7 font-monospace" th:text="${supplier.ceeCustomer ?: '—'}">—</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6"
+             th:if="supplier.accountPct1 != null or supplier.accountPct2 != null or supplier.accountPct3 != null or supplier.accountPct4 != null or supplier.accountPct5 != null or supplier.account1 != null or supplier.costCenter1 != null or supplier.account2 != null or supplier.costCenter2 != null or supplier.account3 != null or supplier.costCenter3 != null or supplier.account4 != null or supplier.costCenter4 != null or supplier.account5 != null or supplier.costCenter5 != null">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white">
+                    <h6 class="detail-card-title"><i class="bi bi-calculator me-1"></i>Dati contabili</h6>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0 small">
+                        <dt class="col-5 text-muted">% ripartizione 1</dt>
+                        <dd class="col-7" th:text="${supplier.accountPct1 ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">% ripartizione 2</dt>
+                        <dd class="col-7" th:text="${supplier.accountPct2 ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">% ripartizione 3</dt>
+                        <dd class="col-7" th:text="${supplier.accountPct3 ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">% ripartizione 4</dt>
+                        <dd class="col-7" th:text="${supplier.accountPct4 ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">% ripartizione 5</dt>
+                        <dd class="col-7" th:text="${supplier.accountPct5 ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">Conto contabile 1</dt>
+                        <dd class="col-7 font-monospace" th:text="${supplier.account1 ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">Centro di costo 1</dt>
+                        <dd class="col-7 font-monospace" th:text="${supplier.costCenter1 ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">Conto contabile 2</dt>
+                        <dd class="col-7 font-monospace" th:text="${supplier.account2 ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">Centro di costo 2</dt>
+                        <dd class="col-7 font-monospace" th:text="${supplier.costCenter2 ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">Conto contabile 3</dt>
+                        <dd class="col-7 font-monospace" th:text="${supplier.account3 ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">Centro di costo 3</dt>
+                        <dd class="col-7 font-monospace" th:text="${supplier.costCenter3 ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">Conto contabile 4</dt>
+                        <dd class="col-7 font-monospace" th:text="${supplier.account4 ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">Centro di costo 4</dt>
+                        <dd class="col-7 font-monospace" th:text="${supplier.costCenter4 ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">Conto contabile 5</dt>
+                        <dd class="col-7 font-monospace" th:text="${supplier.account5 ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">Centro di costo 5</dt>
+                        <dd class="col-7 font-monospace" th:text="${supplier.costCenter5 ?: '—'}">—</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6"
+             th:if="supplier.bankAccountNo != null or supplier.abi != null or supplier.cab != null or supplier.cin != null or supplier.iban != null or supplier.bank2AccountNo != null or supplier.bank2Abi != null or supplier.bank2Cab != null or supplier.bank2Iban != null">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white">
+                    <h6 class="detail-card-title"><i class="bi bi-bank me-1"></i>Dati bancari</h6>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0 small">
+                        <dt class="col-5 text-muted">Numero C/C</dt>
+                        <dd class="col-7" th:text="${supplier.bankAccountNo ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">ABI</dt>
+                        <dd class="col-7 font-monospace" th:text="${supplier.abi ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">CAB</dt>
+                        <dd class="col-7 font-monospace" th:text="${supplier.cab ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">CIN</dt>
+                        <dd class="col-7 font-monospace" th:text="${supplier.cin ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">IBAN</dt>
+                        <dd class="col-7" th:text="${supplier.iban ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">C/C banca 2</dt>
+                        <dd class="col-7" th:text="${supplier.bank2AccountNo ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">ABI banca 2</dt>
+                        <dd class="col-7 font-monospace" th:text="${supplier.bank2Abi ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">CAB banca 2</dt>
+                        <dd class="col-7 font-monospace" th:text="${supplier.bank2Cab ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">IBAN banca 2</dt>
+                        <dd class="col-7" th:text="${supplier.bank2Iban ?: '—'}">—</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6"
+             th:if="supplier.currency != null or supplier.supplyDays != null">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white">
+                    <h6 class="detail-card-title"><i class="bi bi-cart me-1"></i>Commerciali</h6>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0 small">
+                        <dt class="col-5 text-muted">Valuta</dt>
+                        <dd class="col-7 font-monospace" th:text="${supplier.currency ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">Giorni fornitura</dt>
+                        <dd class="col-7" th:text="${supplier.supplyDays ?: '—'}">—</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6"
+             th:if="supplier.ourCustomerCode != null">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white">
+                    <h6 class="detail-card-title"><i class="bi bi-people me-1"></i>Rif. fornitore</h6>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0 small">
+                        <dt class="col-5 text-muted">Nostro codice cliente</dt>
+                        <dd class="col-7 font-monospace" th:text="${supplier.ourCustomerCode ?: '—'}">—</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section></body>
+</html>

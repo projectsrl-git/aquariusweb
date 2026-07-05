@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Fornitore – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-truck',
+        title=${supplier.businessName},
+        subtitle='Fornitore ' + ${supplier.code},
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <div th:if="${flashError}" class="alert alert-danger py-2 small mb-3">
+        <i class="bi bi-exclamation-triangle me-1"></i><span th:text="${flashError}"></span>
+    </div>
+
+    <form th:action="@{/fornitori/{id}(id=${supplier.id})}" method="post" th:object="${supplier}">
+
+        <div class="form-shell">
+
+            <div th:replace="~{fragments/form-shell :: navTabs(${formTabs})}"></div>
+
+            <div class="form-shell-content">
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="tab-anag">
+                        <h6 class="section-title">Anagrafica</h6>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Ragione sociale</label>
+                                <input type="text" th:field="*{businessName}" maxlength="80" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">2ª denominazione</label>
+                                <input type="text" th:field="*{businessName2}" maxlength="80" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">P.IVA</label>
+                                <input type="text" th:field="*{vatNumber}" maxlength="11" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Codice fiscale</label>
+                                <input type="text" th:field="*{taxCode}" maxlength="16" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">P.IVA CEE</label>
+                                <input type="text" th:field="*{vatCee}" maxlength="20" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Ricerca alternativa</label>
+                                <input type="text" th:field="*{searchKey}" maxlength="10" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Codice zona</label>
+                                <input type="text" th:field="*{zone}" maxlength="3" class="form-control form-control-sm font-monospace">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-indir">
+                        <h6 class="section-title">Indirizzo e contatti</h6>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Indirizzo</label>
+                                <input type="text" th:field="*{address}" maxlength="70" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Località</label>
+                                <input type="text" th:field="*{city}" maxlength="80" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">CAP</label>
+                                <input type="text" th:field="*{zipCode}" maxlength="5" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Provincia</label>
+                                <input type="text" th:field="*{province}" maxlength="2" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Nazione</label>
+                                <input type="text" th:field="*{country}" maxlength="3" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Telefono</label>
+                                <input type="text" th:field="*{phone}" maxlength="30" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Fax</label>
+                                <input type="text" th:field="*{fax}" maxlength="30" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Telex/portatile</label>
+                                <input type="text" th:field="*{telex}" maxlength="30" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">E-mail</label>
+                                <input type="text" th:field="*{email}" maxlength="100" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-iva">
+                        <h6 class="section-title">IVA</h6>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Cliente CEE</label>
+                                <input type="text" th:field="*{ceeCustomer}" maxlength="10" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-contab">
+                        <h6 class="section-title">Dati contabili</h6>
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">% ripartizione 1</label>
+                                <input type="number" step="0.01" th:field="*{accountPct1}" class="form-control form-control-sm text-end">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">% ripartizione 2</label>
+                                <input type="number" step="0.01" th:field="*{accountPct2}" class="form-control form-control-sm text-end">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">% ripartizione 3</label>
+                                <input type="number" step="0.01" th:field="*{accountPct3}" class="form-control form-control-sm text-end">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">% ripartizione 4</label>
+                                <input type="number" step="0.01" th:field="*{accountPct4}" class="form-control form-control-sm text-end">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">% ripartizione 5</label>
+                                <input type="number" step="0.01" th:field="*{accountPct5}" class="form-control form-control-sm text-end">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Conto contabile 1</label>
+                                <input type="text" th:field="*{account1}" maxlength="13" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Centro di costo 1</label>
+                                <input type="text" th:field="*{costCenter1}" maxlength="13" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Conto contabile 2</label>
+                                <input type="text" th:field="*{account2}" maxlength="13" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Centro di costo 2</label>
+                                <input type="text" th:field="*{costCenter2}" maxlength="13" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Conto contabile 3</label>
+                                <input type="text" th:field="*{account3}" maxlength="13" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Centro di costo 3</label>
+                                <input type="text" th:field="*{costCenter3}" maxlength="13" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Conto contabile 4</label>
+                                <input type="text" th:field="*{account4}" maxlength="13" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Centro di costo 4</label>
+                                <input type="text" th:field="*{costCenter4}" maxlength="13" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Conto contabile 5</label>
+                                <input type="text" th:field="*{account5}" maxlength="13" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Centro di costo 5</label>
+                                <input type="text" th:field="*{costCenter5}" maxlength="13" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-banca">
+                        <h6 class="section-title">Dati bancari</h6>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Numero C/C</label>
+                                <input type="text" th:field="*{bankAccountNo}" maxlength="20" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">ABI</label>
+                                <input type="text" th:field="*{abi}" maxlength="5" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">CAB</label>
+                                <input type="text" th:field="*{cab}" maxlength="5" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">CIN</label>
+                                <input type="text" th:field="*{cin}" maxlength="2" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">IBAN</label>
+                                <input type="text" th:field="*{iban}" maxlength="29" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">C/C banca 2</label>
+                                <input type="text" th:field="*{bank2AccountNo}" maxlength="20" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">ABI banca 2</label>
+                                <input type="text" th:field="*{bank2Abi}" maxlength="5" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">CAB banca 2</label>
+                                <input type="text" th:field="*{bank2Cab}" maxlength="5" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">IBAN banca 2</label>
+                                <input type="text" th:field="*{bank2Iban}" maxlength="29" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-comm">
+                        <h6 class="section-title">Commerciali</h6>
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Valuta</label>
+                                <input type="text" th:field="*{currency}" maxlength="3" class="form-control form-control-sm font-monospace">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Giorni fornitura</label>
+                                <input type="number" step="0.01" th:field="*{supplyDays}" class="form-control form-control-sm text-end">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-rifforn">
+                        <h6 class="section-title">Rif. fornitore</h6>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Nostro codice cliente</label>
+                                <input type="text" th:field="*{ourCustomerCode}" maxlength="10" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div th:replace="~{fragments/form-shell :: footer('/fornitori/' + ${supplier.id})}"></div>
+
+    </form>
+
+</section></body>
+</html>

@@ -1,18 +1,23 @@
-Fix invisible active tab and show all detail cards
+Add supplier registry (anagrafica fornitori)
 
-Two customer-registry UI fixes.
+Replica of the VFP form MENU_FOR000, reusing the customer framework
+(form-shell, FormTab, whitelist copy).
 
-1. Active form tab was invisible (white text, no background). The rule
-   .form-shell-nav .nav-link.active used var(--aq-primary), which was never
-   defined in :root, so the background stayed transparent. Define
-   --aq-primary (brand navy #0c4a6e); this also fixes other uses of the var.
+Fields were taken from MENU_FOR000.SCT and cross-checked against the schema
+(U_FOR_AN, 195 columns): 44 verified core fields across 7 active tabs
+(Anagrafica, Indirizzo e contatti, IVA, Commerciali, Dati contabili, Dati
+bancari, Rif. fornitore). No invented columns.
 
-2. The customer detail view showed only two cards. Rewrote detail.html to
-   render one card per data area (anagrafica, contatti, IVA, commercio, banca,
-   fido, sede legale, referente, web, note) across the full page with natural
-   scrolling. Optional cards appear only when they hold data, so no empty
-   boxes. Moved the action buttons to the top.
+- Supplier entity (U_FOR_AN, @DynamicUpdate); key id_unique / FOR_CODSOC /
+  FOR_CODCON immutable from web.
+- SupplierRepository with paged search on name/code/VAT.
+- SupplierController: /fornitori list, detail, edit, save with a
+  whitelist copyEditableFields.
+- fornitori/{list,detail,edit}.html: list and full-page detail cards
+  (rendered only when populated), edit on the shared form-shell fragments.
+- MenuService maps menu_for000 -> /fornitori.
 
-Verification: style brace balance 97/97, detail.html div balance 45/45,
-every referenced entity property exists, git apply --check clean on a fresh
-clone of HEAD 74bfa73. Visual result to confirm on deploy.
+Verification: Java brace/paren scan, no duplicate @Column, every th:field
+and supplier.X maps to an entity property, div balance list 5/5 detail 32/32
+edit 65/65, git apply --check clean on a fresh clone of HEAD 74bfa73. App
+start and save round-trip to confirm on deploy.
