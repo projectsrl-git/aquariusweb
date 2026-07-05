@@ -1,22 +1,18 @@
-Add accounting consultation (read-only): 4 areas
+Add CONTABILELIB inventory (mapping for primanota posting)
 
-First accounting slice, all read-only on legacy tables:
-- Primanota: registration list + double-entry detail (Dare/Avere) with totals
-  and an out-of-balance warning.
-- Storico contabile: per-account ledger (mastrino) with a running balance.
-- Bilancio: totals Dare/Avere and balance per account, with KPI cards and
-  links into the ledger.
-- Partitari clienti e fornitori: open items with residual (total - paid).
+Map the VFP accounting library (contabilelib.PRG, ~59,900 lines, 422
+procedures) before replicating its primanota logic in the web system. This
+is documentation only: no code, schema, or logic changes.
 
-Model reads MOV_CONT (movements, MOV_TMOV = 'D'/'A', grouped by MOV_NREGIS),
-PART_CLI and PART_FOR. Only schema-verified columns are mapped; every entity
-is strictly read-only. Amounts and running balances are computed in Java;
-account descriptions are resolved from CONTI. Year and society come from the
-existing FiscalContext (the interceptor already guarantees it is set).
+The document inventories the key posting procedures with their sizes
+(REGISTRA 793 lines, OK_REG, AUT_CONTROPARTITE, REG_ANCLFO_PART_CLI/FOR,
+REG_DETIVA, CALCOLO_IMPOSTA, COD_PAGAM, QUA_REG, REG_NUMRPN), the causale
+matrix (TAB_CAUCONT flags that drive REGISTRA, with inferred semantics to be
+confirmed with Erasmo), the special cases already layered in the code
+(cespiti, supplier/customer advances, reverse-charge self-invoices,
+compensations), and a proposed replication order from the simplest case
+(pure giroconto) up, each with web-vs-VFP reconciliation on a test DB.
 
-Data entry for primanota (writing to MOV_CONT) is intentionally left to a
-separate slice, since writing to legacy tables needs a plug&play-safe design.
-
-Rebased on top of the supplier-registry patch (shared files MenuService.java
-and CLAUDE.md merged). Verification: applies clean on a fresh clone with the
-supplier patch already applied.
+The goal is an explicit map to plan the posting slices and to review with
+Erasmo, not a presumption of completeness. REGISTRA is heavily stratified
+(annotations dated through 2024) and must be replicated one case at a time.
