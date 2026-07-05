@@ -1,23 +1,22 @@
-Add supplier registry (anagrafica fornitori)
+Add accounting consultation (read-only): 4 areas
 
-Replica of the VFP form MENU_FOR000, reusing the customer framework
-(form-shell, FormTab, whitelist copy).
+First accounting slice, all read-only on legacy tables:
+- Primanota: registration list + double-entry detail (Dare/Avere) with totals
+  and an out-of-balance warning.
+- Storico contabile: per-account ledger (mastrino) with a running balance.
+- Bilancio: totals Dare/Avere and balance per account, with KPI cards and
+  links into the ledger.
+- Partitari clienti e fornitori: open items with residual (total - paid).
 
-Fields were taken from MENU_FOR000.SCT and cross-checked against the schema
-(U_FOR_AN, 195 columns): 44 verified core fields across 7 active tabs
-(Anagrafica, Indirizzo e contatti, IVA, Commerciali, Dati contabili, Dati
-bancari, Rif. fornitore). No invented columns.
+Model reads MOV_CONT (movements, MOV_TMOV = 'D'/'A', grouped by MOV_NREGIS),
+PART_CLI and PART_FOR. Only schema-verified columns are mapped; every entity
+is strictly read-only. Amounts and running balances are computed in Java;
+account descriptions are resolved from CONTI. Year and society come from the
+existing FiscalContext (the interceptor already guarantees it is set).
 
-- Supplier entity (U_FOR_AN, @DynamicUpdate); key id_unique / FOR_CODSOC /
-  FOR_CODCON immutable from web.
-- SupplierRepository with paged search on name/code/VAT.
-- SupplierController: /fornitori list, detail, edit, save with a
-  whitelist copyEditableFields.
-- fornitori/{list,detail,edit}.html: list and full-page detail cards
-  (rendered only when populated), edit on the shared form-shell fragments.
-- MenuService maps menu_for000 -> /fornitori.
+Data entry for primanota (writing to MOV_CONT) is intentionally left to a
+separate slice, since writing to legacy tables needs a plug&play-safe design.
 
-Verification: Java brace/paren scan, no duplicate @Column, every th:field
-and supplier.X maps to an entity property, div balance list 5/5 detail 32/32
-edit 65/65, git apply --check clean on a fresh clone of HEAD 74bfa73. App
-start and save round-trip to confirm on deploy.
+Rebased on top of the supplier-registry patch (shared files MenuService.java
+and CLAUDE.md merged). Verification: applies clean on a fresh clone with the
+supplier patch already applied.

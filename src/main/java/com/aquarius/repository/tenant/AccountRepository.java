@@ -147,4 +147,13 @@ public interface AccountRepository extends JpaRepository<Account, String> {
     List<Account> findLeavesByTypeAndYear(@Param("type") String type,
                                            @Param("year") String year,
                                            @Param("society") String society);
+
+    /** Tutti i conti (codice + descrizione) di un anno, per lookup descrizioni. */
+    @Query("""
+        SELECT a FROM Account a
+        WHERE a.fiscalYear = :year AND a.societyCode = :society
+        """)
+    java.util.List<com.aquarius.entity.tenant.Account> findAllByYearAndSociety(
+        @org.springframework.data.repository.query.Param("year") String year,
+        @org.springframework.data.repository.query.Param("society") String society);
 }

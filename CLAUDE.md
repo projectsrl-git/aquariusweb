@@ -163,6 +163,7 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
 | Fiscal year context | `/select-year` | PUB_ANNO analog, silent auto-set |
 | Chart of accounts | `/conti`, `/conti/tree`, detail/edit | positional tree, aq-tree.js |
 | Suppliers (registry) | `/fornitori…` | Replica of VFP MENU_FOR000 on U_FOR_AN; 7 active tabs, 44 verified fields; reuses the customer form-shell framework |
+| Contabilità (read-only) | `/contabilita…` | Primanota, storico (mastrino), bilancio, partitari cli/for. Read-only su MOV_CONT / PART_CLI / PART_FOR. Data-entry primanota = slice futura |
 | Warehouse valuation | `/magazzino/valorizzazione` | FIFO + FX + Pareto + Excel |
 | Custom reports | `/custom-reports…` | self-service SQL reports (foundation for "Project-JDBCapy") |
 

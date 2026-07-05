@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Storico contabile – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-clock-history',
+        title='Storico contabile',
+        subtitle='Mastrino di conto — esercizio ' + ${anno},
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <form method="get" th:action="@{/contabilita/storico}" class="mb-3">
+        <div class="input-group" style="max-width:520px">
+            <span class="input-group-text"><i class="bi bi-bank"></i></span>
+            <input type="text" name="conto" th:value="${conto}" class="form-control font-monospace"
+                   placeholder="Codice conto (es. 01.05.001)">
+            <button type="submit" class="btn btn-primary">Visualizza mastrino</button>
+        </div>
+    </form>
+
+    <div th:if="${ledger != null}">
+        <div class="alert alert-light border d-flex justify-content-between align-items-center py-2">
+            <span>
+                <span class="font-monospace fw-bold" th:text="${conto}">01.05.001</span>
+                <span class="text-muted ms-2" th:text="${accountName ?: ''}">Descrizione conto</span>
+            </span>
+            <span>Saldo finale:
+                <span class="fw-bold font-monospace"
+                      th:classappend="${finalBalance.signum() < 0 ? 'text-danger' : 'text-success'}"
+                      th:text="${#numbers.formatDecimal(finalBalance,1,'POINT',2,'COMMA')}">0,00</span>
+            </span>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-sm mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width:100px">Data</th>
+                                <th style="width:90px">N. Reg.</th>
+                                <th>Descrizione</th>
+                                <th style="width:120px" class="text-end">Dare</th>
+                                <th style="width:120px" class="text-end">Avere</th>
+                                <th style="width:130px" class="text-end">Saldo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="l : ${ledger}">
+                                <td class="small" th:text="${l.mov.registrationDate}">2026/01/15</td>
+                                <td>
+                                    <a th:href="@{/contabilita/primanota/{n}(n=${l.mov.registrationNo})}"
+                                       class="font-monospace small text-decoration-none"
+                                       th:text="${l.mov.registrationNo}">000123</a>
+                                </td>
+                                <td class="small" th:text="${l.mov.description ?: l.mov.shortDescription ?: ''}">—</td>
+                                <td class="text-end font-monospace small"
+                                    th:text="${l.dare.signum() != 0 ? #numbers.formatDecimal(l.dare,1,'POINT',2,'COMMA') : ''}"></td>
+                                <td class="text-end font-monospace small"
+                                    th:text="${l.avere.signum() != 0 ? #numbers.formatDecimal(l.avere,1,'POINT',2,'COMMA') : ''}"></td>
+                                <td class="text-end font-monospace small fw-semibold"
+                                    th:classappend="${l.runningBalance.signum() < 0 ? 'text-danger' : ''}"
+                                    th:text="${#numbers.formatDecimal(l.runningBalance,1,'POINT',2,'COMMA')}">0,00</td>
+                            </tr>
+                            <tr th:if="${ledger.isEmpty()}">
+                                <td colspan="6" class="text-center text-muted py-5">
+                                    Nessun movimento per il conto <span th:text="${conto}"></span>.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${ledger == null}" class="text-muted small">
+        <i class="bi bi-info-circle me-1"></i>Inserisci un codice conto per visualizzarne il mastrino.
+    </div>
+
+</section></body>
+</html>

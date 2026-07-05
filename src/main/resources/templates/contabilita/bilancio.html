@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Bilancio – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-bar-chart-steps',
+        title='Bilancio contabile',
+        subtitle='Saldi per conto — esercizio ' + ${anno},
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <div class="row g-3 mb-3">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100"><div class="card-body">
+                <div class="text-muted small text-uppercase">Totale Dare</div>
+                <div class="fs-4 fw-bold font-monospace" th:text="${#numbers.formatDecimal(totDare,1,'POINT',2,'COMMA')}">0,00</div>
+            </div></div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100"><div class="card-body">
+                <div class="text-muted small text-uppercase">Totale Avere</div>
+                <div class="fs-4 fw-bold font-monospace" th:text="${#numbers.formatDecimal(totAvere,1,'POINT',2,'COMMA')}">0,00</div>
+            </div></div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100"><div class="card-body">
+                <div class="text-muted small text-uppercase">Sbilancio (D − A)</div>
+                <div class="fs-4 fw-bold font-monospace"
+                     th:classappend="${sbilancio.signum() != 0 ? 'text-danger' : 'text-success'}"
+                     th:text="${#numbers.formatDecimal(sbilancio,1,'POINT',2,'COMMA')}">0,00</div>
+            </div></div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-sm mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width:120px">Conto</th>
+                            <th>Descrizione</th>
+                            <th style="width:140px" class="text-end">Dare</th>
+                            <th style="width:140px" class="text-end">Avere</th>
+                            <th style="width:150px" class="text-end">Saldo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="l : ${lines}">
+                            <td>
+                                <a th:href="@{/contabilita/storico(conto=${l.account})}"
+                                   class="font-monospace small text-decoration-none" th:text="${l.account}">01.05.001</a>
+                            </td>
+                            <td class="small" th:text="${l.description ?: ''}">Conto</td>
+                            <td class="text-end font-monospace small" th:text="${#numbers.formatDecimal(l.totDare,1,'POINT',2,'COMMA')}">0,00</td>
+                            <td class="text-end font-monospace small" th:text="${#numbers.formatDecimal(l.totAvere,1,'POINT',2,'COMMA')}">0,00</td>
+                            <td class="text-end font-monospace small fw-semibold"
+                                th:classappend="${l.saldo.signum() < 0 ? 'text-danger' : ''}"
+                                th:text="${#numbers.formatDecimal(l.saldo,1,'POINT',2,'COMMA')}">0,00</td>
+                        </tr>
+                        <tr th:if="${lines.isEmpty()}">
+                            <td colspan="5" class="text-center text-muted py-5">Nessun movimento per l'esercizio.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</section></body>
+</html>

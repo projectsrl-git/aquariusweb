@@ -85,7 +85,12 @@ public class MenuService {
         Map.entry("menu_pdc000",          "/conti/tree"),
         Map.entry("menu_pdc000_treeview", "/conti/tree"),
         Map.entry("menu_pdcelen",         "/conti"),
-        Map.entry("menu_pdcelcco",        "/conti")
+        Map.entry("menu_pdcelcco",        "/conti"),
+        // Slice: Contabilità (consultazione)
+        Map.entry("menu_primanot",  "/contabilita/primanota"),
+        Map.entry("menu_primanot2", "/contabilita/primanota"),
+        Map.entry("viewpartitario", "/contabilita/partitari/clienti"),
+        Map.entry("partitario_soprad", "/contabilita/partitari/clienti")
     );
 
     /**
