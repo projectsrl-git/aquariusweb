@@ -1,17 +1,18 @@
-Fix duplicate column mappings that prevented startup
+Fix invisible active tab and show all detail cards
 
-The customer-tabs change mapped five columns twice, so Hibernate refused to
-build the tenant EntityManagerFactory (Repeated column in mapping ...
-cli_impfid) and the app failed to start.
+Two customer-registry UI fixes.
 
-Five columns were already mapped by the original tabs and got re-added for
-the new ones: CLI_IMPFID, CLI_CLFIDO, CLI_EMAIL, CLI_EMAIL1, CLI_EMAIL2.
+1. Active form tab was invisible (white text, no background). The rule
+   .form-shell-nav .nav-link.active used var(--aq-primary), which was never
+   defined in :root, so the background stayed transparent. Define
+   --aq-primary (brand navy #0c4a6e); this also fixes other uses of the var.
 
-Removed the duplicate (new) fields from Customer and their setters, and
-remapped the affected tabs to the existing properties: Fido -> creditLimit /
-creditLimitEnabled, Gruppi E-mail -> email / emailAlt1 / emailAlt2. In the
-VFP form these tabs are just other views of the same columns.
+2. The customer detail view showed only two cards. Rewrote detail.html to
+   render one card per data area (anagrafica, contatti, IVA, commercio, banca,
+   fido, sede legale, referente, web, note) across the full page with natural
+   scrolling. Optional cards appear only when they hold data, so no empty
+   boxes. Moved the action buttons to the top.
 
-Verification: no duplicate @Column remains (added this scan to the review),
-Java brace/paren scan, every th:field maps to a property, edit.html div
-balance 232/232, git apply --check clean on a fresh clone of HEAD e581084.
+Verification: style brace balance 97/97, detail.html div balance 45/45,
+every referenced entity property exists, git apply --check clean on a fresh
+clone of HEAD 74bfa73. Visual result to confirm on deploy.
