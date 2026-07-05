@@ -1,18 +1,17 @@
-Add CONTABILELIB inventory (mapping for primanota posting)
+Show accounting menu items as synthetic entries
 
-Map the VFP accounting library (contabilelib.PRG, ~59,900 lines, 422
-procedures) before replicating its primanota logic in the web system. This
-is documentation only: no code, schema, or logic changes.
+The Primanota/Storico/Bilancio/Partitari items did not appear in the sidebar:
+they were only mapped via FORM_TO_URL, which works only if the legacy tbl_menu
+has rows pointing at those VFP forms. Those rows aren't present, so nothing was
+translated and no item showed.
 
-The document inventories the key posting procedures with their sizes
-(REGISTRA 793 lines, OK_REG, AUT_CONTROPARTITE, REG_ANCLFO_PART_CLI/FOR,
-REG_DETIVA, CALCOLO_IMPOSTA, COD_PAGAM, QUA_REG, REG_NUMRPN), the causale
-matrix (TAB_CAUCONT flags that drive REGISTRA, with inferred semantics to be
-confirmed with Erasmo), the special cases already layered in the code
-(cespiti, supplier/customer advances, reverse-charge self-invoices,
-compensations), and a proposed replication order from the simplest case
-(pure giroconto) up, each with web-vs-VFP reconciliation on a test DB.
+Inject them as synthetic entries under the "contabilita" top-level, the same
+mechanism already used for magazzino/parametri: Primanota, Storico contabile,
+Bilancio, Partitario clienti, Partitario fornitori, then the existing chart-of-
+accounts shortcuts. hasSyntheticEntries already covers "contabilita", so the
+top-level stays visible even without reachable legacy L2 items. The FORM_TO_URL
+accounting entries are kept as a harmless fallback.
 
-The goal is an explicit map to plan the posting slices and to review with
-Erasmo, not a presumption of completeness. REGISTRA is heavily stratified
-(annotations dated through 2024) and must be replicated one case at a time.
+Rebased on top of the supplier and accounting patches (touches MenuService
+only). Verification: brace/paren scan, git apply --check clean on a fresh
+clone with both patches applied. Menu cache may need eviction/restart to show.
