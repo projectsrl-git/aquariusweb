@@ -1,17 +1,21 @@
-Show accounting menu items as synthetic entries
+Unify prima nota menu into a single CRUD entry
 
-The Primanota/Storico/Bilancio/Partitari items did not appear in the sidebar:
-they were only mapped via FORM_TO_URL, which works only if the legacy tbl_menu
-has rows pointing at those VFP forms. Those rows aren't present, so nothing was
-translated and no item showed.
+The legacy tbl_menu exposes a "Prima nota" submenu fragmented into many items
+(insert effettiva/previsionale, update, search, cancel, duplicate,
+block/unblock, import), all greyed out as "(da migrare)". In the new system
+these are all operations of a single registration CRUD, not separate forms.
 
-Inject them as synthetic entries under the "contabilita" top-level, the same
-mechanism already used for magazzino/parametri: Primanota, Storico contabile,
-Bilancio, Partitario clienti, Partitario fornitori, then the existing chart-of-
-accounts shortcuts. hasSyntheticEntries already covers "contabilita", so the
-top-level stays visible even without reachable legacy L2 items. The FORM_TO_URL
-accounting entries are kept as a harmless fallback.
+MenuService now replaces that submenu's legacy leaves with one web entry,
+"Prima nota" -> /contabilita/primanota, when the L2 container is recognised
+(isPrimaNotaContainer, by label). The contabilita synthetic entries keep
+Storico, Bilancio and the two Partitari plus the chart-of-accounts shortcuts;
+Primanota is no longer synthetic to avoid a duplicate.
 
-Rebased on top of the supplier and accounting patches (touches MenuService
-only). Verification: brace/paren scan, git apply --check clean on a fresh
-clone with both patches applied. Menu cache may need eviction/restart to show.
+The write CRUD (insert/update/duplicate/cancel-as-storno) does not exist yet,
+so the entry currently opens the read-only consultation; the write actions
+will be added to the same page in the data-entry slice. The menu entry is
+already the final one — the page grows, not the menu.
+
+Supersedes the earlier menu-contabilita patch (do not apply that one). Rebased
+on supplier+accounting; git apply --check clean. Menu cache needs a restart to
+refresh.

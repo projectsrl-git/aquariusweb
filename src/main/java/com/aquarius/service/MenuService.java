@@ -289,57 +289,58 @@ public class MenuService {
                 children.add(1, MenuNode.builder().separator(true).build());
             }
             case "contabilita" -> {
-                // Consultazione contabile (web): primanota, storico, bilancio,
-                // partitari. Non sempre presenti come voci nel menu legacy VFP,
-                // quindi iniettate qui per garantire l'accesso.
+                // Consultazione contabile (web). La "Primanota" NON è qui:
+                // arriva dal container legacy "Prima nota" trasformato in voce
+                // unica (vedi toNodeFromL2 / isPrimaNotaContainer). Qui solo le
+                // voci che il menu legacy non espone come sottomenu dedicato.
                 children.add(0, MenuNode.builder()
-                    .label("Primanota")
-                    .icon("bi-journal-text")
-                    .url("/contabilita/primanota")
-                    .hasReachableLeaf(true)
-                    .build());
-                children.add(1, MenuNode.builder()
                     .label("Storico contabile")
                     .icon("bi-clock-history")
                     .url("/contabilita/storico")
                     .hasReachableLeaf(true)
                     .build());
-                children.add(2, MenuNode.builder()
+                children.add(1, MenuNode.builder()
                     .label("Bilancio")
                     .icon("bi-bar-chart-steps")
                     .url("/contabilita/bilancio")
                     .hasReachableLeaf(true)
                     .build());
-                children.add(3, MenuNode.builder()
+                children.add(2, MenuNode.builder()
                     .label("Partitario clienti")
                     .icon("bi-person-lines-fill")
                     .url("/contabilita/partitari/clienti")
                     .hasReachableLeaf(true)
                     .build());
-                children.add(4, MenuNode.builder()
+                children.add(3, MenuNode.builder()
                     .label("Partitario fornitori")
                     .icon("bi-person-lines-fill")
                     .url("/contabilita/partitari/fornitori")
                     .hasReachableLeaf(true)
                     .build());
-                children.add(5, MenuNode.builder().separator(true).build());
+                children.add(4, MenuNode.builder().separator(true).build());
                 // Shortcut diretti al piano dei conti (web feature, non in VFP)
-                children.add(6, MenuNode.builder()
+                children.add(5, MenuNode.builder()
                     .label("Piano dei conti (albero)")
                     .icon("bi-diagram-3")
                     .url("/conti/tree")
                     .hasReachableLeaf(true)
                     .build());
-                children.add(7, MenuNode.builder()
+                children.add(6, MenuNode.builder()
                     .label("Piano dei conti (lista)")
                     .icon("bi-list-ul")
                     .url("/conti")
                     .hasReachableLeaf(true)
                     .build());
-                children.add(8, MenuNode.builder().separator(true).build());
+                children.add(7, MenuNode.builder().separator(true).build());
             }
             // Si possono aggiungere altre top-section sintetiche qui in futuro
         }
+    }
+
+    /** Riconosce il container L2 "Prima nota" (frammentato nel VFP). */
+    private boolean isPrimaNotaContainer(LegacyMenu l2) {
+        String label = safeLower(l2.getLabel());
+        return label != null && label.contains("prima nota");
     }
 
     private boolean hasSyntheticEntries(String l1Menu) {
@@ -355,6 +356,28 @@ public class MenuService {
         if (submenuKey != null) {
             // L2 è un container: allega le foglie L0 del sub-submenu
             List<LegacyMenu> children = leavesByMenu.getOrDefault(submenuKey, List.of());
+
+            // Caso speciale "Prima nota": nel VFP è frammentata in molte voci
+            // (inserimento effettiva/previsionale, aggiornamento, ricerca,
+            // annullo, duplica, blocco/sblocco...). Nel nuovo modello sono tutte
+            // operazioni di un'unica CRUD sulla registrazione: sostituiamo le
+            // foglie legacy con una sola voce web unificata.
+            if (isPrimaNotaContainer(l2)) {
+                List<MenuNode> unified = new ArrayList<>();
+                unified.add(MenuNode.builder()
+                    .label("Prima nota")
+                    .icon("bi-journal-text")
+                    .url("/contabilita/primanota")
+                    .hasReachableLeaf(true)
+                    .build());
+                return MenuNode.builder()
+                    .label(safeTrim(l2.getLabel()))
+                    .icon(iconOrNull(l2.getIcona()))
+                    .children(unified)
+                    .hasReachableLeaf(true)
+                    .build();
+            }
+
             List<MenuNode> leafNodes = new ArrayList<>();
             for (LegacyMenu leaf : children) {
                 if (leaf.isSeparator()) {
