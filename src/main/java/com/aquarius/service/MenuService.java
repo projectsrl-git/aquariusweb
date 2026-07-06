@@ -362,7 +362,19 @@ public class MenuService {
             // annullo, duplica, blocco/sblocco...). Nel nuovo modello sono tutte
             // operazioni di un'unica CRUD sulla registrazione: sostituiamo le
             // foglie legacy con una sola voce web unificata.
+            //
+            // AUTORIZZAZIONE: `children` contiene SOLO le foglie che l'utente
+            // può vedere (il filtro UTENTI è applicato a DB per foglia). Quindi
+            // la voce unificata compare solo se l'utente era abilitato ad almeno
+            // una voce di prima nota nel legacy; altrimenti il container prima
+            // nota non produce alcuna voce. La granularità per-azione
+            // (READ/CREATE/DELETE/...) sarà agganciata quando esisterà la CRUD
+            // di scrittura; oggi la voce apre la sola consultazione.
             if (isPrimaNotaContainer(l2)) {
+                boolean hasVisibleLeaf = children.stream().anyMatch(c -> !c.isSeparator());
+                if (!hasVisibleLeaf) {
+                    return null;   // utente non abilitato ad alcuna voce prima nota
+                }
                 List<MenuNode> unified = new ArrayList<>();
                 unified.add(MenuNode.builder()
                     .label("Prima nota")

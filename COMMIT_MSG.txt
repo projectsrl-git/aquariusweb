@@ -1,21 +1,20 @@
-Unify prima nota menu into a single CRUD entry
+Gate unified prima nota menu entry on legacy UTENTI permission
 
-The legacy tbl_menu exposes a "Prima nota" submenu fragmented into many items
-(insert effettiva/previsionale, update, search, cancel, duplicate,
-block/unblock, import), all greyed out as "(da migrare)". In the new system
-these are all operations of a single registration CRUD, not separate forms.
+Collapsing the "Prima nota" submenu into one entry dropped the legacy
+authorization: the entry showed for anyone who could see the Contabilità
+menu, including users not enabled for any prima nota item (tbl_menu filters
+per leaf by the UTENTI field, DB-side).
 
-MenuService now replaces that submenu's legacy leaves with one web entry,
-"Prima nota" -> /contabilita/primanota, when the L2 container is recognised
-(isPrimaNotaContainer, by label). The contabilita synthetic entries keep
-Storico, Bilancio and the two Partitari plus the chart-of-accounts shortcuts;
-Primanota is no longer synthetic to avoid a duplicate.
+In the container transformation, `children` holds only the leaves the user is
+allowed to see. The unified entry is now produced only when at least one
+non-separator leaf is visible; otherwise the container returns null (the
+caller already handles that). A user with no prima nota permission no longer
+sees the entry.
 
-The write CRUD (insert/update/duplicate/cancel-as-storno) does not exist yet,
-so the entry currently opens the read-only consultation; the write actions
-will be added to the same page in the data-entry slice. The menu entry is
-already the final one — the page grows, not the menu.
+Per-action granularity (READ/CREATE/UPDATE/DELETE/LOCK with conditional
+buttons and server-side enforcement) is deferred to the write CRUD slice,
+when those actions actually exist; today the entry opens the read-only
+consultation, matching the legacy search/consult permission.
 
-Supersedes the earlier menu-contabilita patch (do not apply that one). Rebased
-on supplier+accounting; git apply --check clean. Menu cache needs a restart to
-refresh.
+Rebased on the supplier, accounting and prima-nota-menu patches; git apply
+--check clean. Menu cache needs a restart to refresh.
