@@ -1,20 +1,12 @@
-Gate unified prima nota menu entry on legacy UTENTI permission
+Fix empty account description in primanota and bilancio
 
-Collapsing the "Prima nota" submenu into one entry dropped the legacy
-authorization: the entry showed for anyone who could see the Contabilità
-menu, including users not enabled for any prima nota item (tbl_menu filters
-per leaf by the UTENTI field, DB-side).
+The registration detail and the balance showed empty "Descrizione conto"
+despite correct account codes. Cause: a trim mismatch — accountNameMap keys
+are trimmed (getCode().trim()), but the lookup used the raw account code,
+which is char(13) space-padded in the legacy (MOV_CONTO), so
+"6061000002   " never matched "6061000002".
 
-In the container transformation, `children` holds only the leaves the user is
-allowed to see. The unified entry is now produced only when at least one
-non-separator leaf is visible; otherwise the container returns null (the
-caller already handles that). A user with no prima nota permission no longer
-sees the entry.
+Fix: trim the account code on lookup in registrazione.html and in
+bilancio(); storico already trimmed on input.
 
-Per-action granularity (READ/CREATE/UPDATE/DELETE/LOCK with conditional
-buttons and server-side enforcement) is deferred to the write CRUD slice,
-when those actions actually exist; today the entry opens the read-only
-consultation, matching the legacy search/consult permission.
-
-Rebased on the supplier, accounting and prima-nota-menu patches; git apply
---check clean. Menu cache needs a restart to refresh.
+Rebased on supplier+accounting+primanota-menu+authz; git apply --check clean.

@@ -154,7 +154,8 @@ public class ContabilitaController {
         Map<String, String> names = accountNameMap();
 
         List<BilancioLine> lines = movRepository.findBilancio(soc, anno).stream()
-            .map(r -> new BilancioLine(r.getAccount(), names.get(r.getAccount()),
+            .map(r -> new BilancioLine(r.getAccount(),
+                                       r.getAccount() != null ? names.get(r.getAccount().trim()) : null,
                                        r.getTotDare(), r.getTotAvere()))
             .collect(Collectors.toList());
 

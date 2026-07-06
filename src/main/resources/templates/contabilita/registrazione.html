@@ -47,7 +47,7 @@
                     <tbody>
                         <tr th:each="r : ${rows}">
                             <td class="font-monospace small" th:text="${r.account}">01.01.001</td>
-                            <td class="small" th:text="${accountNames.get(r.account) ?: ''}">Conto</td>
+                            <td class="small" th:text="${r.account != null ? (accountNames.get(r.account.trim()) ?: '') : ''}">Conto</td>
                             <td class="small text-muted" th:text="${r.description ?: r.shortDescription ?: ''}">—</td>
                             <td class="text-end font-monospace small"
                                 th:text="${#strings.equalsIgnoreCase(r.movementType,'D') and r.amount != null ? #numbers.formatDecimal(r.amount,1,'POINT',2,'COMMA') : ''}"></td>
