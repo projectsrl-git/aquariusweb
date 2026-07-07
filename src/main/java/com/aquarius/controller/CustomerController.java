@@ -9,8 +9,6 @@ import com.aquarius.service.BreadcrumbService.Crumb;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,18 +33,25 @@ public class CustomerController {
     private final CustomerRepository customerRepository;
     private final BreadcrumbService breadcrumbService;
 
-    private static final int PAGE_SIZE = 50;
-
     @GetMapping
     @Transactional(transactionManager = "tenantTransactionManager", readOnly = true)
     public String list(@RequestParam(value = "q", required = false) String q,
-                       @RequestParam(value = "page", defaultValue = "0") int page,
+                       @RequestParam(value = "page", required = false) Integer page,
+                       @RequestParam(value = "size", required = false) Integer size,
+                       @RequestParam(value = "sort", required = false) String sort,
+                       @RequestParam(value = "dir", required = false) String dir,
                        Model model,
                        @AuthenticationPrincipal AquariusPrincipal principal) {
-        Pageable pageable = PageRequest.of(Math.max(0, page), PAGE_SIZE);
-        Page<Customer> result = customerRepository.search(q, pageable);
+        com.aquarius.web.ListParams lp = com.aquarius.web.ListParams.of(page, size, sort, dir,
+            java.util.Set.of("businessName", "code", "vatNumber", "city", "zone"),
+            "businessName", "asc");
+        Page<Customer> result = customerRepository.search(q, lp.toPageable());
         model.addAttribute("customers", result);
+        model.addAttribute("pageObj", result);
         model.addAttribute("q", q == null ? "" : q);
+        model.addAttribute("size", lp.getSize());
+        model.addAttribute("sort", lp.getSort());
+        model.addAttribute("dir", lp.getDir());
         model.addAttribute("breadcrumbs",
             breadcrumbService.forUrl("/clienti", principal.getUsername()));
         return "clienti/list";

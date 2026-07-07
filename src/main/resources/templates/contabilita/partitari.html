@@ -12,6 +12,9 @@
     )}"></div>
 
     <form method="get" th:action="@{'/contabilita/partitari/' + ${tipo}}" class="mb-3">
+        <input type="hidden" name="size" th:value="${size}">
+        <input type="hidden" name="sort" th:value="${sort}">
+        <input type="hidden" name="dir" th:value="${dir}">
         <div class="input-group" style="max-width:600px">
             <span class="input-group-text"><i class="bi bi-search"></i></span>
             <input type="text" name="q" th:value="${q}" class="form-control"
@@ -29,13 +32,13 @@
                 <table class="table table-hover table-sm mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th style="width:90px">Codice</th>
-                            <th>Ragione sociale</th>
-                            <th style="width:110px">N. Fattura</th>
-                            <th style="width:100px">Scadenza</th>
-                            <th style="width:120px" class="text-end">Totale</th>
-                            <th style="width:120px" class="text-end">Pagato</th>
-                            <th style="width:120px" class="text-end">Residuo</th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/contabilita/partitari/' + ${tipo},'partyCode','Codice',${q},${size},${sort},${dir},'')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/contabilita/partitari/' + ${tipo},'partyName','Ragione sociale',${q},${size},${sort},${dir},'')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/contabilita/partitari/' + ${tipo},'invoiceNo','N. Fattura',${q},${size},${sort},${dir},'')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/contabilita/partitari/' + ${tipo},'dueDate','Scadenza',${q},${size},${sort},${dir},'')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/contabilita/partitari/' + ${tipo},'totalAmount','Totale',${q},${size},${sort},${dir},'text-end')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/contabilita/partitari/' + ${tipo},'paidAmount','Pagato',${q},${size},${sort},${dir},'text-end')}"></th>
+                            <th class="text-end">Residuo</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -43,7 +46,7 @@
                             <td class="font-monospace small" th:text="${p.partyCode}">0149200</td>
                             <td class="small" th:text="${p.partyName ?: '—'}">Ragione sociale</td>
                             <td class="small font-monospace" th:text="${p.invoiceNo ?: '—'}">FT 42</td>
-                            <td class="small" th:text="${p.dueDate ?: '—'}">2026/03/31</td>
+                            <td class="small"><span th:replace="~{fragments/list-tools :: itDate(${p.dueDate})}">31/03/2026</span></td>
                             <td class="text-end font-monospace small"
                                 th:text="${p.totalAmount != null ? #numbers.formatDecimal(p.totalAmount,1,'POINT',2,'COMMA') : '—'}">0,00</td>
                             <td class="text-end font-monospace small"
@@ -64,20 +67,7 @@
         </div>
     </div>
 
-    <nav th:if="${partite.totalPages > 1}" class="mt-3">
-        <ul class="pagination pagination-sm">
-            <li class="page-item" th:classappend="${partite.first ? 'disabled' : ''}">
-                <a class="page-link" th:href="@{'/contabilita/partitari/' + ${tipo}(q=${q}, page=${partite.number - 1})}">«</a>
-            </li>
-            <li class="page-item disabled">
-                <span class="page-link"
-                      th:text="${'Pagina ' + (partite.number + 1) + ' di ' + partite.totalPages + ' · ' + partite.totalElements + ' partite'}">Pagina 1</span>
-            </li>
-            <li class="page-item" th:classappend="${partite.last ? 'disabled' : ''}">
-                <a class="page-link" th:href="@{'/contabilita/partitari/' + ${tipo}(q=${q}, page=${partite.number + 1})}">»</a>
-            </li>
-        </ul>
-    </nav>
+    <div th:replace="~{fragments/list-tools :: pager('/contabilita/partitari/' + ${tipo},${partite.number},${q},${size},${sort},${dir},${partite})}"></div>
 
 </section></body>
 </html>

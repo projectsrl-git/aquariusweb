@@ -163,7 +163,7 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
 | Fiscal year context | `/select-year` | PUB_ANNO analog, silent auto-set |
 | Chart of accounts | `/conti`, `/conti/tree`, detail/edit | positional tree, aq-tree.js |
 | Suppliers (registry) | `/fornitori…` | Replica of VFP MENU_FOR000 on U_FOR_AN; 7 active tabs, 44 verified fields; reuses the customer form-shell framework |
-| Contabilità (read-only) | `/contabilita…` | Primanota, storico (mastrino), bilancio, partitari cli/for. Read-only su MOV_CONT / PART_CLI / PART_FOR. Data-entry primanota = slice futura |
+| Contabilità (read-only) | `/contabilita…` | Primanota (**grouped by registration**: tipo operazione + involved-accounts badges + clickable metrics), storico (mastrino), bilancio, partitari cli/for. Read-only su MOV_CONT / PART_CLI / PART_FOR / PARA / CONTI. Data-entry primanota = slice futura |
 | Warehouse valuation | `/magazzino/valorizzazione` | FIFO + FX + Pareto + Excel |
 | Custom reports | `/custom-reports…` | self-service SQL reports (foundation for "Project-JDBCapy") |
 
@@ -190,6 +190,66 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
 4. Tenant-side `@Transactional` must specify
    `transactionManager = "tenantTransactionManager"`.
 5. Wide legacy entities: `@DynamicUpdate` + explicit editable-field copy.
+6. **Pageable `Sort` on aggregate/GROUP BY queries is unsafe.** Hibernate 5
+   (Boot 2.7) appends `ORDER BY <property>` referring to the entity, which
+   breaks on SQL Server when the property is aggregated (e.g. `MAX(date)`) or
+   not in the `GROUP BY`. → Use `ListParams.toPageableNoSort()` and put an
+   explicit `ORDER BY` inside the query, driven by `:orderCol`/`:asc` params
+   with `CASE` expressions (see `MovContabileRepository.searchRegistrationHeads`).
+   Keep all `CASE` branches the same column type (here all varchar).
+7. **Paginated JPQL with `GROUP BY` needs an explicit `countQuery`** — the
+   auto-generated count wraps the grouped select and counts rows-per-group,
+   not groups. Provide `countQuery = "SELECT COUNT(DISTINCT key) ..."`.
+8. To let Pageable `Sort` work on a normal (non-grouped) query, the JPQL must
+   **not** carry a fixed `ORDER BY` — it silently overrides the Sort. Removed
+   the fixed `ORDER BY` from `Customer/Supplier/Partita*.search`.
+
+## Shared list UX (ALL search/list screens)
+
+Sorting, pagination and page-size are centralized so every list behaves the
+same and no controller re-implements them:
+- **`com.aquarius.web.ListParams`** — validates `page`/`size`/`sort`/`dir`.
+  `PAGE_SIZE_OPTIONS = {20,50,100,200}`, `DEFAULT_SIZE = 20`. `sort` is checked
+  against a per-list **whitelist** (guards against arbitrary property injection).
+  `of(...)`, `toPageable()`, `toPageableNoSort()`, `isAsc()`, getters.
+- **`fragments/list-tools.html`** — three reusable fragments:
+  `sortableHeader(baseUrl,field,label,q,size,sort,dir,align)` (clickable header
+  with asc/desc toggle + caret), `pager(baseUrl,page,q,size,sort,dir,pageObj)`
+  (first/prev/info/next/last + rows-per-page `<select>`, `totalElements`), and
+  `itDate(value)` (formats `yyyy/MM/dd` or `yyyy-MM-dd` → `dd/MM/yyyy`, robust
+  to short/blank values).
+- **Controllers** accept `q,page,size,sort,dir`; build a `ListParams` with the
+  whitelist + default sort/dir; add to the model: `pageObj`,`size`,`sort`,`dir`
+  (plus the domain list). Search forms carry `size/sort/dir` as hidden inputs.
+- **Dates** are rendered `dd/MM/yyyy` via `itDate` everywhere (legacy stores
+  them as `yyyy/MM/dd` strings; still filtered/ordered as strings).
+- Applied to: primanota, partitari (cli/for), clienti, fornitori. New lists
+  MUST reuse this (see Fable 5 handoff).
+
+### Primanota is grouped by registration
+The primanota list shows **one row per registration** (not per movement).
+`searchRegistrationHeads` paginates the distinct `registrationNo` (GROUP BY),
+then `findRowsForRegistrations` loads that page's rows, aggregated by
+`RegistrazioneRow.fromMovements` into: tipo operazione, importo (sum Dare), and
+the list of involved accounts (badges, trimmed codes → `CONTI` descriptions).
+
+**Tipo operazione description comes from `PARA`, not `TAB_TOPCONT`.** The legacy
+resolves it as `PARA.DESCRI WHERE CODICE = 'TOP' + ALLTRIM(MOV_TOP)` (see
+contabilelib: `select mov_cont.*, para_top.descri ... JOIN para_top`). The web
+uses `ParameterRepository.findByPrefix("TOP")` and looks up with the `"TOP"`
+prefix prepended to the trimmed `MOV_TOP` code.
+
+**Customers/suppliers are identified by account type, not by MOV_CCLI/MOV_CFOR**
+(which are almost always empty). An account is a customer when
+`CONTI.CON_TIPOCO = 'C'` and a supplier when `= 'F'`. The "TOP 5 clienti/
+fornitori" metric joins `MovContabile`↔`Account` on the account code (SQL Server
+ignores trailing spaces in varchar `=`, so legacy padding is a non-issue) and
+filters `accountType IN ('C','F')`.
+
+The header shows clickable grouping **metrics**: by period (month), TOP 5
+customer/supplier accounts, TOP 5 operation types — each links back into a
+filtered view. Metric amounts are pre-formatted in the controller (`formatIt`,
+`Locale.ITALY`) — never instantiate `BigDecimal` in the template.
 
 ## 9. Roadmap (next slices, in rough priority order)
 

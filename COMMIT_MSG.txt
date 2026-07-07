@@ -1,12 +1,32 @@
-Fix empty account description in primanota and bilancio
+Shared list UX + primanota grouped by registration (with lookup fixes)
 
-The registration detail and the balance showed empty "Descrizione conto"
-despite correct account codes. Cause: a trim mismatch — accountNameMap keys
-are trimmed (getCode().trim()), but the lookup used the raw account code,
-which is char(13) space-padded in the legacy (MOV_CONTO), so
-"6061000002   " never matched "6061000002".
+Cumulative patch on ea41579 (the list-UX slice was not pushed yet): it contains
+the shared list refactor + primanota grouping AND fixes the two lookups that
+were wrong on first deploy.
 
-Fix: trim the account code on lookup in registrazione.html and in
-bilancio(); storico already trimmed on input.
+Shared infrastructure:
+- ListParams (page/size/sort/dir with sortable whitelist; sizes 20/50/100/200,
+  default 20) and fragments/list-tools.html (sortableHeader, pager, itDate).
+- Applied to primanota, partitari (cli/for), clienti, fornitori.
+- Dropped fixed ORDER BY from Customer/Supplier/Partita* search so Pageable Sort
+  works. Dates rendered dd/MM/yyyy via itDate.
 
-Rebased on supplier+accounting+primanota-menu+authz; git apply --check clean.
+Primanota grouped by registration + metrics:
+- One row per registration (searchRegistrationHeads GROUP BY + explicit
+  countQuery + CASE-based ORDER BY; findRowsForRegistrations;
+  RegistrazioneRow.fromMovements).
+- Columns: Tipo Operazione (code + description) and involved accounts as badges.
+- Clickable header metrics: by period, TOP 5 customer/supplier accounts,
+  TOP 5 operation types. Amounts pre-formatted in the controller.
+
+Lookup fixes:
+- Tipo operazione description comes from PARA (CODICE = 'TOP' + MOV_TOP → DESCRI),
+  NOT TAB_TOPCONT. Removed the TipoOperazione entity; operationTypeNameMap() now
+  uses ParameterRepository.findByPrefix("TOP") with a "TOP" prefix on lookups.
+- TOP customers/suppliers now identified by account type CONTI.CON_TIPOCO in
+  ('C','F') (MOV_CCLI/MOV_CFOR are almost always empty): topCustomerAccounts
+  joins MovContabile to Account on the account code and filters by type.
+
+Sandbox checks only (no Maven). Query execution on SQL Server 2012 to be
+confirmed on first deploy (CASE ORDER BY, SUBSTRING GROUP BY, and the
+MovContabile-Account join for the customer/supplier metric).

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<!--
+  Fragment condivisi per TUTTE le liste/ricerche:
+   - sortableHeader: intestazione colonna cliccabile per ordinamento (toggle asc/desc)
+   - pager: barra paginazione + selettore righe-per-pagina
+   - itDate: formatta una data stringa yyyy/MM/dd (o yyyy-MM-dd) in dd/MM/yyyy
+
+  Convenzioni parametri di ricerca condivisi: q, page, size, sort, dir.
+  I controller costruiscono i link mantenendo q/size/sort/dir correnti.
+-->
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- ─── Intestazione colonna ordinabile ───────────────────────────────────
+     Uso: <th th:replace="~{fragments/list-tools :: sortableHeader(
+              baseUrl='/clienti', field='businessName', label='Ragione sociale',
+              q=${q}, size=${size}, sort=${sort}, dir=${dir}, align='')}"></th>
+     align: '' (sinistra) | 'text-end' | 'text-center'
+-->
+<th th:fragment="sortableHeader(baseUrl, field, label, q, size, sort, dir, align)"
+    th:classappend="${align}" style="white-space:nowrap; cursor:pointer;">
+    <a th:href="@{${baseUrl}(q=${q}, size=${size}, sort=${field},
+                 dir=${field == sort ? (dir == 'asc' ? 'desc' : 'asc') : 'asc'}, page=0)}"
+       class="text-decoration-none text-reset d-inline-flex align-items-center gap-1">
+        <span th:text="${label}">Colonna</span>
+        <i class="bi"
+           th:classappend="${field == sort
+               ? (dir == 'asc' ? 'bi-caret-up-fill' : 'bi-caret-down-fill')
+               : 'bi-arrow-down-up opacity-25'}"
+           style="font-size:.7rem"></i>
+    </a>
+</th>
+
+<!-- ─── Barra paginazione + righe per pagina ──────────────────────────────
+     Uso: <div th:replace="~{fragments/list-tools :: pager(
+              baseUrl='/clienti', page=${page}, q=${q}, size=${size},
+              sort=${sort}, dir=${dir}, pageObj=${customers})}"></div>
+-->
+<div th:fragment="pager(baseUrl, page, q, size, sort, dir, pageObj)"
+     class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
+
+    <!-- Selettore righe per pagina -->
+    <form method="get" th:action="@{${baseUrl}}" class="d-flex align-items-center gap-2 mb-0">
+        <input type="hidden" name="q" th:value="${q}">
+        <input type="hidden" name="sort" th:value="${sort}">
+        <input type="hidden" name="dir" th:value="${dir}">
+        <label class="small text-muted mb-0">Righe:</label>
+        <select name="size" class="form-select form-select-sm" style="width:auto"
+                onchange="this.form.submit()">
+            <option th:each="opt : ${T(com.aquarius.web.ListParams).PAGE_SIZE_OPTIONS}"
+                    th:value="${opt}" th:text="${opt}"
+                    th:selected="${opt == size}">20</option>
+        </select>
+        <span class="small text-muted"
+              th:if="${pageObj != null}"
+              th:text="${'· ' + pageObj.totalElements + ' totali'}">· 0 totali</span>
+    </form>
+
+    <!-- Navigazione pagine -->
+    <ul class="pagination pagination-sm mb-0" th:if="${pageObj != null and pageObj.totalPages > 1}">
+        <li class="page-item" th:classappend="${pageObj.first ? 'disabled' : ''}">
+            <a class="page-link"
+               th:href="@{${baseUrl}(q=${q}, size=${size}, sort=${sort}, dir=${dir}, page=0)}">«</a>
+        </li>
+        <li class="page-item" th:classappend="${pageObj.first ? 'disabled' : ''}">
+            <a class="page-link"
+               th:href="@{${baseUrl}(q=${q}, size=${size}, sort=${sort}, dir=${dir}, page=${pageObj.number - 1})}">‹</a>
+        </li>
+        <li class="page-item disabled">
+            <span class="page-link"
+                  th:text="${'Pagina ' + (pageObj.number + 1) + ' di ' + pageObj.totalPages}">Pagina 1 di 1</span>
+        </li>
+        <li class="page-item" th:classappend="${pageObj.last ? 'disabled' : ''}">
+            <a class="page-link"
+               th:href="@{${baseUrl}(q=${q}, size=${size}, sort=${sort}, dir=${dir}, page=${pageObj.number + 1})}">›</a>
+        </li>
+        <li class="page-item" th:classappend="${pageObj.last ? 'disabled' : ''}">
+            <a class="page-link"
+               th:href="@{${baseUrl}(q=${q}, size=${size}, sort=${sort}, dir=${dir}, page=${pageObj.totalPages - 1})}">»</a>
+        </li>
+    </ul>
+</div>
+
+<!-- ─── Formato data italiano: yyyy/MM/dd o yyyy-MM-dd → dd/MM/yyyy ────────
+     Uso: <span th:replace="~{fragments/list-tools :: itDate(${m.registrationDate})}"></span>
+     Robusto: se la stringa non è nel formato atteso, la restituisce invariata.
+-->
+<span th:fragment="itDate(value)" th:remove="tag"
+      th:text="${value == null or value.length() &lt; 10 ? (value ?: '') :
+                 value.substring(8,10) + '/' + value.substring(5,7) + '/' + value.substring(0,4)}">01/01/2026</span>
+
+</body>
+</html>

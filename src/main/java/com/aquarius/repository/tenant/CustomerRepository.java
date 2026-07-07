@@ -18,7 +18,6 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
                OR LOWER(c.businessName) LIKE LOWER(CONCAT('%', :q, '%'))
                OR LOWER(c.code)         LIKE LOWER(CONCAT('%', :q, '%'))
                OR c.vatNumber           LIKE CONCAT('%', :q, '%'))
-        ORDER BY c.businessName ASC
         """)
     Page<Customer> search(@Param("q") String q, Pageable pageable);
 

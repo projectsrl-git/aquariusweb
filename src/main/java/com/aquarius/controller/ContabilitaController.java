@@ -3,6 +3,7 @@ package com.aquarius.controller;
 import com.aquarius.context.FiscalContext;
 import com.aquarius.dto.BilancioLine;
 import com.aquarius.dto.LedgerRow;
+import com.aquarius.dto.RegistrazioneRow;
 import com.aquarius.entity.tenant.Account;
 import com.aquarius.entity.tenant.MovContabile;
 import com.aquarius.entity.tenant.PartitaCliente;
@@ -11,6 +12,8 @@ import com.aquarius.repository.tenant.AccountRepository;
 import com.aquarius.repository.tenant.MovContabileRepository;
 import com.aquarius.repository.tenant.PartitaClienteRepository;
 import com.aquarius.repository.tenant.PartitaFornitoreRepository;
+import com.aquarius.repository.tenant.ParameterRepository;
+import com.aquarius.web.ListParams;
 import com.aquarius.security.AquariusPrincipal;
 import com.aquarius.service.BreadcrumbService;
 import com.aquarius.service.BreadcrumbService.Crumb;
@@ -57,29 +60,138 @@ public class ContabilitaController {
     private final MovContabileRepository movRepository;
     private final PartitaClienteRepository partitaClienteRepository;
     private final PartitaFornitoreRepository partitaFornitoreRepository;
+    private final ParameterRepository parameterRepository;
     private final AccountRepository accountRepository;
     private final BreadcrumbService breadcrumbService;
     private final FiscalContext fiscalContext;
-
-    private static final int PAGE_SIZE = 50;
 
     // ─────────────────────────────────────────── PRIMANOTA ──────────────
     @GetMapping("/primanota")
     @Transactional(transactionManager = "tenantTransactionManager", readOnly = true)
     public String primanota(@RequestParam(value = "q", required = false) String q,
-                            @RequestParam(value = "page", defaultValue = "0") int page,
+                            @RequestParam(value = "page", required = false) Integer page,
+                            @RequestParam(value = "size", required = false) Integer size,
+                            @RequestParam(value = "sort", required = false) String sort,
+                            @RequestParam(value = "dir", required = false) String dir,
                             Model model,
                             @AuthenticationPrincipal AquariusPrincipal principal) {
         String soc = fiscalContext.getSocietyCode();
         String anno = fiscalContext.getFiscalYear();
-        Pageable pageable = PageRequest.of(Math.max(0, page), PAGE_SIZE);
-        Page<MovContabile> regs = movRepository.searchRegistrations(soc, anno, q, pageable);
-        model.addAttribute("registrations", regs);
+
+        // Ordinamento: la lista è raggruppata per registrazione; i campi
+        // ordinabili sono quelli della testata aggregata.
+        // NB: l'ordinamento è sulle property della testata; l'importo (totDare)
+        // è un alias di aggregato e NON è ordinabile a DB in modo affidabile
+        // con il Sort del Pageable su JPQL/Hibernate 5 → escluso dalla whitelist.
+        ListParams lp = ListParams.of(page, size, sort, dir,
+            java.util.Set.of("registrationNo", "registrationDate", "documentNo"),
+            "registrationDate", "desc");
+
+        // 1) testate paginate (una riga per registrazione).
+        // L'ordinamento è gestito nella query via orderCol/asc (compatibile GROUP BY).
+        int orderCol = switch (lp.getSort()) {
+            case "registrationNo" -> 2;
+            case "documentNo" -> 3;
+            default -> 1; // registrationDate
+        };
+        Page<MovContabileRepository.RegHead> heads =
+            movRepository.searchRegistrationHeads(soc, anno, q, orderCol, lp.isAsc(),
+                                                  lp.toPageableNoSort());
+
+        // 2) righe delle registrazioni della pagina corrente → RegistrazioneRow
+        List<String> nregs = heads.getContent().stream()
+            .map(MovContabileRepository.RegHead::getRegistrationNo)
+            .collect(Collectors.toList());
+        Map<String, String> accountNames = accountNameMap();
+        List<RegistrazioneRow> rows = nregs.isEmpty()
+            ? List.of()
+            : RegistrazioneRow.fromMovements(
+                  movRepository.findRowsForRegistrations(soc, anno, nregs), accountNames);
+
+        // 3) risolvi descrizione tipo operazione
+        Map<String, String> topNames = operationTypeNameMap();
+        for (RegistrazioneRow r : rows) {
+            if (r.getOperationType() != null) {
+                r.setOperationTypeDesc(operationTypeDesc(topNames, r.getOperationType()));
+            }
+        }
+        // Riordina rows secondo l'ordine delle heads (il group-by potrebbe non preservarlo)
+        Map<String, RegistrazioneRow> byNo = rows.stream()
+            .collect(Collectors.toMap(RegistrazioneRow::getRegistrationNo, x -> x, (a, b) -> a));
+        List<RegistrazioneRow> ordered = nregs.stream()
+            .map(byNo::get).filter(java.util.Objects::nonNull).collect(Collectors.toList());
+
+        model.addAttribute("rows", ordered);
+        model.addAttribute("pageObj", heads);
         model.addAttribute("q", q == null ? "" : q);
+        model.addAttribute("size", lp.getSize());
+        model.addAttribute("sort", lp.getSort());
+        model.addAttribute("dir", lp.getDir());
         model.addAttribute("anno", anno);
+
+        // Metriche cliccabili in testa
+        addPrimanotaMetrics(model, soc, anno, topNames, accountNames);
+
         model.addAttribute("breadcrumbs",
             breadcrumbService.forUrl("/contabilita/primanota", principal.getUsername()));
         return "contabilita/primanota";
+    }
+
+    /** Costruisce le metriche di raggruppamento cliccabili per la primanota. */
+    private void addPrimanotaMetrics(Model model, String soc, String anno,
+                                     Map<String, String> topNames,
+                                     Map<String, String> accountNames) {
+        Pageable top5 = PageRequest.of(0, 5);
+        // Per periodo (mese) — importo già formattato in italiano [label, importo]
+        var periods = movRepository.amountByPeriod(soc, anno).stream()
+            .map(m -> new String[]{ m.getLabel(), formatIt(m.getTotal()) })
+            .collect(Collectors.toList());
+        model.addAttribute("metricPeriods", periods);
+        // TOP 5 conti clienti/fornitori (proxy anagrafiche) [codice, descrizione, importo]
+        var topCust = movRepository.topCustomerAccounts(soc, anno, top5).stream()
+            .map(m -> new String[]{
+                m.getLabel(),
+                accountNames.getOrDefault(m.getLabel() != null ? m.getLabel().trim() : "", ""),
+                formatIt(m.getTotal()) })
+            .collect(Collectors.toList());
+        model.addAttribute("metricTopAccounts", topCust);
+        // TOP 5 tipi operazione [codice, descrizione, importo]
+        var topOps = movRepository.topOperationTypes(soc, anno, top5).stream()
+            .map(m -> new String[]{
+                m.getLabel(),
+                m.getLabel() != null ? topNames.getOrDefault("TOP" + m.getLabel().trim(), "") : "",
+                formatIt(m.getTotal()) })
+            .collect(Collectors.toList());
+        model.addAttribute("metricTopOps", topOps);
+    }
+
+    /** Formatta un importo in stile italiano (1.234,56); null → "0,00". */
+    private String formatIt(java.math.BigDecimal v) {
+        java.text.DecimalFormatSymbols sym = new java.text.DecimalFormatSymbols(java.util.Locale.ITALY);
+        java.text.DecimalFormat df = new java.text.DecimalFormat("#,##0.00", sym);
+        return df.format(v != null ? v : java.math.BigDecimal.ZERO);
+    }
+
+    /**
+     * Mappa descrizione tipo operazione. Nel legacy la descrizione NON sta in
+     * TAB_TOPCONT ma nella tabella PARA: CODICE = 'TOP' + ALLTRIM(MOV_TOP),
+     * descrizione = PARA.DESCRI (vedi contabilelib: join mov_cont/para_top).
+     * La mappa è chiavata sul CODICE PARA completo (es. "TOP01"); il lookup
+     * antepone quindi il prefisso "TOP" al codice MOV_TOP.
+     */
+    private Map<String, String> operationTypeNameMap() {
+        return parameterRepository.findByPrefix("TOP").stream()
+            .filter(p -> p.getCodice() != null)
+            .collect(Collectors.toMap(
+                p -> p.getCodice().trim(),
+                p -> p.getDescri() != null ? p.getDescri().trim() : "",
+                (a, b) -> a));
+    }
+
+    /** Descrizione tipo operazione per un codice MOV_TOP (aggiunge prefisso TOP). */
+    private String operationTypeDesc(Map<String, String> topNames, String code) {
+        if (code == null || code.trim().isEmpty()) return null;
+        return topNames.get("TOP" + code.trim());
     }
 
     @GetMapping("/primanota/{nreg}")
@@ -178,15 +290,24 @@ public class ContabilitaController {
     @GetMapping("/partitari/clienti")
     @Transactional(transactionManager = "tenantTransactionManager", readOnly = true)
     public String partitariClienti(@RequestParam(value = "q", required = false) String q,
-                                   @RequestParam(value = "page", defaultValue = "0") int page,
+                                   @RequestParam(value = "page", required = false) Integer page,
+                                   @RequestParam(value = "size", required = false) Integer size,
+                                   @RequestParam(value = "sort", required = false) String sort,
+                                   @RequestParam(value = "dir", required = false) String dir,
                                    Model model,
                                    @AuthenticationPrincipal AquariusPrincipal principal) {
         String soc = fiscalContext.getSocietyCode();
         String anno = fiscalContext.getFiscalYear();
-        Pageable pageable = PageRequest.of(Math.max(0, page), PAGE_SIZE);
-        Page<PartitaCliente> partite = partitaClienteRepository.search(soc, anno, q, pageable);
+        ListParams lp = ListParams.of(page, size, sort, dir,
+            java.util.Set.of("partyCode", "partyName", "invoiceNo", "dueDate", "totalAmount", "paidAmount"),
+            "dueDate", "asc");
+        Page<PartitaCliente> partite = partitaClienteRepository.search(soc, anno, q, lp.toPageable());
         model.addAttribute("partite", partite);
+        model.addAttribute("pageObj", partite);
         model.addAttribute("q", q == null ? "" : q);
+        model.addAttribute("size", lp.getSize());
+        model.addAttribute("sort", lp.getSort());
+        model.addAttribute("dir", lp.getDir());
         model.addAttribute("anno", anno);
         model.addAttribute("tipo", "clienti");
         model.addAttribute("breadcrumbs",
@@ -197,15 +318,24 @@ public class ContabilitaController {
     @GetMapping("/partitari/fornitori")
     @Transactional(transactionManager = "tenantTransactionManager", readOnly = true)
     public String partitariFornitori(@RequestParam(value = "q", required = false) String q,
-                                     @RequestParam(value = "page", defaultValue = "0") int page,
+                                     @RequestParam(value = "page", required = false) Integer page,
+                                     @RequestParam(value = "size", required = false) Integer size,
+                                     @RequestParam(value = "sort", required = false) String sort,
+                                     @RequestParam(value = "dir", required = false) String dir,
                                      Model model,
                                      @AuthenticationPrincipal AquariusPrincipal principal) {
         String soc = fiscalContext.getSocietyCode();
         String anno = fiscalContext.getFiscalYear();
-        Pageable pageable = PageRequest.of(Math.max(0, page), PAGE_SIZE);
-        Page<PartitaFornitore> partite = partitaFornitoreRepository.search(soc, anno, q, pageable);
+        ListParams lp = ListParams.of(page, size, sort, dir,
+            java.util.Set.of("partyCode", "partyName", "invoiceNo", "dueDate", "totalAmount", "paidAmount"),
+            "dueDate", "asc");
+        Page<PartitaFornitore> partite = partitaFornitoreRepository.search(soc, anno, q, lp.toPageable());
         model.addAttribute("partite", partite);
+        model.addAttribute("pageObj", partite);
         model.addAttribute("q", q == null ? "" : q);
+        model.addAttribute("size", lp.getSize());
+        model.addAttribute("sort", lp.getSort());
+        model.addAttribute("dir", lp.getDir());
         model.addAttribute("anno", anno);
         model.addAttribute("tipo", "fornitori");
         model.addAttribute("breadcrumbs",

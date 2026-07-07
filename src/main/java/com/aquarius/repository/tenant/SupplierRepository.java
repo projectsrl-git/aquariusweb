@@ -16,7 +16,6 @@ public interface SupplierRepository extends JpaRepository<Supplier, String> {
                OR LOWER(s.businessName) LIKE LOWER(CONCAT('%', :q, '%'))
                OR LOWER(s.code)         LIKE LOWER(CONCAT('%', :q, '%'))
                OR s.vatNumber           LIKE CONCAT('%', :q, '%'))
-        ORDER BY s.businessName ASC
         """)
     Page<Supplier> search(@Param("q") String q, Pageable pageable);
 }

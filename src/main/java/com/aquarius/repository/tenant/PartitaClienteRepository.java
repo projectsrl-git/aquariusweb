@@ -19,7 +19,6 @@ public interface PartitaClienteRepository extends JpaRepository<PartitaCliente, 
                OR p.partyCode LIKE CONCAT('%', :q, '%')
                OR LOWER(p.partyName) LIKE LOWER(CONCAT('%', :q, '%'))
                OR p.invoiceNo LIKE CONCAT('%', :q, '%'))
-        ORDER BY p.dueDate ASC, p.partyName ASC
         """)
     Page<PartitaCliente> search(@Param("soc") String soc,
                       @Param("anno") String anno,

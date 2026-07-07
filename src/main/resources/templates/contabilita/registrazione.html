@@ -21,7 +21,7 @@
                 <dt class="col-2 text-muted">Documento</dt>
                 <dd class="col-4" th:text="${header.documentNo ?: '—'}">—</dd>
                 <dt class="col-2 text-muted">Data doc.</dt>
-                <dd class="col-4" th:text="${header.documentDate ?: '—'}">—</dd>
+                <dd class="col-4"><span th:if="${header.documentDate}" th:replace="~{fragments/list-tools :: itDate(${header.documentDate})}">—</span><span th:unless="${header.documentDate}">—</span></dd>
                 <dt class="col-2 text-muted">Descrizione</dt>
                 <dd class="col-10" th:text="${header.description ?: '—'}">—</dd>
             </dl>

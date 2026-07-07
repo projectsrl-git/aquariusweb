@@ -49,7 +49,7 @@
                         </thead>
                         <tbody>
                             <tr th:each="l : ${ledger}">
-                                <td class="small" th:text="${l.mov.registrationDate}">2026/01/15</td>
+                                <td class="small"><span th:replace="~{fragments/list-tools :: itDate(${l.mov.registrationDate})}">15/01/2026</span></td>
                                 <td>
                                     <a th:href="@{/contabilita/primanota/{n}(n=${l.mov.registrationNo})}"
                                        class="font-monospace small text-decoration-none"
