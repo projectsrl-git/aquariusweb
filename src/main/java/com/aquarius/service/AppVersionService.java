@@ -41,6 +41,9 @@ public class AppVersionService implements CommandLineRunner {
     @Value("${app.build-time:n.d.}")
     private String declaredBuildTime;
 
+    @Value("${app.commit:}")
+    private String declaredCommit;
+
     public AppVersionService(@Qualifier("systemDataSource") DataSource systemDataSource) {
         this.systemJdbc = new JdbcTemplate(systemDataSource);
     }
@@ -96,5 +99,17 @@ public class AppVersionService implements CommandLineRunner {
 
     public String getBuildTime() {
         return declaredBuildTime;
+    }
+
+    /**
+     * Hash abbreviato del commit da cui è stato fatto il build (catturato dal
+     * plugin git-commit-id). Se il token non è stato risolto (build senza .git,
+     * o placeholder @...@ rimasto), ritorna stringa vuota.
+     */
+    public String getCommit() {
+        if (declaredCommit == null) return "";
+        String c = declaredCommit.trim();
+        if (c.isEmpty() || c.contains("@")) return "";   // placeholder non risolto
+        return c;
     }
 }

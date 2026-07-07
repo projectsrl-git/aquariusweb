@@ -39,6 +39,26 @@ public class AccountController {
 
     private static final int PAGE_SIZE = 50;
 
+    /**
+     * Autocomplete conti (JSON) per la selezione live in maschere come lo
+     * storico: cerca per codice OPPURE descrizione e ritorna [{code, description}].
+     */
+    @GetMapping("/autocomplete")
+    @org.springframework.web.bind.annotation.ResponseBody
+    @Transactional(transactionManager = "tenantTransactionManager", readOnly = true)
+    public java.util.List<java.util.Map<String, String>> autocomplete(
+            @RequestParam(value = "q", required = false) String q) {
+        if (q == null || q.trim().length() < 2) return java.util.List.of();
+        String soc = fiscalContext.getSocietyCode();
+        String anno = fiscalContext.getFiscalYear();
+        return repository.searchByYearAndSociety(anno, soc, q.trim(), PageRequest.of(0, 15))
+            .getContent().stream()
+            .map(a -> java.util.Map.of(
+                "code", a.getCode() != null ? a.getCode().trim() : "",
+                "description", a.getDescription() != null ? a.getDescription().trim() : ""))
+            .collect(java.util.stream.Collectors.toList());
+    }
+
     @GetMapping
     @Transactional(transactionManager = "tenantTransactionManager", readOnly = true)
     public String list(@RequestParam(value = "q", required = false) String q,

@@ -28,7 +28,7 @@
         body { background: #f4f6fb; font-family: 'Segoe UI', system-ui, sans-serif; }
 
         #sidebar {
-            width: var(--sidebar-w); min-height: 100vh; background: var(--aq-dark);
+            width: var(--sidebar-w); height: 100vh; max-height: 100vh; background: var(--aq-dark);
             position: fixed; top: 0; left: 0; z-index: 1000;
             display: flex; flex-direction: column;
             transition: width .2s ease;
@@ -422,6 +422,11 @@
             <span class="menu-icon"><i class="bi bi-bar-chart-line"></i></span>
             <span class="menu-label">Query personalizzate</span>
         </a>
+        <a class="menu-item" th:href="@{/utilita/migrazione}" th:title="'Tracciamento migrazione'"
+           th:classappend="${#httpServletRequest.requestURI.startsWith('/utilita/migrazione')} ? 'active'">
+            <span class="menu-icon"><i class="bi bi-diagram-2"></i></span>
+            <span class="menu-label">Tracciamento migrazione</span>
+        </a>
         <a class="menu-item" th:href="@{/help}" th:title="'Assistente'"
            th:classappend="${#httpServletRequest.requestURI.startsWith('/help')} ? 'active'">
             <span class="menu-icon"><i class="bi bi-robot"></i></span>
@@ -436,8 +441,8 @@
                 <i class="bi bi-box-arrow-right"></i><span class="menu-label ms-1">Esci</span>
             </button>
         </form>
-        <div class="app-version menu-label" th:title="'Build: ' + ${appBuildTime}">
-            <i class="bi bi-tag"></i> v<span th:text="${appVersion}">0.0.0</span>
+        <div class="app-version menu-label" th:title="'Build: ' + ${appBuildTime} + (${appCommit} != '' ? ' · commit ' + ${appCommit} : '')">
+            <i class="bi bi-tag"></i> v<span th:text="${appVersion}">0.0.0</span><span th:if="${appCommit != ''}" class="text-white-50" th:text="' · ' + ${appCommit}"> · abc1234</span>
         </div>
     </div>
 </aside>
@@ -536,6 +541,17 @@ function renderNode(node, depth) {
 
         item.addEventListener('click', (e) => {
             e.preventDefault();
+            const willOpen = !childrenDiv.classList.contains('open');
+            if (willOpen) {
+                // Accordion: chiudi gli altri rami aperti allo stesso livello
+                // (e i loro discendenti), così resta aperto un solo ramo.
+                const siblings = wrap.parentElement.querySelectorAll(':scope > div');
+                siblings.forEach(sib => {
+                    if (sib === wrap) return;
+                    sib.querySelectorAll('.menu-item.open').forEach(mi => mi.classList.remove('open'));
+                    sib.querySelectorAll('.menu-children.open').forEach(mc => mc.classList.remove('open'));
+                });
+            }
             item.classList.toggle('open');
             childrenDiv.classList.toggle('open');
         });

@@ -111,6 +111,43 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
   silently don't appear. Always match the real L1 codes; verify against the log
   line `Menu '...' L1 '...' (menu=XXX): ...`.
 
+## 4b. Versioning
+
+- Versione = `<version>` in `pom.xml` (filtrata in `application.properties` come
+  `app.version=@project.version@`). `AppVersionService` la registra su
+  `aq_web_app_version` (SYSTEM DB) a ogni deploy con versione nuova.
+- **Regola** (semver adattato a prodotto interno):
+  - PATCH (0.0.x): fix e ritocchi, nessuna nuova funzionalità utente.
+  - MINOR (0.x.0): nuovo modulo/funzionalità utente-visibile (anagrafica,
+    prospetto, viewer, ecc.).
+  - MAJOR (x.0.0): milestone di prodotto (es. prima release con data-entry
+    contabile completo).
+  - I build deployati NON usano `-SNAPSHOT` (quello resta per il lavoro locale).
+- **Commit id**: catturato a BUILD-TIME dal plugin `git-commit-id`
+  (`app.commit=@git.commit.id.abbrev@`), mostrato in footer come `v0.2.0 · <hash>`.
+  Risolve il problema "non conosco il commit prima di committare": il valore è
+  il commit da cui è stato fatto il build (l'ultimo noto). Se `.git` manca o il
+  token non si risolve, `AppVersionService.getCommit()` ritorna vuoto (guardia).
+- Versione corrente: **0.2.0** (shared list UX, primanota raggruppata, fix menu
+  contabilit, autocomplete storico, bilancio a sezioni, migration tracker+viewer).
+
+## 4c. Migration tracker (.scx logic ↔ web)
+
+`src/main/resources/migration/scx_migration_tracker.csv` relaziona la logica dei
+form VFP (`.scx`: metodi, bottoni, eventi, proprietà) con la controparte web, o
+il motivo di non-migrazione (set standard di `reason_code`). Sta nel CLASSPATH
+perché il viewer web lo legge a runtime (`/utilita/migrazione`, voce menu
+Strumenti). Schema + legenda in `src/main/resources/migration/README.md` — nomi
+colonna stabili. Ogni sessione appende i membri `.scx` analizzati/migrati (righe
+aggiornate, non cancellate).
+
+Parsing `.scx` (VFP form = DBF + `.sct` FPT memo): ogni record è un oggetto del
+form; il codice sta nel memo `METHODS`, la config in `PROPERTIES` (RecordSource /
+ControlSource / Caption → tabelle, campi, label). Descrittori di campo da offset
+32 del DBF (32 byte ciascuno); i campi memo puntano a blocchi nel `.sct` (block
+size ai byte 6-7). I form contengono MOLTA logica nei bottoni/validazioni
+(es. `menu_cli000_2016_04_04.scx` → 677 oggetti, 311 con codice): non trascurarli.
+
 ## 5. Domain knowledge (hard-won, do not re-derive)
 
 ### Fiscal year & society
@@ -134,6 +171,22 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
   rendered client-side by the reusable **`static/js/aq-tree.js`** component
   (lazy DOM, live filter, expand-to-level, `#c=CODE` deep links). Reuse this
   pattern for any future hierarchy (cost centers, BOMs).
+
+### Bilancio classification (CON_POSBIL) — sezioni contrapposte
+- `CONTI.CON_POSBIL`: **`'P'` = Stato Patrimoniale**, **`'E'` = Conto Economico**
+  (mapped as `Account.balancePosition`). This is the SP/CE split.
+- Within a section the side is the **sign of the account balance** (saldo =
+  totDare − totAvere), exactly as the legacy report `fanni210.prg`:
+  - Patrimoniale + saldo Dare (≥0) → **Attività**; saldo Avere (<0) → **Passività**
+  - Economico + saldo Dare (≥0) → **Costi**; saldo Avere (<0) → **Ricavi**
+- `/contabilita/bilancio` renders a prospetto a sezioni contrapposte
+  (Attività|Passività, Costi|Ricavi) with a synthesis header (totals per side +
+  Risultato d'esercizio = Ricavi − Costi). `?cf=false` hides customer/supplier
+  accounts (CON_TIPOCO C/F). Accounts without CON_POSBIL are surfaced in a
+  "da classificare" panel, not hidden.
+- Account autocomplete for the storico picker: `GET /conti/autocomplete?q=`
+  (JSON `[{code,description}]`, searches code OR description) + a vanilla-JS
+  combobox in `storico.html`.
 
 ### Warehouse (U_MAG_MO / U_MAG_GG / u_vva_ch)
 - `MOV_SEGNO` (`'+'/'-'`) carries the sign; stock at a date = signed sum of

@@ -11,14 +11,93 @@
         crumbs=${breadcrumbs}
     )}"></div>
 
-    <form method="get" th:action="@{/contabilita/storico}" class="mb-3">
-        <div class="input-group" style="max-width:520px">
+    <form method="get" th:action="@{/contabilita/storico}" class="mb-3" id="storicoForm" autocomplete="off">
+        <div class="input-group position-relative" style="max-width:560px">
             <span class="input-group-text"><i class="bi bi-bank"></i></span>
-            <input type="text" name="conto" th:value="${conto}" class="form-control font-monospace"
-                   placeholder="Codice conto (es. 01.05.001)">
+            <!-- codice effettivo inviato al server -->
+            <input type="hidden" name="conto" id="contoCode" th:value="${conto}">
+            <!-- campo di ricerca live: codice o descrizione -->
+            <input type="text" id="contoSearch" class="form-control"
+                   th:value="${conto != null and conto != '' ? (conto + (accountName != null and accountName != '' ? ' — ' + accountName : '')) : ''}"
+                   placeholder="Cerca per codice o descrizione…">
             <button type="submit" class="btn btn-primary">Visualizza mastrino</button>
+            <!-- tendina risultati -->
+            <ul id="contoResults" class="list-group position-absolute w-100 shadow"
+                style="top:100%; z-index:1050; max-height:280px; overflow:auto; display:none;"></ul>
         </div>
+        <div class="form-text">Digita almeno 2 caratteri: seleziona il conto dalla lista.</div>
     </form>
+
+    <script th:inline="none">
+    (function () {
+        const ctx = (document.querySelector('meta[name=_ctx]')?.content || '/').replace(/\/$/, '');
+        const search = document.getElementById('contoSearch');
+        const code = document.getElementById('contoCode');
+        const box = document.getElementById('contoResults');
+        const form = document.getElementById('storicoForm');
+        let timer = null, items = [], active = -1;
+
+        function hide() { box.style.display = 'none'; active = -1; }
+        function render() {
+            if (!items.length) { hide(); return; }
+            box.innerHTML = '';
+            items.forEach((it, idx) => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item list-group-item-action py-1';
+                li.style.cursor = 'pointer';
+                li.innerHTML = '<span class="font-monospace small fw-semibold">' + it.code +
+                               '</span> <span class="text-muted small">' + (it.description || '') + '</span>';
+                li.addEventListener('mousedown', (e) => { e.preventDefault(); pick(idx); });
+                if (idx === active) li.classList.add('active');
+                box.appendChild(li);
+            });
+            box.style.display = 'block';
+        }
+        function pick(idx) {
+            const it = items[idx];
+            if (!it) return;
+            code.value = it.code;
+            search.value = it.code + (it.description ? ' — ' + it.description : '');
+            hide();
+            form.submit();
+        }
+        async function query(q) {
+            try {
+                const res = await fetch(ctx + '/conti/autocomplete?q=' + encodeURIComponent(q),
+                                        { credentials: 'same-origin' });
+                if (!res.ok) { hide(); return; }
+                items = await res.json();
+                active = -1;
+                render();
+            } catch (e) { hide(); }
+        }
+        search.addEventListener('input', () => {
+            const q = search.value.trim();
+            // se l'utente riscrive, il codice selezionato non è più valido
+            code.value = '';
+            clearTimeout(timer);
+            if (q.length < 2) { hide(); return; }
+            timer = setTimeout(() => query(q), 200);
+        });
+        search.addEventListener('keydown', (e) => {
+            if (box.style.display === 'none') return;
+            if (e.key === 'ArrowDown') { e.preventDefault(); active = Math.min(active + 1, items.length - 1); render(); }
+            else if (e.key === 'ArrowUp') { e.preventDefault(); active = Math.max(active - 1, 0); render(); }
+            else if (e.key === 'Enter' && active >= 0) { e.preventDefault(); pick(active); }
+            else if (e.key === 'Escape') { hide(); }
+        });
+        document.addEventListener('click', (e) => { if (!form.contains(e.target)) hide(); });
+
+        // Se l'utente digita un codice senza selezionare dalla lista, ricava
+        // il codice dal testo (parte prima di " — ") così la ricerca funziona.
+        form.addEventListener('submit', () => {
+            if (!code.value) {
+                const raw = (search.value || '').split(' — ')[0].trim();
+                code.value = raw;
+            }
+        });
+    })();
+    </script>
 
     <div th:if="${ledger != null}">
         <div class="alert alert-light border d-flex justify-content-between align-items-center py-2">

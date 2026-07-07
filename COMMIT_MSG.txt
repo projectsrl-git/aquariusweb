@@ -1,14 +1,26 @@
-Fix accounting menu code (contabilit) so synthetic entries appear
+Migration viewer, versioning, scrollable menu + version footer
 
-The accounting L1 menu code in tbl_menu is literally "contabilit", not
-"contabilita" (not a truncation — the column is varchar(50)). guessIcon already
-handled both spellings, but injectSyntheticEntries and hasSyntheticEntries only
-matched "contabilita", so the section rendered (icon + primanota) while the
-web-only entries — Storico contabile, Bilancio, Partitario clienti/fornitori,
-Piano dei conti — were silently never injected.
+Cumulative on 9f3a66e (also carries the unpushed storico/bilancio slice) so the
+repo is ready in one deploy before the Fable 5 handoff.
 
-Aligned both methods to match "contabilit" as well. Documented the gotcha in
-CLAUDE.md. No behavior change for magazzino/parametri.
+Migration viewer (utilities): GET /utilita/migrazione renders the .scx→web
+migration tracker with client-side filters (text/status/form/reason) and a
+per-status summary. CSV moved to the classpath
+(src/main/resources/migration/scx_migration_tracker.csv, README co-located) so it
+is readable at runtime; MigrationTrackerService (quote-aware CSV parser) +
+MigrationRow. Menu entry added to the static "Strumenti" sidebar section.
 
-Sandbox checks only (no Maven). After deploy (Tomcat restart clears the menu
-cache) the four entries should appear active under Contabilità.
+Versioning: rule documented in CLAUDE.md (semver-ish, no -SNAPSHOT on deployed
+builds). Bumped 0.1.0-SNAPSHOT -> 0.2.0. Commit id captured at build time via the
+git-commit-id plugin (app.commit=@git.commit.id.abbrev@); AppVersionService
+guards an unresolved token; footer shows "v0.2.0 · <hash>".
+
+Menu/footer: #sidebar min-height -> height:100vh so the nav scrolls when long and
+the version footer stays pinned/visible; opening a branch now closes sibling
+branches (accordion, one open at a time).
+
+Also includes storico account autocomplete + bilancio a sezioni contrapposte.
+
+Sandbox checks only (no Maven). Confirm on deploy: the git-commit-id plugin (if
+it can't resolve, the footer just omits the commit — guarded, build must not
+fail) and SQL Server query execution.

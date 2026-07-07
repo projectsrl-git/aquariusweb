@@ -30,6 +30,11 @@ public class GlobalModelAdvice {
         return appVersionService.getBuildTime();
     }
 
+    @ModelAttribute("appCommit")
+    public String appCommit() {
+        return appVersionService.getCommit();
+    }
+
     @ModelAttribute("currentYear")
     public int currentYear() {
         return Year.now().getValue();

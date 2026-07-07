@@ -259,31 +259,103 @@ public class ContabilitaController {
     // ─────────────────────────────────────────────── BILANCIO ──────────
     @GetMapping("/bilancio")
     @Transactional(transactionManager = "tenantTransactionManager", readOnly = true)
-    public String bilancio(Model model,
+    public String bilancio(@RequestParam(value = "cf", defaultValue = "true") boolean showCF,
+                           Model model,
                            @AuthenticationPrincipal AquariusPrincipal principal) {
         String soc = fiscalContext.getSocietyCode();
         String anno = fiscalContext.getFiscalYear();
-        Map<String, String> names = accountNameMap();
 
-        List<BilancioLine> lines = movRepository.findBilancio(soc, anno).stream()
-            .map(r -> new BilancioLine(r.getAccount(),
-                                       r.getAccount() != null ? names.get(r.getAccount().trim()) : null,
-                                       r.getTotDare(), r.getTotAvere()))
+        // Anagrafica conti: codice → Account (per sezione bilancio + tipo conto)
+        Map<String, Account> accByCode = accountByCode();
+
+        // Righe di bilancio (saldo per conto dai movimenti), arricchite con
+        // sezione (CON_POSBIL: P/E) e tipo conto (CON_TIPOCO: C/F).
+        List<BilancioLine> all = movRepository.findBilancio(soc, anno).stream()
+            .map(r -> {
+                String code = r.getAccount() != null ? r.getAccount().trim() : "";
+                Account a = accByCode.get(code);
+                String desc = a != null ? a.getDescription() : null;
+                String section = a != null ? trimUpper(a.getBalancePosition()) : null;
+                String tipo = a != null ? trimUpper(a.getAccountType()) : null;
+                return new BilancioLine(code, desc, r.getTotDare(), r.getTotAvere(), section, tipo);
+            })
+            .filter(l -> l.getSaldo().signum() != 0)   // solo conti movimentati
             .collect(Collectors.toList());
 
-        BigDecimal totDare = lines.stream().map(BilancioLine::getTotDare)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
-        BigDecimal totAvere = lines.stream().map(BilancioLine::getTotAvere)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        // Opzione 2.1: mostra/nascondi i conti clienti/fornitori
+        if (!showCF) {
+            all = all.stream().filter(l -> !l.isCustomerOrSupplier())
+                     .collect(Collectors.toList());
+        }
 
-        model.addAttribute("lines", lines);
-        model.addAttribute("totDare", totDare);
-        model.addAttribute("totAvere", totAvere);
-        model.addAttribute("sbilancio", totDare.subtract(totAvere));
+        // Bucket a sezioni contrapposte
+        List<BilancioLine> attivo = new ArrayList<>();
+        List<BilancioLine> passivo = new ArrayList<>();
+        List<BilancioLine> costi = new ArrayList<>();
+        List<BilancioLine> ricavi = new ArrayList<>();
+        List<BilancioLine> nonClassificati = new ArrayList<>();
+        for (BilancioLine l : all) {
+            if (l.isPatrimoniale()) {
+                (l.isDareSide() ? attivo : passivo).add(l);
+            } else if (l.isEconomico()) {
+                (l.isDareSide() ? costi : ricavi).add(l);
+            } else {
+                nonClassificati.add(l);   // niente CON_POSBIL: da segnalare, non nascondere
+            }
+        }
+        attivo.sort(java.util.Comparator.comparing(BilancioLine::getAccount));
+        passivo.sort(java.util.Comparator.comparing(BilancioLine::getAccount));
+        costi.sort(java.util.Comparator.comparing(BilancioLine::getAccount));
+        ricavi.sort(java.util.Comparator.comparing(BilancioLine::getAccount));
+        nonClassificati.sort(java.util.Comparator.comparing(BilancioLine::getAccount));
+
+        BigDecimal totAttivo  = sumDisplay(attivo);
+        BigDecimal totPassivo = sumDisplay(passivo);
+        BigDecimal totCosti   = sumDisplay(costi);
+        BigDecimal totRicavi  = sumDisplay(ricavi);
+        BigDecimal risultato  = totRicavi.subtract(totCosti);   // >0 utile, <0 perdita
+
+        model.addAttribute("attivo", attivo);
+        model.addAttribute("passivo", passivo);
+        model.addAttribute("costi", costi);
+        model.addAttribute("ricavi", ricavi);
+        model.addAttribute("nonClassificati", nonClassificati);
+        model.addAttribute("totAttivo", totAttivo);
+        model.addAttribute("totPassivo", totPassivo);
+        model.addAttribute("totCosti", totCosti);
+        model.addAttribute("totRicavi", totRicavi);
+        model.addAttribute("risultato", risultato.abs());
+        model.addAttribute("risultatoUtile", risultato.signum() >= 0);
+        // Quadratura patrimoniale: Attivo vs Passivo + risultato d'esercizio
+        model.addAttribute("totPassivoConRisultato",
+            risultato.signum() >= 0 ? totPassivo.add(risultato) : totPassivo);
+        model.addAttribute("showCF", showCF);
         model.addAttribute("anno", anno);
         model.addAttribute("breadcrumbs",
             breadcrumbService.forUrl("/contabilita/bilancio", principal.getUsername()));
         return "contabilita/bilancio";
+    }
+
+    /** Somma degli importi di prospetto (saldo assoluto) di un bucket. */
+    private BigDecimal sumDisplay(List<BilancioLine> lines) {
+        return lines.stream().map(BilancioLine::getDisplayAmount)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    private String trimUpper(String s) {
+        return s == null ? null : s.trim().toUpperCase(java.util.Locale.ROOT);
+    }
+
+    /** Mappa codice conto (trimmed) → Account, per l'anno/società correnti. */
+    private Map<String, Account> accountByCode() {
+        String soc = fiscalContext.getSocietyCode();
+        String anno = fiscalContext.getFiscalYear();
+        return accountRepository.findAllByYearAndSociety(anno, soc).stream()
+            .filter(a -> a.getCode() != null)
+            .collect(Collectors.toMap(
+                a -> a.getCode().trim(),
+                a -> a,
+                (a, b) -> a));
     }
 
     // ─────────────────────────────────────────────── PARTITARI ─────────

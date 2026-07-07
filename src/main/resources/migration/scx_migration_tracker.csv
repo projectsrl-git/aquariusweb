@@ -1,0 +1,8 @@
+form_file,object_name,object_type,base_class,member,member_kind,purpose,source_tables,status,new_location,reason_code,reason_detail
+form/menu_cli000_2016_04_04.scx,CLI000,form,form,Load,event,Setup ambiente/cursori all'apertura maschera clienti,U_CLI_AN,NOT_APPLICABLE,,NOT_APPLICABLE,Setup UI VFP senza logica di business da portare
+form/menu_cli000_2016_04_04.scx,grdClienti,grid,grid,PROPERTY:RecordSource,property,Griglia elenco clienti,U_CLI_AN,MIGRATED,controller CustomerController#list; template clienti/list.html; endpoint GET /clienti,,
+form/menu_cli000_2016_04_04.scx,Form1,pageframe,pageframe,PROPERTY:ControlSource,property,Schede anagrafica cliente (dati/indirizzi/IVA),U_CLI_AN,MIGRATED,template clienti/detail.html; endpoint GET /clienti/{id},,
+form/menu_cli000_2016_04_04.scx,cmdStampaLetteraIntento,commandbutton,commandbutton,Click,button_click,Stampa la lettera di intento del cliente,U_CLI_AN,NOT_MIGRATED,,PRINT_REPORT,Stampa legacy (.frx); la gestione stampe web e' una fase separata
+form/menu_cli000_2016_04_04.scx,cmdPersonalizzaLayoutDocumenti,commandbutton,commandbutton,Click,button_click,Personalizza il layout dei documenti del cliente,U_CLI_AN,NOT_MIGRATED,,OUT_OF_SCOPE,Configurazione layout stampe: fuori scope consultazione read-only
+form/menu_cli000_2016_04_04.scx,Command1,commandbutton,commandbutton,Click,button_click,Cancella riferimenti da anagrafica generale,U_CLI_AN,NOT_MIGRATED,,WRITE_SIDE,Operazione di scrittura sull'anagrafica: riservata a Opus
+form/menu_cli000_2016_04_04.scx,Command2,commandbutton,commandbutton,Click,button_click,Aggiungi referente interno,U_CLI_AN,NOT_MIGRATED,,WRITE_SIDE,Inserimento referente (scrittura): riservata a Opus

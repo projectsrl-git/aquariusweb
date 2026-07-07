@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Tracciamento migrazione – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-diagram-2',
+        title='Tracciamento migrazione',
+        subtitle='Logica dei form VFP (.scx) ↔ web',
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <!-- Riepilogo per stato -->
+    <div class="d-flex flex-wrap gap-2 mb-3">
+        <span class="badge bg-secondary">Totale: <span th:text="${total}">0</span></span>
+        <span th:each="s : ${byStatus}" class="badge"
+              th:classappend="${s.key == 'MIGRATED' ? 'bg-success' :
+                               (s.key == 'NOT_MIGRATED' ? 'bg-danger' :
+                               (s.key == 'PARTIAL' ? 'bg-warning text-dark' : 'bg-secondary'))}"
+              th:text="${s.key + ': ' + s.value}">STATO: 0</span>
+    </div>
+
+    <!-- Filtri -->
+    <div class="row g-2 mb-3">
+        <div class="col-md-4">
+            <input type="text" id="fltText" class="form-control form-control-sm"
+                   placeholder="Cerca (oggetto, membro, scopo, tabella…)">
+        </div>
+        <div class="col-md-2">
+            <select id="fltStatus" class="form-select form-select-sm">
+                <option value="">Tutti gli stati</option>
+                <option>MIGRATED</option><option>PARTIAL</option>
+                <option>NOT_MIGRATED</option><option>NOT_APPLICABLE</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select id="fltForm" class="form-select form-select-sm">
+                <option value="">Tutti i form</option>
+                <option th:each="f : ${forms}" th:value="${f}" th:text="${f}">form.scx</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select id="fltReason" class="form-select form-select-sm">
+                <option value="">Tutti i motivi</option>
+                <option th:each="r : ${reasons}" th:value="${r}" th:text="${r}">REASON</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-sm mb-0 align-middle" id="migTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Form</th>
+                            <th>Oggetto</th>
+                            <th>Membro</th>
+                            <th>Scopo</th>
+                            <th>Tabelle</th>
+                            <th>Stato</th>
+                            <th>Nuovo / Motivo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="r : ${rows}"
+                            th:attr="data-form=${r.formFile}, data-status=${r.status}, data-reason=${r.reasonCode},
+                                     data-text=${(r.objectName + ' ' + r.member + ' ' + r.purpose + ' ' + r.sourceTables).toLowerCase()}">
+                            <td class="small text-muted font-monospace"
+                                th:text="${#strings.replace(r.formFile,'form/','')}">form.scx</td>
+                            <td class="small font-monospace" th:text="${r.objectName}">obj</td>
+                            <td class="small">
+                                <span th:text="${r.member}">Click</span>
+                                <span th:if="${r.memberKind != ''}" class="badge bg-light text-secondary border ms-1"
+                                      th:text="${r.memberKind}">kind</span>
+                            </td>
+                            <td class="small" th:text="${r.purpose}">…</td>
+                            <td class="small">
+                                <span th:each="t : ${#strings.arraySplit(r.sourceTables, ';')}"
+                                      th:if="${t != ''}"
+                                      class="badge bg-secondary-subtle text-secondary-emphasis me-1"
+                                      th:text="${t}">TAB</span>
+                            </td>
+                            <td>
+                                <span class="badge"
+                                      th:classappend="${r.status == 'MIGRATED' ? 'bg-success' :
+                                                       (r.status == 'NOT_MIGRATED' ? 'bg-danger' :
+                                                       (r.status == 'PARTIAL' ? 'bg-warning text-dark' : 'bg-secondary'))}"
+                                      th:text="${r.status}">STATO</span>
+                            </td>
+                            <td class="small">
+                                <span th:if="${r.migrated}" th:text="${r.newLocation}">controller…</span>
+                                <span th:unless="${r.migrated}">
+                                    <span th:if="${r.reasonCode != ''}"
+                                          class="badge bg-warning-subtle text-warning-emphasis"
+                                          th:title="${r.reasonDetail}" th:text="${r.reasonCode}">REASON</span>
+                                    <span th:if="${r.reasonDetail != ''}" class="text-muted ms-1"
+                                          th:text="${r.reasonDetail}">dettaglio</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr th:if="${rows == null or rows.isEmpty()}">
+                            <td colspan="7" class="text-center text-muted py-5">
+                                Nessuna riga nel tracker. Verrà popolato man mano che i form vengono analizzati.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="form-text mt-2">
+        Sorgente: <span class="font-monospace">src/main/resources/migration/scx_migration_tracker.csv</span>
+        — legenda colonne e motivi in <span class="font-monospace">README.md</span> nella stessa cartella.
+    </div>
+
+    <script th:inline="none">
+    (function () {
+        const t = document.getElementById('fltText');
+        const st = document.getElementById('fltStatus');
+        const fm = document.getElementById('fltForm');
+        const rs = document.getElementById('fltReason');
+        const rows = Array.from(document.querySelectorAll('#migTable tbody tr[data-status]'));
+        function apply() {
+            const q = (t.value || '').toLowerCase().trim();
+            const sv = st.value, fv = fm.value, rv = rs.value;
+            rows.forEach(tr => {
+                const okQ = !q || (tr.getAttribute('data-text') || '').includes(q);
+                const okS = !sv || tr.getAttribute('data-status') === sv;
+                const okF = !fv || tr.getAttribute('data-form') === fv;
+                const okR = !rv || tr.getAttribute('data-reason') === rv;
+                tr.style.display = (okQ && okS && okF && okR) ? '' : 'none';
+            });
+        }
+        [t, st, fm, rs].forEach(el => { el.addEventListener('input', apply); el.addEventListener('change', apply); });
+    })();
+    </script>
+
+</section></body>
+</html>
