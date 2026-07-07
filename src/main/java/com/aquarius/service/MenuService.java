@@ -288,7 +288,7 @@ public class MenuService {
                     .build());
                 children.add(1, MenuNode.builder().separator(true).build());
             }
-            case "contabilita" -> {
+            case "contabilit", "contabilita" -> {
                 // Consultazione contabile (web). La "Primanota" NON è qui:
                 // arriva dal container legacy "Prima nota" trasformato in voce
                 // unica (vedi toNodeFromL2 / isPrimaNotaContainer). Qui solo le
@@ -344,7 +344,8 @@ public class MenuService {
     }
 
     private boolean hasSyntheticEntries(String l1Menu) {
-        return "parametri".equals(l1Menu) || "contabilita".equals(l1Menu)
+        return "parametri".equals(l1Menu)
+            || "contabilit".equals(l1Menu) || "contabilita".equals(l1Menu)
             || "magazzino".equals(l1Menu);
     }
 

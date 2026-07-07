@@ -1,32 +1,14 @@
-Shared list UX + primanota grouped by registration (with lookup fixes)
+Fix accounting menu code (contabilit) so synthetic entries appear
 
-Cumulative patch on ea41579 (the list-UX slice was not pushed yet): it contains
-the shared list refactor + primanota grouping AND fixes the two lookups that
-were wrong on first deploy.
+The accounting L1 menu code in tbl_menu is literally "contabilit", not
+"contabilita" (not a truncation — the column is varchar(50)). guessIcon already
+handled both spellings, but injectSyntheticEntries and hasSyntheticEntries only
+matched "contabilita", so the section rendered (icon + primanota) while the
+web-only entries — Storico contabile, Bilancio, Partitario clienti/fornitori,
+Piano dei conti — were silently never injected.
 
-Shared infrastructure:
-- ListParams (page/size/sort/dir with sortable whitelist; sizes 20/50/100/200,
-  default 20) and fragments/list-tools.html (sortableHeader, pager, itDate).
-- Applied to primanota, partitari (cli/for), clienti, fornitori.
-- Dropped fixed ORDER BY from Customer/Supplier/Partita* search so Pageable Sort
-  works. Dates rendered dd/MM/yyyy via itDate.
+Aligned both methods to match "contabilit" as well. Documented the gotcha in
+CLAUDE.md. No behavior change for magazzino/parametri.
 
-Primanota grouped by registration + metrics:
-- One row per registration (searchRegistrationHeads GROUP BY + explicit
-  countQuery + CASE-based ORDER BY; findRowsForRegistrations;
-  RegistrazioneRow.fromMovements).
-- Columns: Tipo Operazione (code + description) and involved accounts as badges.
-- Clickable header metrics: by period, TOP 5 customer/supplier accounts,
-  TOP 5 operation types. Amounts pre-formatted in the controller.
-
-Lookup fixes:
-- Tipo operazione description comes from PARA (CODICE = 'TOP' + MOV_TOP → DESCRI),
-  NOT TAB_TOPCONT. Removed the TipoOperazione entity; operationTypeNameMap() now
-  uses ParameterRepository.findByPrefix("TOP") with a "TOP" prefix on lookups.
-- TOP customers/suppliers now identified by account type CONTI.CON_TIPOCO in
-  ('C','F') (MOV_CCLI/MOV_CFOR are almost always empty): topCustomerAccounts
-  joins MovContabile to Account on the account code and filters by type.
-
-Sandbox checks only (no Maven). Query execution on SQL Server 2012 to be
-confirmed on first deploy (CASE ORDER BY, SUBSTRING GROUP BY, and the
-MovContabile-Account join for the customer/supplier metric).
+Sandbox checks only (no Maven). After deploy (Tomcat restart clears the menu
+cache) the four entries should appear active under Contabilità.

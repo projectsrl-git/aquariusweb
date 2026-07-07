@@ -102,6 +102,14 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
 - `injectSyntheticEntries()` adds web-only entries at the top of an L1 menu
   (currently: parametri, contabilita, magazzino) — remember to also extend
   `hasSyntheticEntries()`.
+- **GOTCHA: the accounting L1 `MENU` code is `"contabilit"`, NOT `"contabilita"`**
+  (that's the literal value stored in `tbl_menu`, not a truncation — the column
+  is varchar(50)). `guessIcon`, `injectSyntheticEntries` and
+  `hasSyntheticEntries` must all match `"contabilit"` (they match both spellings
+  for safety). If only some of them do, the section renders (icon + primanota)
+  but the synthetic entries — Storico, Bilancio, Partitari, Piano dei conti —
+  silently don't appear. Always match the real L1 codes; verify against the log
+  line `Menu '...' L1 '...' (menu=XXX): ...`.
 
 ## 5. Domain knowledge (hard-won, do not re-derive)
 
