@@ -1,26 +1,22 @@
-Migration viewer, versioning, scrollable menu + version footer
+Add read-only articles registry (/articoli)
 
-Cumulative on 9f3a66e (also carries the unpushed storico/bilancio slice) so the
-repo is ready in one deploy before the Fable 5 handoff.
+New consultation module for U_ART_PR (254-column legacy article master),
+web counterpart of VFP MENU_ART000 ("Anagrafica articoli", 986 objects).
 
-Migration viewer (utilities): GET /utilita/migrazione renders the .scx→web
-migration tracker with client-side filters (text/status/form/reason) and a
-per-status summary. CSV moved to the classpath
-(src/main/resources/migration/scx_migration_tracker.csv, README co-located) so it
-is readable at runtime; MigrationTrackerService (quote-aware CSV parser) +
-MigrationRow. Menu entry added to the static "Strumenti" sidebar section.
+- Article entity: ~30 columns mapped, all insertable/updatable=false,
+  verified against docs/db_schema/aquarius_schema_full.csv. Note: the VFP
+  form binds M.art_coord1..4 which are memvars; the real column is ART_COORD.
+- Shared list pattern (ListParams + list-tools): free-text search on
+  code/description/barcode/supplier, sortable whitelist, badges for
+  UM/IVA/commodity category/Obsoleto.
+- Detail: 4 cards (Anagrafica, Prezzi, Classificazione e fornitore,
+  Magazzino e note). No edit path: maintenance stays on the VFP client.
+- MenuService FORM_TO_URL: menu_art000 -> /articoli (tbl_menu leaf
+  'gestionearticoli' already exists; no synthetic entries needed).
+- Migration tracker: 22 rows for MENU_ART000.SCX.
 
-Versioning: rule documented in CLAUDE.md (semver-ish, no -SNAPSHOT on deployed
-builds). Bumped 0.1.0-SNAPSHOT -> 0.2.0. Commit id captured at build time via the
-git-commit-id plugin (app.commit=@git.commit.id.abbrev@); AppVersionService
-guards an unresolved token; footer shows "v0.2.0 · <hash>".
-
-Menu/footer: #sidebar min-height -> height:100vh so the nav scrolls when long and
-the version footer stays pinned/visible; opening a branch now closes sibling
-branches (accordion, one open at a time).
-
-Also includes storico account autocomplete + bilancio a sezioni contrapposte.
-
-Sandbox checks only (no Maven). Confirm on deploy: the git-commit-id plugin (if
-it can't resolve, the footer just omits the commit — guarded, build must not
-fail) and SQL Server query execution.
+Verification (sandbox only, no Maven/JDK/SQL Server): Java brace/paren
+balance OK; duplicate @Column grep empty; fragment arity OK (sortableHeader
+8 args, pager 7); tracker CSV 12 columns per row. git apply --check OK on
+fresh clone of HEAD d4652ec. Maven build and live-DB behaviour to be
+confirmed at first deploy.

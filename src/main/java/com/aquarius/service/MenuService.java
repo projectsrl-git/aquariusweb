@@ -90,7 +90,9 @@ public class MenuService {
         Map.entry("menu_primanot",  "/contabilita/primanota"),
         Map.entry("menu_primanot2", "/contabilita/primanota"),
         Map.entry("viewpartitario", "/contabilita/partitari/clienti"),
-        Map.entry("partitario_soprad", "/contabilita/partitari/clienti")
+        Map.entry("partitario_soprad", "/contabilita/partitari/clienti"),
+        // Slice: Anagrafica articoli (consultazione)
+        Map.entry("menu_art000", "/articoli")
     );
 
     /**

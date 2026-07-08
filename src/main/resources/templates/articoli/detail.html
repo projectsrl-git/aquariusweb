@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Articolo – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-box',
+        title=${article.description != null ? article.description : article.code},
+        subtitle='Articolo ' + ${article.code != null ? article.code.trim() : ''},
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <div class="d-flex gap-2 mb-3 align-items-center">
+        <a th:href="@{/articoli}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i>Torna alla lista
+        </a>
+        <span class="badge bg-warning-subtle text-warning-emphasis" th:if="${article.isObsolete()}">
+            <i class="bi bi-exclamation-triangle me-1"></i>Articolo obsoleto
+        </span>
+        <span class="text-muted small ms-auto">Consultazione — la manutenzione articoli resta sul gestionale</span>
+    </div>
+
+    <div class="row g-3 detail-cards">
+
+        <!-- Anagrafica -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white">
+                    <h6 class="detail-card-title"><i class="bi bi-card-text me-1"></i>Anagrafica</h6>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0 small">
+                        <dt class="col-5 text-muted">Codice articolo</dt>
+                        <dd class="col-7 font-monospace" th:text="${article.code != null ? article.code.trim() : '—'}">—</dd>
+                        <dt class="col-5 text-muted">Estensione</dt>
+                        <dd class="col-7 font-monospace" th:text="${article.extension != null and !article.extension.trim().isEmpty() ? article.extension.trim() : '—'}">—</dd>
+                        <dt class="col-5 text-muted">Descrizione</dt>
+                        <dd class="col-7" th:text="${article.description ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">Descrizione estesa</dt>
+                        <dd class="col-7" th:text="${article.extendedDescription ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">Ridotta / REF</dt>
+                        <dd class="col-7" th:text="${article.shortDescription ?: '—'}">—</dd>
+                        <dt class="col-5 text-muted">Unità di misura</dt>
+                        <dd class="col-7" th:text="${article.unitOfMeasure != null and !article.unitOfMeasure.trim().isEmpty() ? article.unitOfMeasure.trim() : '—'}">—</dd>
+                        <dt class="col-5 text-muted">UM magazzino</dt>
+                        <dd class="col-7" th:text="${article.warehouseUnit != null and !article.warehouseUnit.trim().isEmpty() ? article.warehouseUnit.trim() : '—'}">—</dd>
+                        <dt class="col-5 text-muted">Tipo</dt>
+                        <dd class="col-7 font-monospace" th:text="${article.type != null and !article.type.trim().isEmpty() ? article.type.trim() : '—'}">—</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <!-- Prezzi -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white">
+                    <h6 class="detail-card-title"><i class="bi bi-currency-euro me-1"></i>Prezzi</h6>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0 small">
+                        <dt class="col-5 text-muted">Prezzo di vendita 1</dt>
+                        <dd class="col-7 font-monospace" th:text="${article.salePrice1 != null ? #numbers.formatDecimal(article.salePrice1, 1, 'POINT', 2, 'COMMA') : '—'}">—</dd>
+                        <dt class="col-5 text-muted">Prezzo di vendita 2</dt>
+                        <dd class="col-7 font-monospace" th:text="${article.salePrice2 != null ? #numbers.formatDecimal(article.salePrice2, 1, 'POINT', 2, 'COMMA') : '—'}">—</dd>
+                        <dt class="col-5 text-muted">Prezzo di vendita 3</dt>
+                        <dd class="col-7 font-monospace" th:text="${article.salePrice3 != null ? #numbers.formatDecimal(article.salePrice3, 1, 'POINT', 2, 'COMMA') : '—'}">—</dd>
+                        <dt class="col-5 text-muted">Prezzo di vendita 4</dt>
+                        <dd class="col-7 font-monospace" th:text="${article.salePrice4 != null ? #numbers.formatDecimal(article.salePrice4, 1, 'POINT', 2, 'COMMA') : '—'}">—</dd>
+                        <dt class="col-5 text-muted">Prezzo di vendita 5</dt>
+                        <dd class="col-7 font-monospace" th:text="${article.salePrice5 != null ? #numbers.formatDecimal(article.salePrice5, 1, 'POINT', 2, 'COMMA') : '—'}">—</dd>
+                        <dt class="col-5 text-muted">Costo standard</dt>
+                        <dd class="col-7 font-monospace" th:text="${article.standardCost != null ? #numbers.formatDecimal(article.standardCost, 1, 'POINT', 2, 'COMMA') : '—'}">—</dd>
+                        <dt class="col-5 text-muted">Codice IVA</dt>
+                        <dd class="col-7"><span class="badge bg-info-subtle text-info-emphasis"
+                              th:if="${article.vatCode != null and !article.vatCode.trim().isEmpty()}"
+                              th:text="${article.vatCode.trim()}">22</span>
+                            <span th:if="${article.vatCode == null or article.vatCode.trim().isEmpty()}">—</span></dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <!-- Classificazione e fornitore -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white">
+                    <h6 class="detail-card-title"><i class="bi bi-tags me-1"></i>Classificazione e fornitore</h6>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0 small">
+                        <dt class="col-5 text-muted">Categoria merceologica</dt>
+                        <dd class="col-7 font-monospace" th:text="${article.commodityCategory != null and !article.commodityCategory.trim().isEmpty() ? article.commodityCategory.trim() : '—'}">—</dd>
+                        <dt class="col-5 text-muted">Codice categoria</dt>
+                        <dd class="col-7 font-monospace" th:text="${article.categoryCode != null and !article.categoryCode.trim().isEmpty() ? article.categoryCode.trim() : '—'}">—</dd>
+                        <dt class="col-5 text-muted">Tipo prodotto</dt>
+                        <dd class="col-7 font-monospace" th:text="${article.productType != null and !article.productType.trim().isEmpty() ? article.productType.trim() : '—'}">—</dd>
+                        <dt class="col-5 text-muted">Fornitore abituale</dt>
+                        <dd class="col-7 font-monospace" th:text="${article.supplierCode != null and !article.supplierCode.trim().isEmpty() ? article.supplierCode.trim() : '—'}">—</dd>
+                        <dt class="col-5 text-muted">Barcode</dt>
+                        <dd class="col-7 font-monospace" th:text="${article.barcode != null and !article.barcode.trim().isEmpty() ? article.barcode.trim() : '—'}">—</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <!-- Magazzino e note -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white">
+                    <h6 class="detail-card-title"><i class="bi bi-box-seam me-1"></i>Magazzino e note</h6>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0 small">
+                        <dt class="col-5 text-muted">Scaffale</dt>
+                        <dd class="col-7" th:text="${article.location != null and !article.location.trim().isEmpty() ? article.location.trim() : '—'}">—</dd>
+                        <dt class="col-5 text-muted">Scorta minima</dt>
+                        <dd class="col-7 font-monospace" th:text="${article.minStock != null ? #numbers.formatDecimal(article.minStock, 1, 'POINT', 2, 'COMMA') : '—'}">—</dd>
+                        <dt class="col-5 text-muted">Scorta massima</dt>
+                        <dd class="col-7 font-monospace" th:text="${article.maxStock != null ? #numbers.formatDecimal(article.maxStock, 1, 'POINT', 2, 'COMMA') : '—'}">—</dd>
+                        <dt class="col-5 text-muted">Peso (kg)</dt>
+                        <dd class="col-7 font-monospace" th:text="${article.weightKg != null ? #numbers.formatDecimal(article.weightKg, 1, 'POINT', 3, 'COMMA') : '—'}">—</dd>
+                        <dt class="col-5 text-muted">Note</dt>
+                        <dd class="col-7">
+                            <div th:if="${article.note1 != null and !article.note1.trim().isEmpty()}" th:text="${article.note1}"></div>
+                            <div th:if="${article.note2 != null and !article.note2.trim().isEmpty()}" th:text="${article.note2}"></div>
+                            <div th:if="${article.note3 != null and !article.note3.trim().isEmpty()}" th:text="${article.note3}"></div>
+                            <span th:if="${(article.note1 == null or article.note1.trim().isEmpty()) and (article.note2 == null or article.note2.trim().isEmpty()) and (article.note3 == null or article.note3.trim().isEmpty())}">—</span>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section></body>
+</html>

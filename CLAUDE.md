@@ -227,6 +227,7 @@ size ai byte 6-7). I form contengono MOLTA logica nei bottoni/validazioni
 | Contabilità (read-only) | `/contabilita…` | Primanota (**grouped by registration**: tipo operazione + involved-accounts badges + clickable metrics), storico (mastrino), bilancio, partitari cli/for. Read-only su MOV_CONT / PART_CLI / PART_FOR / PARA / CONTI. Data-entry primanota = slice futura |
 | Warehouse valuation | `/magazzino/valorizzazione` | FIFO + FX + Pareto + Excel |
 | Custom reports | `/custom-reports…` | self-service SQL reports (foundation for "Project-JDBCapy") |
+| Articles (read-only) | `/articoli` | Consultation of U_ART_PR (VFP MENU_ART000): shared list pattern + 4-card detail. ~30 of 254 columns mapped, no edit path (maintenance stays on VFP). ART_COORD1..4 in the form are memvars — real column is ART_COORD |
 
 ## 7. Security notes (PUBLIC repository!)
 
