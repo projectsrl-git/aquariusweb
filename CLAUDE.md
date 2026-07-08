@@ -131,9 +131,12 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
 - Log versioni:
   - 0.2.0 — shared list UX, primanota raggruppata, fix menu contabilita',
     autocomplete storico, bilancio a sezioni, migration tracker+viewer.
-  - **0.3.0 (corrente)** — magazzino / distinta base / produzione standard,
+  - 0.3.0 — magazzino / distinta base / produzione standard,
     consultazione (+ sessione 1: articoli, ordini, DDT, fatture+proforma,
     cruscotto ristampa documenti).
+  - **0.3.1 (corrente)** — cesello dettaglio righe documento: righe espandibili
+    + esplosione commenti dal CLOB ORD_NOTE (per ora sulle fatture, poi
+    ordini/DDT/proforma).
 
 ## 4c. Migration tracker (.scx logic ↔ web)
 

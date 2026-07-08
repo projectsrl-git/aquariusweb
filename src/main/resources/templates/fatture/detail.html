@@ -101,7 +101,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="r : ${rows}" th:classappend="${r.isComment()} ? 'table-light text-muted' : ''">
+                        <th:block th:each="r : ${rows}">
+                        <tr class="doc-main-row"
+                            th:classappend="${(r.isComment() ? 'table-light text-muted ' : '') + (r.hasDetail ? 'has-detail' : '')}">
                             <td class="text-end font-monospace small" th:text="${r.sequence != null ? #numbers.formatDecimal(r.sequence, 1, 0) : ''}">1</td>
                             <td class="font-monospace small">
                                 <span th:text="${r.articleCode != null ? r.articleCode.trim() : ''}"></span><span
@@ -109,8 +111,13 @@
                                     class="text-muted" th:text="'/' + ${r.articleExtension.trim()}"></span>
                             </td>
                             <td class="small">
-                                <span th:text="${r.description ?: ''}"></span>
-                                <div class="text-muted" th:if="${r.description2 != null and !r.description2.trim().isEmpty()}" th:text="${r.description2}"></div>
+                                <!-- riga COMMENTO: mostra il testo esploso da ORD_NOTE -->
+                                <div th:if="${r.isComment()}" style="white-space:pre-wrap" th:text="${r.commentText}">commento</div>
+                                <th:block th:unless="${r.isComment()}">
+                                    <span th:text="${r.description ?: ''}"></span>
+                                    <div class="text-muted" th:if="${r.description2 != null and !r.description2.trim().isEmpty()}" th:text="${r.description2}"></div>
+                                </th:block>
+                                <i th:if="${r.hasDetail}" class="bi bi-chevron-down text-muted ms-1" style="font-size:.7rem"></i>
                             </td>
                             <td class="text-end font-monospace small" th:text="${r.quantity != null ? #numbers.formatDecimal(r.quantity, 1, 'POINT', 2, 'COMMA') : ''}">1,00</td>
                             <td class="text-end font-monospace small" th:text="${r.netPrice != null ? #numbers.formatDecimal(r.netPrice, 1, 'POINT', 2, 'COMMA') : ''}">0,00</td>
@@ -119,6 +126,8 @@
                                       th:if="${r.vatCode != null and !r.vatCode.trim().isEmpty()}"
                                       th:text="${r.vatCode.trim()}">22</span></td>
                         </tr>
+                        <tr th:replace="~{fragments/doc-row :: detailRow(${r}, 7)}"></tr>
+                        </th:block>
                         <tr th:if="${#lists.isEmpty(rows)}">
                             <td colspan="7" class="text-center text-muted py-4">Nessuna riga collegata a questa fattura (verificare chiave di aggancio sui dati storici).</td>
                         </tr>
@@ -128,5 +137,6 @@
         </div>
     </div>
 
+    <div th:replace="~{fragments/doc-row :: toggleScript}"></div>
 </section></body>
 </html>

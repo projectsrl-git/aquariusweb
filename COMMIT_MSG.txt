@@ -1,50 +1,18 @@
-Add magazzino, distinta base, produzione standard (read-only)
+Document row detail: expandable rows + comment CLOB (invoices)
 
-Session-2 horizontal expansion, three consultation modules in one
-cumulative patch (they share pom.xml, CLAUDE.md, migration tracker and
-MenuService). Version bump 0.2.0 -> 0.3.0 (MINOR, new user-visible
-modules; log line added in CLAUDE.md 4b).
+Cesello on the document detail view, done on invoices first as the reference
+(to validate the untestable part — reading the ORD_NOTE text/CLOB via jTDS —
+before replicating to orders/DDT/proforma).
 
-MAGAZZINO (/magazzino/movimenti, /magazzino/giacenze)
-- WarehouseMovement (U_MAG_MO): fiscal-year list, TOP causale badge
-  decoded via PARA 'TOP'+MOV_TOP -> DESCRI (verbatim from the
-  menu_movimenti_mag query; same TOP rule as primanota). Dates stay
-  strings (dirty MOV_DTREGI, never converted).
-- StockBalanceDao (U_MAG_GG, native SQL on tenantDataSource): the legacy
-  aggregation SUM(MAG_GIACEN) GROUP BY MAG_ANAART, MAG_CODMAG - counting
-  groups with HAVING needs a derived table, not expressible in
-  JPQL/Hibernate 5. Anomalies surfaced, not hidden: badge "Negativa" and
-  "Zero con storico" (phantom rows); switch to include zero balances.
-- Menu: menu_movimenti_mag via FORM_TO_URL; giacenze via NEW minimal
-  FUNCTION_TO_URL mechanism (commands '=funzione()') mapping
-  determina_form_giacenze -> /magazzino/giacenze (APPLILIB dispatcher,
-  non-medical installs open MENU_GIACENZE).
+- Comment rows (*** COMMENTO *** on ORD_DESART) now show the real comment body
+  from the ORD_NOTE CLOB, matching FATTURAZIONE_ELETTRONICA_LIB.
+- Rows are clickable to expand a grouped detail panel (UM/weight, dimensions,
+  source order, destination, notes) shown only when populated.
+- InvoiceRow maps the curated extra fields + ORD_NOTE/ORD_NOTEBO
+  (columnDefinition="text", read-only). New shared fragment fragments/doc-row.html
+  (detailRow + toggleScript), reusable by the other document types.
+- Version 0.3.1 (patch: refinement of existing modules).
 
-DISTINTA BASE (/distinte)
-- BomHead/BomRow (U_DIS_TT/DD): DIT_GRUPPO = parent ARTICLE code (join
-  U_ART_PR.ART_CODPRI in DISTINTA_BASE_LIB); first-level components only;
-  DIS_ESPLOD='X' -> "Apri sotto-distinta" link, one level at a time via
-  /distinte/articolo/{code}. Multi-level explosion and costing DEFERRED.
-- Menu: menu_dis000 -> /distinte.
-
-PRODUZIONE STANDARD (/produzione)
-- STANDARD discriminator VERIFIED in STD_PROGRAMMAZIONE sources:
-  PARENT = '' AND TIPO = 'STD' on PRODUZIONE (root nodes of the program
-  tree). PROD_ORDINI/PROD_LEGAMI/PROD_AVANZA linked by IDPRG (no soc/year
-  columns). GRUPRD badge decoded via PARA 'PRD'+code (legacy seek_para).
-- Detail: program header (planned vs actual), linked customer orders,
-  components (PRDFIN badge), progress planned-vs-produced. Non-standard
-  production variants excluded by mandate (OUT_OF_SCOPE in tracker);
-  std_avanza is data-entry and intentionally NOT menu-mapped.
-
-Migration tracker: +11 rows (menu_movimenti_mag, menu_giacenze,
-MENU_DIS000, STD_PROGRAMMAZIONE, STD_AVANZA). Three slice docs in
-.claude/ + three rows in the CLAUDE.md slice table.
-
-Verification (sandbox only): every mapped column checked against the
-schema CSV (none missing); brace/paren balance OK on all 20 Java files;
-div balance and fragment arity OK on all 6 templates; CSV 12 cols/row;
-patch applies cleanly on a second fresh clone of HEAD b1acd71. Maven
-build and execution on SQL Server 2012 to be confirmed at first deploy
-(notably: giacenze aggregation performance, TIPO='STD' coverage on
-pre-2013 programs, TOP codes resolving in PARA).
+Sandbox checks only (no Maven). Confirm on deploy that the text columns read as
+String via jTDS/Hibernate on SQL Server 2012; if OK, replicate to orders/DDT/
+proforma. If Hibernate objects to the text type, @Lob is the fallback.

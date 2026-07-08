@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<!--
+  Fragment condivisi per il dettaglio espandibile delle righe documento
+  (fatture/ordini/DDT/proforma). La riga entità deve esporre i getter:
+  um, umFinal, weightPerUm, thickness, height, length, sourceOrderNo,
+  sourceOrderDate, destination, note, noteInternal, isHasDetail().
+-->
+<html xmlns:th="http://www.thymeleaf.org"><body>
+
+<!-- Riga di dettaglio (nascosta finché non si clicca la riga sopra). cols = numero colonne della tabella. -->
+<tr th:fragment="detailRow(r, cols)" class="doc-detail-row" style="display:none">
+    <td th:attr="colspan=${cols}" class="bg-light">
+        <div class="row g-3 px-2 py-1 small">
+            <!-- Unità di misura / quantità -->
+            <div class="col-md-3" th:if="${r.um != null and !r.um.trim().isEmpty()} or ${r.weightPerUm != null and r.weightPerUm.signum() != 0}">
+                <div class="text-uppercase text-muted" style="font-size:.7rem">Unità di misura</div>
+                <div><span th:if="${r.um != null and !r.um.trim().isEmpty()}" th:text="${'UM ' + r.um.trim()}">UM</span>
+                     <span th:if="${r.umFinal != null and !r.umFinal.trim().isEmpty()}" class="text-muted" th:text="${' · fin. ' + r.umFinal.trim()}"></span></div>
+                <div th:if="${r.weightPerUm != null and r.weightPerUm.signum() != 0}"
+                     th:text="${'Peso/UM: ' + #numbers.formatDecimal(r.weightPerUm,1,'POINT',3,'COMMA')}">Peso</div>
+            </div>
+            <!-- Misure -->
+            <div class="col-md-3" th:if="${(r.thickness != null and r.thickness.signum() != 0) or (r.height != null and r.height.signum() != 0) or (r.length != null and r.length.signum() != 0)}">
+                <div class="text-uppercase text-muted" style="font-size:.7rem">Misure</div>
+                <div>
+                    <span th:if="${r.thickness != null and r.thickness.signum() != 0}" th:text="${'Sp. ' + #numbers.formatDecimal(r.thickness,1,'POINT',2,'COMMA')}"></span>
+                    <span th:if="${r.height != null and r.height.signum() != 0}" th:text="${' · H ' + #numbers.formatDecimal(r.height,1,'POINT',2,'COMMA')}"></span>
+                    <span th:if="${r.length != null and r.length.signum() != 0}" th:text="${' · L ' + #numbers.formatDecimal(r.length,1,'POINT',2,'COMMA')}"></span>
+                </div>
+            </div>
+            <!-- Riferimento ordine origine -->
+            <div class="col-md-3" th:if="${r.sourceOrderNo != null and !r.sourceOrderNo.trim().isEmpty()}">
+                <div class="text-uppercase text-muted" style="font-size:.7rem">Ordine origine</div>
+                <div><span th:text="${r.sourceOrderNo.trim()}">N.</span>
+                     <span th:if="${r.sourceOrderDate != null and !r.sourceOrderDate.trim().isEmpty()}" class="text-muted"
+                           th:replace="~{fragments/list-tools :: itDate(${r.sourceOrderDate})}"> </span></div>
+            </div>
+            <!-- Destinazione -->
+            <div class="col-md-3" th:if="${r.destination != null and !r.destination.trim().isEmpty()}">
+                <div class="text-uppercase text-muted" style="font-size:.7rem">Destinazione</div>
+                <div th:text="${r.destination.trim()}">dest</div>
+            </div>
+            <!-- Note di riga (ORD_NOTE) su riga non-commento -->
+            <div class="col-12" th:if="${!r.isComment() and r.note != null and !r.note.trim().isEmpty()}">
+                <div class="text-uppercase text-muted" style="font-size:.7rem">Note</div>
+                <div style="white-space:pre-wrap" th:text="${r.note.trim()}">note</div>
+            </div>
+            <!-- Note interne (ORD_NOTEBO) -->
+            <div class="col-12" th:if="${r.noteInternal != null and !r.noteInternal.trim().isEmpty()}">
+                <div class="text-uppercase text-muted" style="font-size:.7rem">Note interne</div>
+                <div style="white-space:pre-wrap" th:text="${r.noteInternal.trim()}">note bo</div>
+            </div>
+        </div>
+    </td>
+</tr>
+
+<!-- Script di toggle: da includere UNA volta per pagina. -->
+<th:block th:fragment="toggleScript">
+    <script th:inline="none">
+    (function () {
+        document.querySelectorAll('tr.doc-main-row').forEach(function (row) {
+            row.addEventListener('click', function () {
+                var d = row.nextElementSibling;
+                if (d && d.classList.contains('doc-detail-row')) {
+                    d.style.display = (d.style.display === 'none' || !d.style.display) ? 'table-row' : 'none';
+                    row.classList.toggle('doc-open');
+                }
+            });
+        });
+    })();
+    </script>
+    <style>
+        tr.doc-main-row.has-detail { cursor: pointer; }
+        tr.doc-main-row.doc-open { background: var(--bs-primary-bg-subtle, #e7f1ff); }
+    </style>
+</th:block>
+
+</body></html>
