@@ -260,6 +260,7 @@ public class ContabilitaController {
     @GetMapping("/bilancio")
     @Transactional(transactionManager = "tenantTransactionManager", readOnly = true)
     public String bilancio(@RequestParam(value = "cf", defaultValue = "true") boolean showCF,
+                           @RequestParam(value = "vista", defaultValue = "mastri") String vista,
                            Model model,
                            @AuthenticationPrincipal AquariusPrincipal principal) {
         String soc = fiscalContext.getSocietyCode();
@@ -338,6 +339,7 @@ public class ContabilitaController {
         model.addAttribute("totPassivoConRisultato",
             risultato.signum() >= 0 ? totPassivo.add(risultato) : totPassivo);
         model.addAttribute("showCF", showCF);
+        model.addAttribute("vista", "contrapposte".equals(vista) ? "contrapposte" : "mastri");
         model.addAttribute("quadraturaSP", quadraturaSP.abs());
         model.addAttribute("sbilancio", sbilancio.abs());
         model.addAttribute("quadraturaOk", quadraturaOk);

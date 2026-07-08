@@ -1,8 +1,10 @@
-Bilancio: expand quadratura banner + sub-tabs per section
+Bilancio: add side-by-side (sezioni contrapposte) view switch
 
-- Quadratura banner now spells out the identity:
-  "(Attivita - Passivita) = <value> - result = 0", with "Differenza: 0,00".
-- Sub-tabs (nav-pills) inside the main SP/CE tabs: Attivita/Passivita under
-  Stato Patrimoniale, Costi/Ricavi under Conto Economico.
+New ?vista=mastri|contrapposte switch (btn-group next to the C/F toggle):
+- mastri: existing mastro/gruppo tree with tabs.
+- contrapposte: Attivita|Passivita side by side, then Costi|Ricavi side by side
+  (saldo per account, section total in footer) — the pre-grouping layout.
+C/F leaves still respect the toggle; section totals include everything so the
+quadratura is unchanged. New sezioneFlat fragment; controller gains a vista param.
 
-Version 0.7.1. Template-only change. Sandbox checks only.
+Version 0.8.0. Sandbox checks only.

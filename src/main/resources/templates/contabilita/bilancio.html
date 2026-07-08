@@ -11,16 +11,27 @@
         crumbs=${breadcrumbs}
     )}"></div>
 
-    <!-- ─── Opzioni (toggle C/F: hidden + JS così anche il deselezionato invia) ─ -->
-    <form method="get" th:action="@{/contabilita/bilancio}" class="mb-3 d-flex align-items-center gap-2">
-        <input type="hidden" name="cf" id="cfHidden" th:value="${showCF}">
-        <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" role="switch" id="cfToggle"
-                   th:checked="${showCF}"
-                   onchange="document.getElementById('cfHidden').value = this.checked; this.form.submit();">
-            <label class="form-check-label small" for="cfToggle">Mostra conti clienti / fornitori</label>
+    <!-- ─── Opzioni: switch vista + toggle C/F ─────────────────────────── -->
+    <div class="d-flex align-items-center gap-3 mb-3 flex-wrap">
+        <div class="btn-group btn-group-sm" role="group" aria-label="Vista bilancio">
+            <a class="btn" th:classappend="${vista == 'mastri' ? 'btn-primary' : 'btn-outline-primary'}"
+               th:href="@{/contabilita/bilancio(vista='mastri', cf=${showCF})}">
+                <i class="bi bi-list-nested me-1"></i>Mastri e gruppi</a>
+            <a class="btn" th:classappend="${vista == 'contrapposte' ? 'btn-primary' : 'btn-outline-primary'}"
+               th:href="@{/contabilita/bilancio(vista='contrapposte', cf=${showCF})}">
+                <i class="bi bi-layout-split me-1"></i>Sezioni contrapposte</a>
         </div>
-    </form>
+        <form method="get" th:action="@{/contabilita/bilancio}" class="d-flex align-items-center gap-2 mb-0">
+            <input type="hidden" name="vista" th:value="${vista}">
+            <input type="hidden" name="cf" id="cfHidden" th:value="${showCF}">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" role="switch" id="cfToggle"
+                       th:checked="${showCF}"
+                       onchange="document.getElementById('cfHidden').value = this.checked; this.form.submit();">
+                <label class="form-check-label small" for="cfToggle">Mostra conti clienti / fornitori</label>
+            </div>
+        </form>
+    </div>
 
     <!-- ─── Quadro di sintesi ──────────────────────────────────────────── -->
     <div class="row g-3 mb-3">
@@ -83,6 +94,8 @@
         </span>
     </div>
 
+    <!-- ═══════════ VISTA A MASTRI / GRUPPI ═══════════ -->
+    <div th:if="${vista == 'mastri'}">
     <!-- ─── TAB: Stato Patrimoniale | Conto Economico ──────────────────── -->
     <ul class="nav nav-tabs mb-3" role="tablist">
         <li class="nav-item" role="presentation">
@@ -139,6 +152,29 @@
                     <span class="fs-5 fw-bold font-monospace" th:classappend="${risultatoUtile ? 'text-success' : 'text-danger'}"
                           th:text="${#numbers.formatDecimal(risultato,1,'POINT',2,'COMMA')}">0,00</span>
                 </div>
+            </div>
+        </div>
+    </div>
+    </div><!-- /vista mastri -->
+
+    <!-- ═══════════ VISTA A SEZIONI CONTRAPPOSTE ═══════════ -->
+    <div th:if="${vista == 'contrapposte'}">
+        <h6 class="text-uppercase text-muted fw-semibold mb-2"><i class="bi bi-bank me-1"></i>Stato Patrimoniale</h6>
+        <div class="row g-3 mb-4 align-items-stretch">
+            <div class="col-lg-6"><div th:replace="~{contabilita/bilancio :: sezioneFlat('Attività', ${attivo}, ${totAttivo})}"></div></div>
+            <div class="col-lg-6"><div th:replace="~{contabilita/bilancio :: sezioneFlat('Passività', ${passivo}, ${totPassivo})}"></div></div>
+        </div>
+        <h6 class="text-uppercase text-muted fw-semibold mb-2"><i class="bi bi-graph-up-arrow me-1"></i>Conto Economico</h6>
+        <div class="row g-3 mb-3 align-items-stretch">
+            <div class="col-lg-6"><div th:replace="~{contabilita/bilancio :: sezioneFlat('Costi', ${costi}, ${totCosti})}"></div></div>
+            <div class="col-lg-6"><div th:replace="~{contabilita/bilancio :: sezioneFlat('Ricavi', ${ricavi}, ${totRicavi})}"></div></div>
+        </div>
+        <div class="card shadow-sm border-0 mb-4"
+             th:classappend="${risultatoUtile ? 'border-start border-success border-4' : 'border-start border-danger border-4'}">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <span class="fw-semibold" th:text="${risultatoUtile ? 'Utile d''esercizio (Ricavi − Costi)' : 'Perdita d''esercizio (Costi − Ricavi)'}">Risultato</span>
+                <span class="fs-5 fw-bold font-monospace" th:classappend="${risultatoUtile ? 'text-success' : 'text-danger'}"
+                      th:text="${#numbers.formatDecimal(risultato,1,'POINT',2,'COMMA')}">0,00</span>
             </div>
         </div>
     </div>
@@ -211,6 +247,42 @@
                     </th:block>
                     <tr th:if="${mastri == null or mastri.isEmpty()}">
                         <td colspan="4" class="text-center text-muted py-4 small">Nessun conto movimentato.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer bg-light d-flex justify-content-between align-items-center">
+        <span class="text-uppercase small fw-semibold">Totale <span th:text="${titolo}">sezione</span></span>
+        <span class="font-monospace fw-bold" th:text="${#numbers.formatDecimal(totale,1,'POINT',2,'COMMA')}">0,00</span>
+    </div>
+</div>
+
+<!-- ═══════════ FRAGMENT: sezioneFlat (lista piatta, saldo, per vista contrapposta) ═══════════ -->
+<div th:fragment="sezioneFlat(titolo, righe, totale)" class="card shadow-sm border-0 h-100">
+    <div class="card-header bg-light py-2 d-flex justify-content-between align-items-center">
+        <span class="fw-semibold" th:text="${titolo}">Sezione</span>
+        <span class="badge bg-secondary" th:text="${righe != null ? righe.size() : 0}">0</span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover table-sm mb-0">
+                <tbody>
+                    <tr th:each="l : ${righe}" th:if="${showCF or !l.customerOrSupplier}">
+                        <td style="width:120px">
+                            <a th:href="@{/contabilita/storico(conto=${l.account})}"
+                               class="font-monospace small text-decoration-none" th:text="${l.account}">01.05.001</a>
+                        </td>
+                        <td class="small">
+                            <span th:text="${l.description ?: '—'}">Conto</span>
+                            <span th:if="${l.accountType == 'C'}" class="badge bg-info-subtle text-info-emphasis ms-1">Cliente</span>
+                            <span th:if="${l.accountType == 'F'}" class="badge bg-warning-subtle text-warning-emphasis ms-1">Fornitore</span>
+                        </td>
+                        <td class="text-end font-monospace small fw-semibold"
+                            th:text="${#numbers.formatDecimal(l.displayAmount,1,'POINT',2,'COMMA')}">0,00</td>
+                    </tr>
+                    <tr th:if="${righe == null or righe.isEmpty()}">
+                        <td colspan="3" class="text-center text-muted py-4 small">Nessun conto.</td>
                     </tr>
                 </tbody>
             </table>

@@ -148,8 +148,10 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
     mappatura con pannello anomalie.
   - 0.7.0 — bilancio raggruppato per mastri/gruppi
     (Bilancio di verifica, Prog. Dare/Avere/Saldo); quadratura stabile col toggle C/F.
-  - **0.7.1 (corrente)** — bilancio: banner quadratura esteso + sub-tab
+  - 0.7.1 — bilancio: banner quadratura esteso + sub-tab
     Attività/Passività e Costi/Ricavi.
+  - **0.8.0 (corrente)** — bilancio: switch vista mastri/gruppi ↔ sezioni
+    contrapposte (Attività|Passività, Costi|Ricavi).
 
 ## 4c. Migration tracker (.scx logic ↔ web)
 
