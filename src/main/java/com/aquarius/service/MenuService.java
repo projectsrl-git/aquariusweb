@@ -94,7 +94,9 @@ public class MenuService {
         // Slice: Anagrafica articoli (consultazione)
         Map.entry("menu_art000", "/articoli"),
         // Slice: Ordini clienti (consultazione)
-        Map.entry("menu_ord000", "/ordini")
+        Map.entry("menu_ord000", "/ordini"),
+        // Slice: DDT / documenti di trasporto (consultazione)
+        Map.entry("menu_bol000", "/ddt")
     );
 
     /**

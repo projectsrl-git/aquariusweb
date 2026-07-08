@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>DDT – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-truck',
+        title='Documenti di trasporto',
+        subtitle='Consultazione DDT — anno ' + ${currentFiscalYear} + ' (tabelle U_BOL_TT / U_BOL_DD)',
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <form method="get" th:action="@{/ddt}" class="mb-3">
+        <input type="hidden" name="size" th:value="${size}">
+        <input type="hidden" name="sort" th:value="${sort}">
+        <input type="hidden" name="dir" th:value="${dir}">
+        <div class="input-group" style="max-width:600px">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" name="q" th:value="${q}" class="form-control"
+                   placeholder="Numero, cliente, riferimento o vettore…">
+            <button type="submit" class="btn btn-primary">Cerca</button>
+            <a th:href="@{/ddt}" class="btn btn-outline-secondary" th:if="${q != null and q != ''}">
+                <i class="bi bi-x"></i>
+            </a>
+        </div>
+    </form>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-sm mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/ddt','ddtNumber','Numero',${q},${size},${sort},${dir},'')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/ddt','ddtDate','Data',${q},${size},${sort},${dir},'')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/ddt','customerCode','Cliente',${q},${size},${sort},${dir},'')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/ddt','customerName','Ragione sociale',${q},${size},${sort},${dir},'')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/ddt','causale','Causale',${q},${size},${sort},${dir},'')}"></th>
+                            <th class="text-end">Colli</th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/ddt','documentValue','Valore',${q},${size},${sort},${dir},'end')}"></th>
+                            <th>Stato</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="d : ${ddts.content}">
+                            <td>
+                                <a th:href="@{/ddt/{id}(id=${d.id})}"
+                                   class="font-monospace small text-decoration-none"
+                                   th:text="${d.ddtNumber != null ? d.ddtNumber.trim() : ''}">000123</a>
+                            </td>
+                            <td class="small"><span th:replace="~{fragments/list-tools :: itDate(${d.ddtDate})}"></span></td>
+                            <td class="font-monospace small" th:text="${d.customerCode != null ? d.customerCode.trim() : '—'}">CLI001</td>
+                            <td>
+                                <a th:href="@{/ddt/{id}(id=${d.id})}"
+                                   class="text-decoration-none text-dark"
+                                   th:text="${d.customerName ?: '—'}">Cliente S.r.l.</a>
+                            </td>
+                            <td><span class="badge bg-secondary-subtle text-secondary-emphasis"
+                                      th:if="${d.causale != null and !d.causale.trim().isEmpty()}"
+                                      th:text="${d.causale.trim()}">VEN</span></td>
+                            <td class="text-end font-monospace small" th:text="${d.packages != null and !d.packages.trim().isEmpty() ? d.packages.trim() : '—'}">1</td>
+                            <td class="text-end font-monospace small"
+                                th:text="${d.documentValue != null ? #numbers.formatDecimal(d.documentValue, 1, 'POINT', 2, 'COMMA') : '—'}">0,00</td>
+                            <td>
+                                <span class="badge bg-success-subtle text-success-emphasis" th:if="${d.isInvoiced()}">Fatturato</span>
+                                <span class="badge bg-primary-subtle text-primary-emphasis" th:unless="${d.isInvoiced()}">Da fatturare</span>
+                            </td>
+                        </tr>
+                        <tr th:if="${ddts.empty}">
+                            <td colspan="8" class="text-center text-muted py-5">
+                                <i class="bi bi-inbox" style="font-size:2rem"></i>
+                                <p class="mt-2 mb-0" th:text="${q != null and q != '' ? 'Nessun DDT trovato per «' + q + '»' : 'Nessun DDT trovato per questo anno.'}">Nessun DDT</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/list-tools :: pager('/ddt',${ddts.number},${q},${size},${sort},${dir},${ddts})}"></div>
+
+</section></body>
+</html>

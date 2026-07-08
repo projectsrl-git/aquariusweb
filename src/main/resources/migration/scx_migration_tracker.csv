@@ -42,3 +42,10 @@ form/MENU_ORD000.SCX,Command16,commandbutton,commandbutton,Click,button_click,Ve
 form/MENU_ORD000.SCX,Command22,commandbutton,commandbutton,Click,button_click,Rateizza ordine,U_ORD_TT,NOT_MIGRATED,,WRITE_SIDE,Rateizzazione modifica la testata; fuori dalla consultazione
 form/MENU_ORD000.SCX,cmdInviaMailNotifica,commandbutton,commandbutton,Click,button_click,Invio e-mail di notifica ordine,U_ORD_TT,NOT_MIGRATED,,OUT_OF_SCOPE,Invio e-mail non incluso nella consultazione
 form/MENU_ORD000.SCX,TASTO_SCAD,commandbutton,commandbutton,Click,button_click,Scadenze speciali dell'ordine,U_ORD_TT,NOT_MIGRATED,,DEFERRED,Scadenze documento rinviate a slice scadenzario
+form/menu_BOL000.SCX,Form1,form,form,PROPERTY:Caption,property,Titolo maschera 'Documenti di trasporto',U_BOL_TT;U_BOL_DD,MIGRATED,template ddt/list.html + ddt/detail.html; endpoint GET /ddt,,
+form/menu_BOL000.SCX,Formset1,formset,formset,savesql,method,Salvataggio DDT (testata+righe) su SQL,U_BOL_TT;U_BOL_DD,NOT_MIGRATED,,WRITE_SIDE,Gestione DDT resta su VFP; slice web e' consultazione read-only
+form/menu_BOL000.SCX,Formset1,formset,formset,loadvar/savevar,method,Carica/salva memvar del documento corrente,U_BOL_TT;U_BOL_DD,MIGRATED,controller DdtController#detail (lettura via JPA; join TAGGANCIO=DAGGANCIO),,
+form/menu_BOL000.SCX,GridRighe,grid,grid,PROPERTY:RecordSource,property,Griglia righe DDT (RecordSource impostato a runtime),U_BOL_DD,MIGRATED,template ddt/detail.html tabella Righe DDT; DdtRowRepository#findByAggancio,,
+form/menu_BOL000.SCX,cmdStampa,commandbutton,commandbutton,Click,button_click,Stampa DDT,U_BOL_TT;U_BOL_DD,NOT_MIGRATED,,PRINT_REPORT,Stampa legacy (.frx); gestione stampe web separata
+form/menu_BOL000.SCX,cmdEvasioneOrdini,commandbutton,commandbutton,Click,button_click,Evasione ordini in DDT (ordtobol),U_ORD_DD;U_BOL_DD,NOT_MIGRATED,,WRITE_SIDE,Flusso di evasione riservato al gestionale
+form/menu_BOL000.SCX,MovimentiMagazzino,form,form,vari,method,Generazione movimenti di magazzino da DDT,U_MAG_MO,NOT_MIGRATED,,WRITE_SIDE,Scrittura movimenti riservata al gestionale

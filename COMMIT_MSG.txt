@@ -1,24 +1,20 @@
-Add read-only customer orders module (/ordini)
+Add read-only DDT module (/ddt)
 
-New consultation module for U_ORD_TT + U_ORD_DD, web counterpart of VFP
-MENU_ORD000 ("Ordini clienti"). Depends on the articles patch (applies
-after it: shared edits to MenuService/CLAUDE.md/migration tracker).
+New consultation module for U_BOL_TT + U_BOL_DD, web counterpart of VFP
+menu_BOL000 ("Documenti di trasporto"). Depends on the orders patch
+(applies after it in the chain).
 
-- OrderHead/OrderRow read-only entities; list scoped to society + fiscal
-  year via FiscalContext (legacy PUB_ANNO behaviour).
-- Header-rows join: primary hook TT.TAGGANCIO = DD.DAGGANCIO (the
-  "aggancio" key used by modern legacy SQL joins on ALL document tables);
-  fallback triple key ORS_DATORD/ORS_NUMORD/ORS_CODCLI (ristampelib) for
-  old records with empty hook.
-- Row semantics from APPLILIB: ORD_VALORE = ORD_PRZNET x ORD_QTAORD;
-  comment rows ('*** COMMENTO ***') rendered muted.
-- Status badge from ORD_CHIUSO/ORD_EVATOT/ORD_EVAPAR
-  (Chiuso/Evaso/Evaso parz./Aperto).
-- MenuService FORM_TO_URL: menu_ord000 -> /ordini.
-- Migration tracker: 14 rows for MENU_ORD000.SCX.
+- DdtHead/DdtRow read-only entities; list scoped to society + fiscal year.
+- Column-name gotcha documented: U_BOL_* reuses the ORD_ prefix
+  (ORD_NUMDDT/ORD_DATDDT = DDT number/date; ORD_NUMORD/ORD_DATORD on the
+  same header = LINKED order refs).
+- Header-rows join: TT.TAGGANCIO = DD.DAGGANCIO (legacy SQL join form).
+- Delivered qty = ORD_QTAORD (summed by APPLILIB for order fulfilment);
+  rows show linked invoice (MOV_NUMFAT/MOV_DATFAT).
+- Status badge Fatturato/Da fatturare from ORD_DATFAT.
+- MenuService FORM_TO_URL: menu_bol000 -> /ddt.
+- Migration tracker: 7 rows for menu_BOL000.SCX.
 
 Verification (sandbox only): brace balance OK, duplicate @Column empty,
-fragment arity OK, CSV OK. Applies cleanly after the articles patch
-(chain verified on fresh clone of HEAD d4652ec). Maven build, live-DB
-behaviour and LIKE-search performance on large archives to be confirmed
-at first deploy.
+fragment arity OK, CSV OK. Applies cleanly in chain on HEAD d4652ec.
+Maven build and live-DB behaviour to be confirmed at first deploy.
