@@ -139,8 +139,10 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
     ordini/DDT/proforma).
   - 0.4.0 — acquisti (ordini/carichi da fornitore) +
     anagrafiche agenti/banche/capi area, consultazione.
-  - **0.5.0 (corrente)** — analisi DEEP parametri aziendali (catalogo
+  - 0.5.0 — analisi DEEP parametri aziendali (catalogo
     MENU_AZI000→U_AZI_*) + viewer read-only /parametri-aziendali.
+  - **0.5.1 (corrente)** — fix bilancio (toggle C/F, TAB SP/CE,
+    quadratura, allineamento totali) + fix bug /documenti (ORDER BY duplicato).
 
 ## 4c. Migration tracker (.scx logic ↔ web)
 

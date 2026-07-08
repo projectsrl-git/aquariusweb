@@ -1,37 +1,17 @@
-Add read-only company parameters viewer (/parametri-aziendali)
+Fix bilancio (toggle/tabs/quadratura/align) and /documenti ORDER BY
 
-Part 2 of 2 - apply AFTER the catalog patch. Read-only consultation of
-the company parameters, grouped as in the legacy form, with an info
-popover per parameter fed by the DEEP-analysis catalog. NOT an editable
-settings page: writing the parameters drives ERP behavior and stays on
-the VFP client (future Opus slices). Version bump 0.4.0 -> 0.5.0.
+/documenti (ristampa documenti): DocumentArchiveDao built
+"ORDER BY <col> <dir>, ORD_NUMORD <dir>" — sorting by number duplicated the
+column and SQL Server rejected it. Tie-breaker now added only when the sort
+column isn't already ORD_NUMORD.
 
-- CompanyParameterCatalogService: loads the catalog CSV from the
-  classpath (RFC-4180 quote-aware parser, MigrationTrackerService
-  pattern).
-- CompanyParameterValuesDao: current values via SELECT TOP 1 * FROM
-  U_AZI_{AN,PA,PB} WHERE AZI_CODSOC = :soc, metadata-driven
-  (ResultSetMetaData -> column map): no 700-column entity; columns
-  absent in this DB release simply don't appear and the viewer shows
-  "n.d." with an explanatory tooltip. Table names are controlled
-  identifiers (fixed list).
-- CompanyParametersController: catalog+values merge; free-text search
-  (label/column/purpose/how/group), top-tab filter, confidence filter.
-- Template: Bootstrap accordion per top tab; per row label, current
-  value (Attivo/Non attivo badges for booleans), type badge,
-  table.column, sub-section, and an (i) popover with "A cosa serve /
-  Valori possibili / Come funziona / Usato in / note". Popover content
-  is text-ESCAPED client-side (no HTML from the CSV is interpreted).
-  INCERTO badge on uncertain rows.
-- Menu: FORM_TO_URL menu_azi000 -> /parametri-aziendali (legacy leaf
-  "Definizione dati azienda") + synthetic entry "Parametri aziendali"
-  under the "parametri" L1.
-- CLAUDE.md: version log 0.5.0 + slice table row with the AQUADOCU
-  architecture gotcha.
+Bilancio:
+- "Mostra conti clienti/fornitori" toggle: unchecked checkbox sent nothing so
+  defaultValue=true always won; now a hidden cf field updated by JS.
+- Tabs for Stato Patrimoniale / Conto Economico (no more scrolling to switch).
+- Section totals moved to a card-footer so the two columns' totals align at the
+  bottom (h-100 + align-items-stretch).
+- Quadratura banner: checks Attivo - Passivo == result (tol 0.01), shows the
+  imbalance otherwise.
 
-Verification (sandbox only): brace/paren balance OK (one apparent
-imbalance is a "(" inside a string literal - verified balanced after
-literal stripping); div balance OK; chain (catalog -> viewer) applies
-cleanly on fresh clone of current HEAD. Maven build and execution on
-SQL Server 2012 to be confirmed at first deploy (notably: one U_AZI_*
-row per society; popovers with long used_in lists).
+Version 0.5.1. Sandbox checks only; confirm build/SQL on deploy.

@@ -314,6 +314,10 @@ public class ContabilitaController {
         BigDecimal totCosti   = sumDisplay(costi);
         BigDecimal totRicavi  = sumDisplay(ricavi);
         BigDecimal risultato  = totRicavi.subtract(totCosti);   // >0 utile, <0 perdita
+        // Quadratura di bilancio: (Attività − Passività) deve = risultato d'esercizio.
+        BigDecimal quadraturaSP = totAttivo.subtract(totPassivo);
+        BigDecimal sbilancio    = quadraturaSP.subtract(risultato);
+        boolean quadraturaOk    = sbilancio.abs().compareTo(new BigDecimal("0.01")) <= 0;
 
         model.addAttribute("attivo", attivo);
         model.addAttribute("passivo", passivo);
@@ -330,6 +334,9 @@ public class ContabilitaController {
         model.addAttribute("totPassivoConRisultato",
             risultato.signum() >= 0 ? totPassivo.add(risultato) : totPassivo);
         model.addAttribute("showCF", showCF);
+        model.addAttribute("quadraturaSP", quadraturaSP.abs());
+        model.addAttribute("sbilancio", sbilancio.abs());
+        model.addAttribute("quadraturaOk", quadraturaOk);
         model.addAttribute("anno", anno);
         model.addAttribute("breadcrumbs",
             breadcrumbService.forUrl("/contabilita/bilancio", principal.getUsername()));

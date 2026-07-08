@@ -136,7 +136,9 @@ public class DocumentArchiveDao {
             "LEFT OUTER JOIN PARA pa ON pa.CODICE = 'AGE' + tt.ORD_AGE " +
             "WHERE " + where + " " +
             "ORDER BY tt." + sort.column() + (asc ? " ASC" : " DESC") +
-            ", tt.ORD_NUMORD " + (asc ? "ASC" : "DESC") + " " +
+            // tie-breaker su ORD_NUMORD solo se non è già la colonna d'ordine
+            // (altrimenti SQL Server: "colonna specificata più volte nell'ORDER BY")
+            ("ORD_NUMORD".equals(sort.column()) ? " " : ", tt.ORD_NUMORD " + (asc ? "ASC" : "DESC") + " ") +
             "OFFSET :off ROWS FETCH NEXT :lim ROWS ONLY";
         p.addValue("off", page * size).addValue("lim", size);
         return jdbc.query(sql, p, testataMapper(tipo));
