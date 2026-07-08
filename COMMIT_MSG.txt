@@ -1,44 +1,36 @@
-Add purchase docs and minor registries consultation (read-only)
+Add company parameters DEEP-analysis catalog (MENU_AZI000)
 
-Session-3 bulk: supplier orders, supplier inbound documents and three
-lookup registries, one cumulative patch (shared pom/CLAUDE.md/tracker/
-MenuService). Version bump 0.3.1 -> 0.4.0 (MINOR; log in CLAUDE.md 4b).
+Part 1 of 2 (the viewer patch applies on top of this one). DEEP analysis
+of EVERY parameter exposed by the legacy form MENU_AZI000.SCX
+("Definizione dati azienda"), published as a runtime-readable catalog:
+src/main/resources/parametri/parametri_aziendali_catalog.csv (UTF-8,
+quote-aware, 11 stable columns) + README with schema, method and
+confidence criteria.
 
-ORDINI A FORNITORE (/ordini-fornitore)
-- U_ORF_TT/DD, mirror of /ordini: ordered vs received qty (ORD_QTAEV),
-  row delivery dates, Chiuso/Aperto badge, linked customer order
-  (ORD_NUMORC/DATORC, back-to-back / conto lavoro).
-- MENU_ORF000 also manages "proposte ordini" via a launch flag with NO
-  visible discriminator column: the list shows the whole archive
-  (NEEDS_DOMAIN in tracker - ask Erasmo how proposals are distinguished).
+KEY ARCHITECTURAL FINDING (the reading key for every parameter):
+APPLILIB.PRG, function AQUADOCU (startup), loads every AZI_X column of
+U_AZI_AN/PA/PB into a public variable PUB_X (712 verified mappings).
+The ERP reads the PUB_* variables, almost never the tables - so the real
+usage of a parameter lives on its PUB. Exception: print/FE libraries
+read some registry columns directly for headers and XML.
 
-CARICHI DA FORNITORE (/ddt-fornitore)
-- ARCHIVE CORRECTION (verified in sources): the handoff said U_BOF_TT,
-  but U_BOF_* is the customer-facing "bollette fiscali" flow (BOFCONSE
-  opens U_CLI_AN; menu label "Scarico con bolletta fiscale"). The
-  supplier-inbound archive is U_BFO_* (MENU_BFO000 "Carico da fornitore")
-  - used here, consistent with the Ristampa dashboard types BFO/RDC.
-- ORD_TIPO=9 rows get a "Reso da cliente" badge (verified discriminator)
-  instead of being hidden; rows show linked purchase order (ORC pair) and
-  supplier invoice refs (MOV_NUMFAT/MOV_DATFAT).
+Numbers:
+- 845 parameter controls parsed from the form (1717 objects, 14 top
+  tabs, 103 pages incl. nested pageframes); labels from checkbox
+  captions or geometric label attachment; optiongroup values extracted.
+- 743 columns resolved on the Impresind schema (234 AN / 249 PA /
+  260 PB); 98 form columns ABSENT in this DB (other release/vertical),
+  included with an explicit note.
+- Catalog: 841 rows - confidence 622 ALTA / 66 MEDIA / 153 INCERTO.
+  purpose = the form's own descriptive caption; how_it_works = AZI->PUB
+  load chain + cited code excerpt (conditionals preferred) with
+  file.function; used_in = current sources only (dated backups and
+  replication/cleanup libs excluded from evidence).
+- No invented interpretations: 31 possible orphans and every ambiguous
+  case marked INCERTO with a note.
 
-ANAGRAFICHE (/agenti, /banche, /capi-area)
-- U_AGE_AN and U_BAN_AN list+detail (ABI/CAB/CIN/IBAN/SWIFT on banks).
-- U_CAR_AN: NOT vettori - MENU_CAR000 is "Gestione agenti per capo area"
-  (% provvigione su imponibile del venduto). Route /capi-area, list-only.
-- NOT built: /pagamenti and /vettori. Payment terms are PARA 'CPA' and
-  carriers are PARA 'VET', both already served by /parametri/{CPA,VET};
-  U_PAG_AN is a dead archive (order receipts, referenced only by
-  replication and cleanup) -> NOT_APPLICABLE in tracker.
+Migration tracker: 3 rows for MENU_AZI000.SCX (analysis PARTIAL, editing
+WRITE_SIDE). Slice doc in .claude/.
 
-Menu FORM_TO_URL: menu_orf000, menu_bfo000, menu_age000, menu_ban000,
-menu_car000. Migration tracker: +9 rows. Slice doc + 3 CLAUDE.md rows.
-Cosmetic fix: five session-1 list templates passed align='end' to
-sortableHeader (fragment expects 'text-end'); headers now right-align.
-
-Verification (sandbox only): every mapped column checked against the
-schema CSV incl. exact varchar lengths (none missing); brace/paren OK on
-18 Java files; div balance and fragment arity OK on 9 templates; CSV 12
-cols/row; patch applies cleanly on a second fresh clone of HEAD 4d99274.
-Maven build and execution on SQL Server 2012 to be confirmed at first
-deploy (notably: ORF proposals mixing into the list, U_BFO volume).
+Verification (sandbox only): CSV parse-back 841 rows x 11 fields, no
+embedded newlines; applies cleanly on fresh clone of current HEAD.
