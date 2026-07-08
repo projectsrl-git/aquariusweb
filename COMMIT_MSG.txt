@@ -1,16 +1,8 @@
-Bilancio grouped by mastri/gruppi (trial-balance tree)
+Bilancio: expand quadratura banner + sub-tabs per section
 
-Restructures the bilancio into a Mastro -> Gruppo -> Sottoconto tree with
-progressive Dare/Avere/Saldo columns, like the legacy "Bilancio di verifica".
+- Quadratura banner now spells out the identity:
+  "(Attivita - Passivita) = <value> - result = 0", with "Differenza: 0,00".
+- Sub-tabs (nav-pills) inside the main SP/CE tabs: Attivita/Passivita under
+  Stato Patrimoniale, Costi/Ricavi under Conto Economico.
 
-- Account hierarchy derived by code prefix (mastro = first 2 chars, gruppo =
-  first 4), using the multilevel CONTI rows for descriptions (parameter-free;
-  verified against Impresind data).
-- New BilancioGroup tree DTO; controller buildGroups() aggregates Dare/Avere from
-  ALL lines (customers/suppliers included) so section totals and the quadratura
-  no longer change with the C/F toggle (fixes the imbalance when hiding C/F).
-  showCF now only hides C/F leaf rows; their amounts stay in the group totals.
-- Full-width sections inside the SP/CE tabs; quadratura banner shows the
-  difference (0,00 when balanced, green; imbalance when not, red).
-
-Version 0.7.0 (on top of Fable 5's 0.6.0 CEE viewer). Sandbox checks only.
+Version 0.7.1. Template-only change. Sandbox checks only.

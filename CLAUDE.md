@@ -146,8 +146,10 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
   - 0.6.0 — analisi DEEP bilancio CEE (BILNEW/U_INT_TT/
     U_COR_TT + pseudocodice ceecont per Opus) + viewer struttura e
     mappatura con pannello anomalie.
-  - **0.7.0 (corrente)** — bilancio raggruppato per mastri/gruppi
+  - 0.7.0 — bilancio raggruppato per mastri/gruppi
     (Bilancio di verifica, Prog. Dare/Avere/Saldo); quadratura stabile col toggle C/F.
+  - **0.7.1 (corrente)** — bilancio: banner quadratura esteso + sub-tab
+    Attività/Passività e Costi/Ricavi.
 
 ## 4c. Migration tracker (.scx logic ↔ web)
 
