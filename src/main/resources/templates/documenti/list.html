@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Ristampa documenti – Aquarius</title></head>
+<body><section th:with="base=${'/documenti?' + filterQs}">
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-collection',
+        title='Ristampa documenti',
+        subtitle='Consultazione unificata di tutti gli archivi documento, con tracciabilità ordine ↔ DDT ↔ fattura',
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <!-- ─── Pannello filtri (come la maschera legacy: tipo + periodo + numeri + soggetto) ─── -->
+    <div class="card shadow-sm border-0 mb-3">
+        <div class="card-body py-3">
+            <form method="get" th:action="@{/documenti}">
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted mb-1">Tipo documento</label>
+                        <select name="tipo" class="form-select form-select-sm">
+                            <option th:each="t : ${tipi}" th:value="${t.name()}"
+                                    th:text="${t.label()}" th:selected="${t == tipo}">Ordini clienti</option>
+                        </select>
+                    </div>
+                    <div class="col-md-1">
+                        <label class="form-label small text-muted mb-1">Anno</label>
+                        <input type="text" name="anno" th:value="${anno}" class="form-control form-control-sm" maxlength="4">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small text-muted mb-1">Periodo dal</label>
+                        <input type="date" name="dataDa" th:value="${dataDa}" class="form-control form-control-sm">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small text-muted mb-1">al</label>
+                        <input type="date" name="dataA" th:value="${dataA}" class="form-control form-control-sm">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small text-muted mb-1">Numero dal</label>
+                        <input type="text" name="numDa" th:value="${numDa}" class="form-control form-control-sm">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small text-muted mb-1">al</label>
+                        <input type="text" name="numA" th:value="${numA}" class="form-control form-control-sm">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted mb-1" th:text="${tipo.partyLabel()}">Cliente</label>
+                        <input type="text" name="q" th:value="${q}" class="form-control form-control-sm"
+                               placeholder="Codice o ragione sociale">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted mb-1">Riferimento</label>
+                        <input type="text" name="rif" th:value="${rif}" class="form-control form-control-sm">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted mb-1">Articolo (codice esatto)</label>
+                        <input type="text" name="art" th:value="${art}" class="form-control form-control-sm">
+                    </div>
+                    <div class="col-md-3 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary btn-sm flex-grow-1">
+                            <i class="bi bi-search me-1"></i>Ricerca
+                        </button>
+                        <a th:href="@{/documenti(tipo=${tipo.name()})}" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-x-lg me-1"></i>Pulisci
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ─── Risultati ─── -->
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white d-flex align-items-center">
+            <span class="badge bg-primary-subtle text-primary-emphasis me-2" th:text="${tipo.name()}">ORD</span>
+            <h6 class="detail-card-title mb-0" th:text="${tipo.label()}">Ordini clienti</h6>
+            <span class="small text-muted ms-auto" th:text="${documenti.totalElements + ' documenti'}">0 documenti</span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-sm mb-0">
+                    <thead class="table-light">
+                        <tr th:with="flip=${dir == 'asc' ? 'desc' : 'asc'}">
+                            <th style="white-space:nowrap"><a class="text-decoration-none text-reset"
+                                th:href="@{${base + '&size=' + size + '&page=0&sort=NUMERO&dir=' + (sort == 'NUMERO' ? flip : 'asc')}}">Numero
+                                <i class="bi" th:classappend="${sort == 'NUMERO' ? (dir == 'asc' ? 'bi-caret-up-fill' : 'bi-caret-down-fill') : 'bi-arrow-down-up opacity-25'}" style="font-size:.7rem"></i></a></th>
+                            <th style="white-space:nowrap"><a class="text-decoration-none text-reset"
+                                th:href="@{${base + '&size=' + size + '&page=0&sort=DATA&dir=' + (sort == 'DATA' ? flip : 'asc')}}">Data
+                                <i class="bi" th:classappend="${sort == 'DATA' ? (dir == 'asc' ? 'bi-caret-up-fill' : 'bi-caret-down-fill') : 'bi-arrow-down-up opacity-25'}" style="font-size:.7rem"></i></a></th>
+                            <th style="white-space:nowrap"><a class="text-decoration-none text-reset"
+                                th:href="@{${base + '&size=' + size + '&page=0&sort=CODICE&dir=' + (sort == 'CODICE' ? flip : 'asc')}}" th:text="${tipo.partyLabel()}">Cliente</a></th>
+                            <th style="white-space:nowrap"><a class="text-decoration-none text-reset"
+                                th:href="@{${base + '&size=' + size + '&page=0&sort=RAGSOC&dir=' + (sort == 'RAGSOC' ? flip : 'asc')}}">Ragione sociale
+                                <i class="bi" th:classappend="${sort == 'RAGSOC' ? (dir == 'asc' ? 'bi-caret-up-fill' : 'bi-caret-down-fill') : 'bi-arrow-down-up opacity-25'}" style="font-size:.7rem"></i></a></th>
+                            <th style="white-space:nowrap"><a class="text-decoration-none text-reset"
+                                th:href="@{${base + '&size=' + size + '&page=0&sort=CAUSALE&dir=' + (sort == 'CAUSALE' ? flip : 'asc')}}">Causale</a></th>
+                            <th>Riferimento</th>
+                            <th class="text-end" style="white-space:nowrap"><a class="text-decoration-none text-reset"
+                                th:href="@{${base + '&size=' + size + '&page=0&sort=IMPONIBILE&dir=' + (sort == 'IMPONIBILE' ? flip : 'asc')}}">Imponibile
+                                <i class="bi" th:classappend="${sort == 'IMPONIBILE' ? (dir == 'asc' ? 'bi-caret-up-fill' : 'bi-caret-down-fill') : 'bi-arrow-down-up opacity-25'}" style="font-size:.7rem"></i></a></th>
+                            <th class="text-end">Valore con IVA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="d : ${documenti.content}">
+                            <td>
+                                <a th:href="@{/documenti/{t}/{id}(t=${d.tipo.name()},id=${d.id})}"
+                                   class="font-monospace small text-decoration-none"
+                                   th:text="${d.numero != null ? d.numero.trim() : ''}">000123</a>
+                            </td>
+                            <td class="small"><span th:replace="~{fragments/list-tools :: itDate(${d.data})}"></span></td>
+                            <td class="font-monospace small" th:text="${d.codiceSoggetto != null ? d.codiceSoggetto.trim() : '—'}">CLI001</td>
+                            <td>
+                                <a th:href="@{/documenti/{t}/{id}(t=${d.tipo.name()},id=${d.id})}"
+                                   class="text-decoration-none text-dark"
+                                   th:text="${d.ragioneSociale ?: '—'}">Cliente S.r.l.</a>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary-subtle text-secondary-emphasis"
+                                      th:if="${d.causale != null and !d.causale.trim().isEmpty()}"
+                                      th:text="${d.causale.trim()}"
+                                      th:title="${d.causaleDescrizione}">VEN</span>
+                                <span class="small text-muted d-none d-xl-inline"
+                                      th:if="${d.causaleDescrizione != null and !d.causaleDescrizione.trim().isEmpty()}"
+                                      th:text="${' ' + d.causaleDescrizione.trim()}"></span>
+                            </td>
+                            <td class="small" th:text="${d.riferimento != null and !d.riferimento.trim().isEmpty() ? d.riferimento : '—'}">—</td>
+                            <td class="text-end font-monospace small"
+                                th:text="${d.imponibile != null ? #numbers.formatDecimal(d.imponibile, 1, 'POINT', 2, 'COMMA') : '—'}">0,00</td>
+                            <td class="text-end font-monospace small"
+                                th:text="${#numbers.formatDecimal(d.totale, 1, 'POINT', 2, 'COMMA')}">0,00</td>
+                        </tr>
+                        <tr th:if="${documenti.empty}">
+                            <td colspan="8" class="text-center text-muted py-5">
+                                <i class="bi bi-inbox" style="font-size:2rem"></i>
+                                <p class="mt-2 mb-0">Nessun documento trovato con i filtri impostati.</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── Paginazione locale (preserva TUTTI i filtri) ─── -->
+    <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
+        <span class="small text-muted" th:text="${'Righe per pagina: ' + size + ' · ' + documenti.totalElements + ' totali'}"></span>
+        <ul class="pagination pagination-sm mb-0" th:if="${documenti.totalPages > 1}"
+            th:with="tail=${'&size=' + size + '&sort=' + sort + '&dir=' + dir}">
+            <li class="page-item" th:classappend="${documenti.first ? 'disabled' : ''}">
+                <a class="page-link" th:href="@{${base + tail + '&page=0'}}">«</a>
+            </li>
+            <li class="page-item" th:classappend="${documenti.first ? 'disabled' : ''}">
+                <a class="page-link" th:href="@{${base + tail + '&page=' + (documenti.number - 1)}}">‹</a>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link" th:text="${'Pagina ' + (documenti.number + 1) + ' di ' + documenti.totalPages}"></span>
+            </li>
+            <li class="page-item" th:classappend="${documenti.last ? 'disabled' : ''}">
+                <a class="page-link" th:href="@{${base + tail + '&page=' + (documenti.number + 1)}}">›</a>
+            </li>
+            <li class="page-item" th:classappend="${documenti.last ? 'disabled' : ''}">
+                <a class="page-link" th:href="@{${base + tail + '&page=' + (documenti.totalPages - 1)}}">»</a>
+            </li>
+        </ul>
+    </div>
+
+</section></body>
+</html>

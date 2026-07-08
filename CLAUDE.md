@@ -231,6 +231,7 @@ size ai byte 6-7). I form contengono MOLTA logica nei bottoni/validazioni
 | Customer orders (read-only) | `/ordini` | U_ORD_TT + U_ORD_DD (VFP MENU_ORD000), scoped to FiscalContext year. TT↔DD join: TAGGANCIO=DAGGANCIO hook (fallback ORS_ triple key). Row value = ORD_PRZNET × ORD_QTAORD (APPLILIB) |
 | DDT (read-only) | `/ddt` | U_BOL_TT + U_BOL_DD (VFP menu_BOL000), year-scoped. GOTCHA: BOL columns reuse the ORD_ prefix (ORD_NUMDDT = DDT number; ORD_NUMORD = linked order). Join TAGGANCIO=DAGGANCIO |
 | Invoices + proforma (read-only) | `/fatture`, `/proforma` | U_FAT_TT/DD + U_FAP_TT/DD (VFP MENU_FAT000 / menu_FAP000), year-scoped. GOTCHA: ORD_NUMORD/ORD_DATORD on these tables are the invoice's OWN number/date; U_FAP_* = fatture PROFORMA (not acquisto). FE flags (ORD_TRASME/ORD_IDSDI) read-only |
+| Ristampa documenti (read-only) | `/documenti` | Unified dashboard over ALL document archives (VFP MENU_RISTAMPA_DOC) + traceability ordine↔DDT↔fattura. DocumentArchiveDao: table names from DocumentType enum only (controlled identifiers, cf. WarehouseValuationDao.DateBase). GOTCHA: on every document table ORD_NUMORD/ORD_DATORD are the doc's OWN number/date; on DDT rows the linked customer order is the ORC pair (ORS_NUMORC/ORS_DATORC) |
 
 ## 7. Security notes (PUBLIC repository!)
 

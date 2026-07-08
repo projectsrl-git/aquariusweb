@@ -1,26 +1,39 @@
-Add read-only sales invoices and proforma modules
+Add unified documents dashboard with traceability (/documenti)
 
-New consultation modules for U_FAT_TT/DD (/fatture, VFP MENU_FAT000
-"Fatture di vendita") and U_FAP_TT/DD (/proforma, VFP menu_FAP000
-"Fatture proforma"). Depends on the DDT patch (applies after it).
+Port of MENU_RISTAMPA_DOC ("Ristampa documenti"), the most-used module of
+the legacy client: one dashboard to consult ALL document archives, plus
+the ordine <-> DDT <-> fattura chain. Read-only: physical reprint (.frx),
+e-mail and FE generation stay on the VFP client. Depends on the previous
+4 patches (applies last in the chain).
 
-Domain corrections vs. the session handoff:
-- U_FAP_* is fatture PROFORMA, not fatture acquisto (tbl_menu entry
-  'gestionefattureproforma' + form caption confirm it).
-- On invoice tables ORD_NUMORD/ORD_DATORD are the invoice's OWN
-  number/date (legacy: ord_numord = ALLTRIM(Z_NUMFAT)).
+- DocumentArchiveDao: port of the legacy dynamic archive selection
+  (&_V_ARCH_TT). NamedParameterJdbcTemplate on tenantDataSource (same
+  pattern as WarehouseValuationDao); table names only from the
+  DocumentType enum (controlled identifiers); OFFSET/FETCH pagination.
+  Causale via PARA 'TOP'+ORD_CAUS -> DESCRI, agente via 'AGE'+ORD_AGE
+  (verbatim from the legacy query).
+- Type catalog (9 verified): ORD, OFF, ORF, BOL, BFO, RDC (ord_tipo=9),
+  FAP, FAT, INR. Excluded and tracked: RFI/ORT/REC/REF/BOF/BCL (no
+  discriminator in sources, NEEDS_DOMAIN); FAF (U_FAF_TT absent at
+  Impresind, NOT_APPLICABLE).
+- Traceability card "Documenti collegati" for the sales chain,
+  reconstructed from U_BOL_DD refs (ORS_NUMORC/ORS_DATORC for the order,
+  MOV_NUMFAT/MOV_DATFAT for the invoice), with resolved clickable links.
+- Domain finding + DDT FIX: the Ristampa grid binds ORD_NUMORD/ORD_DATORD
+  as Numero/Data for ALL types -> on DDT rows the linked customer order is
+  the ORC pair, and ORS_NUMORD is the header self-reference. DdtHead/
+  DdtRow linked-order mappings corrected (ORD_NUMORC/ORD_DATORC and
+  ORS_NUMORC/ORS_DATORC); internal number exposed separately.
+- Dashboard UI: legacy-style filter panel (tipo, anno, periodo, numeri,
+  soggetto, riferimento, articolo via taggancio subquery); local sortable
+  headers and pager preserving ALL filters (shared fragments untouched).
+- MenuService FORM_TO_URL: menu_ristampa_doc -> /documenti (tbl_menu leaf
+  'gestioneristampadocumenti', reachable from L1 clienti AND fornitori).
+- Migration tracker: 9 rows for MENU_RISTAMPA_DOC.SCX.
 
-- Invoice/Proforma Head+Row read-only entities (structurally identical
-  tables; proforma module is a twin); year-scoped lists; join
-  TAGGANCIO = DAGGANCIO.
-- FE surfaced read-only: ORD_TRASME badge Trasmessa/Non trasmessa,
-  ORD_IDSDI in detail. FE generation stays with Erasmo's
-  FATTURAZIONE_ELETTRONICA_LIB (tracked NEEDS_DOMAIN); posting stays
-  WRITE_SIDE for Opus sessions.
-- MenuService FORM_TO_URL: menu_fat000 -> /fatture, menu_fap000 -> /proforma.
-- Migration tracker: 10 rows (MENU_FAT000.SCX + menu_FAP000.SCX).
-
-Verification (sandbox only): brace balance OK, duplicate @Column empty,
-fragment arity OK, CSV OK. Full 4-patch chain verified with git apply
---check + apply on fresh clone of HEAD d4652ec. Maven build and live-DB
-behaviour to be confirmed at first deploy.
+Verification (sandbox only): every SQL column checked against the schema
+CSV for ALL 8 TT + 8 DD archives (none missing); brace balance OK; div
+balance OK; CSV 12 columns/row; full 5-patch chain applies cleanly on
+fresh clone of HEAD d4652ec. To confirm at first deploy: Maven build,
+TAGGANCIO population on historical data, OFFSET/FETCH performance on the
+largest archives, RDC ord_tipo=9 on real data.

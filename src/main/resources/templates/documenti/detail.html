@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Documento – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-collection',
+        title=${tipo.label()} + ' ' + ${doc.numero != null ? doc.numero.trim() : ''},
+        subtitle=${doc.ragioneSociale},
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <div class="d-flex gap-2 mb-3 align-items-center flex-wrap">
+        <a th:href="@{/documenti(tipo=${tipo.name()})}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i>Torna al cruscotto
+        </a>
+        <a th:if="${tipo.moduleRoute() != null}"
+           th:href="@{${tipo.moduleRoute() + '/' + doc.id}}"
+           class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-box-arrow-up-right me-1"></i>Apri nel modulo dedicato
+        </a>
+        <span class="badge bg-primary-subtle text-primary-emphasis" th:text="${tipo.name()}">ORD</span>
+        <span class="text-muted small ms-auto">Consultazione — ristampa fisica, e-mail e FE restano sul gestionale</span>
+    </div>
+
+    <div class="row g-3 detail-cards mb-3">
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white">
+                    <h6 class="detail-card-title"><i class="bi bi-card-text me-1"></i>Testata</h6>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0 small">
+                        <dt class="col-5 text-muted">Tipo documento</dt>
+                        <dd class="col-7" th:text="${tipo.label()}">—</dd>
+                        <dt class="col-5 text-muted">Numero</dt>
+                        <dd class="col-7 font-monospace" th:text="${doc.numero != null ? doc.numero.trim() : '—'}">—</dd>
+                        <dt class="col-5 text-muted">Data</dt>
+                        <dd class="col-7"><span th:replace="~{fragments/list-tools :: itDate(${doc.data})}"></span></dd>
+                        <dt class="col-5 text-muted" th:text="${tipo.partyLabel()}">Cliente</dt>
+                        <dd class="col-7"><span class="font-monospace" th:text="${doc.codiceSoggetto != null ? doc.codiceSoggetto.trim() : ''}"></span>
+                            — <span th:text="${doc.ragioneSociale ?: ''}"></span></dd>
+                        <dt class="col-5 text-muted">Causale</dt>
+                        <dd class="col-7">
+                            <span class="badge bg-secondary-subtle text-secondary-emphasis"
+                                  th:if="${doc.causale != null and !doc.causale.trim().isEmpty()}"
+                                  th:text="${doc.causale.trim()}"></span>
+                            <span class="small" th:text="${doc.causaleDescrizione != null and !doc.causaleDescrizione.trim().isEmpty() ? ' ' + doc.causaleDescrizione.trim() : ''}"></span>
+                        </dd>
+                        <dt class="col-5 text-muted">Riferimento</dt>
+                        <dd class="col-7" th:text="${doc.riferimento != null and !doc.riferimento.trim().isEmpty() ? doc.riferimento : '—'}">—</dd>
+                        <dt class="col-5 text-muted">Agente</dt>
+                        <dd class="col-7">
+                            <span class="font-monospace" th:text="${doc.agente != null and !doc.agente.trim().isEmpty() ? doc.agente.trim() : '—'}"></span>
+                            <span class="small text-muted" th:text="${doc.agenteDescrizione != null and !doc.agenteDescrizione.trim().isEmpty() ? ' ' + doc.agenteDescrizione.trim() : ''}"></span>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white">
+                    <h6 class="detail-card-title"><i class="bi bi-diagram-3 me-1"></i>Documenti collegati</h6>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-3 small">
+                        <dt class="col-5 text-muted">Imponibile</dt>
+                        <dd class="col-7 font-monospace" th:text="${doc.imponibile != null ? #numbers.formatDecimal(doc.imponibile, 1, 'POINT', 2, 'COMMA') : '—'}">—</dd>
+                        <dt class="col-5 text-muted">Valore con IVA</dt>
+                        <dd class="col-7 font-monospace fw-semibold" th:text="${#numbers.formatDecimal(doc.totale, 1, 'POINT', 2, 'COMMA')}">—</dd>
+                        <dt class="col-5 text-muted">Valuta</dt>
+                        <dd class="col-7 font-monospace" th:text="${doc.valuta != null and !doc.valuta.trim().isEmpty() ? doc.valuta.trim() : '—'}">EUR</dd>
+                    </dl>
+                    <div th:if="${!#lists.isEmpty(collegati)}">
+                        <div class="d-flex flex-wrap gap-2">
+                            <a th:each="c : ${collegati}"
+                               th:href="${c.id != null} ? @{/documenti/{t}/{id}(t=${c.tipo.name()},id=${c.id})} : null"
+                               class="badge text-decoration-none border"
+                               th:classappend="${c.tipo.name() == 'ORD'} ? 'bg-primary-subtle text-primary-emphasis'
+                                              : (${c.tipo.name() == 'BOL'} ? 'bg-warning-subtle text-warning-emphasis'
+                                              : 'bg-success-subtle text-success-emphasis')">
+                                <i class="bi" th:classappend="${c.tipo.name() == 'ORD'} ? 'bi-cart3' : (${c.tipo.name() == 'BOL'} ? 'bi-truck' : 'bi-receipt')"></i>
+                                <span th:text="${' ' + c.tipo.name() + ' ' + (c.numero != null ? c.numero.trim() : '')}"> ORD 000123</span>
+                                <span class="opacity-75" th:text="${' del '}"></span><span th:replace="~{fragments/list-tools :: itDate(${c.data})}"></span>
+                            </a>
+                        </div>
+                        <p class="small text-muted mt-2 mb-0">Catena ricostruita dai riferimenti sulle righe DDT (ordine ↔ DDT ↔ fattura).</p>
+                    </div>
+                    <p class="small text-muted mb-0" th:if="${#lists.isEmpty(collegati)}">
+                        Nessun legame tracciato per questo documento (la tracciabilità è disponibile per la catena vendite: ordini, DDT, fatture).
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white d-flex align-items-center">
+            <h6 class="detail-card-title mb-0"><i class="bi bi-list-ol me-1"></i>Righe documento</h6>
+            <span class="badge bg-light text-dark border ms-2" th:text="${#lists.size(rows)} + ' righe'">0 righe</span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-sm mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-end">#</th>
+                            <th>Articolo</th>
+                            <th>Descrizione</th>
+                            <th class="text-end">Quantità</th>
+                            <th class="text-end">Prezzo netto</th>
+                            <th class="text-end">Valore riga</th>
+                            <th>IVA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="r : ${rows}" th:classappend="${r.isCommento()} ? 'table-light text-muted' : ''">
+                            <td class="text-end font-monospace small" th:text="${r.sequenza != null ? #numbers.formatDecimal(r.sequenza, 1, 0) : ''}">1</td>
+                            <td class="font-monospace small">
+                                <span th:text="${r.codiceArticolo != null ? r.codiceArticolo.trim() : ''}"></span><span
+                                    th:if="${r.estensione != null and !r.estensione.trim().isEmpty()}"
+                                    class="text-muted" th:text="'/' + ${r.estensione.trim()}"></span>
+                            </td>
+                            <td class="small">
+                                <span th:text="${r.descrizione ?: ''}"></span>
+                                <div class="text-muted" th:if="${r.descrizione2 != null and !r.descrizione2.trim().isEmpty()}" th:text="${r.descrizione2}"></div>
+                            </td>
+                            <td class="text-end font-monospace small" th:text="${r.quantita != null ? #numbers.formatDecimal(r.quantita, 1, 'POINT', 2, 'COMMA') : ''}">1,00</td>
+                            <td class="text-end font-monospace small" th:text="${r.prezzoNetto != null ? #numbers.formatDecimal(r.prezzoNetto, 1, 'POINT', 2, 'COMMA') : ''}">0,00</td>
+                            <td class="text-end font-monospace small" th:text="${r.valoreRiga != null ? #numbers.formatDecimal(r.valoreRiga, 1, 'POINT', 2, 'COMMA') : ''}">0,00</td>
+                            <td><span class="badge bg-info-subtle text-info-emphasis"
+                                      th:if="${r.codiceIva != null and !r.codiceIva.trim().isEmpty()}"
+                                      th:text="${r.codiceIva.trim()}">22</span></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(rows)}">
+                            <td colspan="7" class="text-center text-muted py-4">Nessuna riga collegata (verificare chiave di aggancio sui dati storici).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</section></body>
+</html>

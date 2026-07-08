@@ -99,7 +99,9 @@ public class MenuService {
         Map.entry("menu_bol000", "/ddt"),
         // Slice: Fatture di vendita + proforma (consultazione)
         Map.entry("menu_fat000", "/fatture"),
-        Map.entry("menu_fap000", "/proforma")
+        Map.entry("menu_fap000", "/proforma"),
+        // Slice: Ristampa documenti (cruscotto unificato + tracciabilita')
+        Map.entry("menu_ristampa_doc", "/documenti")
     );
 
     /**

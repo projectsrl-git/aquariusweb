@@ -90,12 +90,25 @@ public class DdtHead {
     private BigDecimal documentValue;
 
     // ─── Linked documents ────────────────────────────────────────────────────
-    /** Linked customer order (number/date). */
-    @Column(name = "ORD_NUMORD", length = 6, insertable = false, updatable = false)
+    /**
+     * Linked customer order — the ORC pair ("ORdine Cliente"). NOTE:
+     * ORD_NUMORD/ORD_DATORD on U_BOL_TT are the document's OWN internal
+     * number/date (the "Numero" shown by the legacy Ristampa grid), NOT the
+     * linked order (evidence: legacy matches ORS_NUMORC against
+     * U_ORD_T2.ORD_NUMORD).
+     */
+    @Column(name = "ORD_NUMORC", length = 6, insertable = false, updatable = false)
     private String linkedOrderNumber;
 
-    @Column(name = "ORD_DATORD", length = 10, insertable = false, updatable = false)
+    @Column(name = "ORD_DATORC", length = 10, insertable = false, updatable = false)
     private String linkedOrderDate;
+
+    /** Internal document number/date (legacy Ristampa "Numero"/"Data"). */
+    @Column(name = "ORD_NUMORD", length = 6, insertable = false, updatable = false)
+    private String internalNumber;
+
+    @Column(name = "ORD_DATORD", length = 10, insertable = false, updatable = false)
+    private String internalDate;
 
     /** Invoicing date — non-empty when the DDT has been invoiced. */
     @Column(name = "ORD_DATFAT", length = 10, insertable = false, updatable = false)

@@ -61,11 +61,14 @@ public class DdtRow {
     private String vatCode;
 
     // ─── Linked documents on the row ─────────────────────────────────────────
-    /** Linked customer order (denormalized). */
-    @Column(name = "ORS_NUMORD", length = 6, insertable = false, updatable = false)
+    /**
+     * Linked customer order (denormalized, ORC pair). ORS_NUMORD/ORS_DATORD
+     * are the DDT header's own keys, not the order.
+     */
+    @Column(name = "ORS_NUMORC", length = 6, insertable = false, updatable = false)
     private String linkedOrderNumber;
 
-    @Column(name = "ORS_DATORD", length = 10, insertable = false, updatable = false)
+    @Column(name = "ORS_DATORC", length = 10, insertable = false, updatable = false)
     private String linkedOrderDate;
 
     /** Linked invoice (populated once the row is invoiced). */
