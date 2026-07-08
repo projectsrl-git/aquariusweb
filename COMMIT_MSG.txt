@@ -1,18 +1,44 @@
-Document row detail: expandable rows + comment CLOB (invoices)
+Add purchase docs and minor registries consultation (read-only)
 
-Cesello on the document detail view, done on invoices first as the reference
-(to validate the untestable part — reading the ORD_NOTE text/CLOB via jTDS —
-before replicating to orders/DDT/proforma).
+Session-3 bulk: supplier orders, supplier inbound documents and three
+lookup registries, one cumulative patch (shared pom/CLAUDE.md/tracker/
+MenuService). Version bump 0.3.1 -> 0.4.0 (MINOR; log in CLAUDE.md 4b).
 
-- Comment rows (*** COMMENTO *** on ORD_DESART) now show the real comment body
-  from the ORD_NOTE CLOB, matching FATTURAZIONE_ELETTRONICA_LIB.
-- Rows are clickable to expand a grouped detail panel (UM/weight, dimensions,
-  source order, destination, notes) shown only when populated.
-- InvoiceRow maps the curated extra fields + ORD_NOTE/ORD_NOTEBO
-  (columnDefinition="text", read-only). New shared fragment fragments/doc-row.html
-  (detailRow + toggleScript), reusable by the other document types.
-- Version 0.3.1 (patch: refinement of existing modules).
+ORDINI A FORNITORE (/ordini-fornitore)
+- U_ORF_TT/DD, mirror of /ordini: ordered vs received qty (ORD_QTAEV),
+  row delivery dates, Chiuso/Aperto badge, linked customer order
+  (ORD_NUMORC/DATORC, back-to-back / conto lavoro).
+- MENU_ORF000 also manages "proposte ordini" via a launch flag with NO
+  visible discriminator column: the list shows the whole archive
+  (NEEDS_DOMAIN in tracker - ask Erasmo how proposals are distinguished).
 
-Sandbox checks only (no Maven). Confirm on deploy that the text columns read as
-String via jTDS/Hibernate on SQL Server 2012; if OK, replicate to orders/DDT/
-proforma. If Hibernate objects to the text type, @Lob is the fallback.
+CARICHI DA FORNITORE (/ddt-fornitore)
+- ARCHIVE CORRECTION (verified in sources): the handoff said U_BOF_TT,
+  but U_BOF_* is the customer-facing "bollette fiscali" flow (BOFCONSE
+  opens U_CLI_AN; menu label "Scarico con bolletta fiscale"). The
+  supplier-inbound archive is U_BFO_* (MENU_BFO000 "Carico da fornitore")
+  - used here, consistent with the Ristampa dashboard types BFO/RDC.
+- ORD_TIPO=9 rows get a "Reso da cliente" badge (verified discriminator)
+  instead of being hidden; rows show linked purchase order (ORC pair) and
+  supplier invoice refs (MOV_NUMFAT/MOV_DATFAT).
+
+ANAGRAFICHE (/agenti, /banche, /capi-area)
+- U_AGE_AN and U_BAN_AN list+detail (ABI/CAB/CIN/IBAN/SWIFT on banks).
+- U_CAR_AN: NOT vettori - MENU_CAR000 is "Gestione agenti per capo area"
+  (% provvigione su imponibile del venduto). Route /capi-area, list-only.
+- NOT built: /pagamenti and /vettori. Payment terms are PARA 'CPA' and
+  carriers are PARA 'VET', both already served by /parametri/{CPA,VET};
+  U_PAG_AN is a dead archive (order receipts, referenced only by
+  replication and cleanup) -> NOT_APPLICABLE in tracker.
+
+Menu FORM_TO_URL: menu_orf000, menu_bfo000, menu_age000, menu_ban000,
+menu_car000. Migration tracker: +9 rows. Slice doc + 3 CLAUDE.md rows.
+Cosmetic fix: five session-1 list templates passed align='end' to
+sortableHeader (fragment expects 'text-end'); headers now right-align.
+
+Verification (sandbox only): every mapped column checked against the
+schema CSV incl. exact varchar lengths (none missing); brace/paren OK on
+18 Java files; div balance and fragment arity OK on 9 templates; CSV 12
+cols/row; patch applies cleanly on a second fresh clone of HEAD 4d99274.
+Maven build and execution on SQL Server 2012 to be confirmed at first
+deploy (notably: ORF proposals mixing into the list, U_BFO volume).

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Ordine fornitore – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-cart-plus',
+        title='Ordine a fornitore ' + ${order.orderNumber != null ? order.orderNumber.trim() : ''},
+        subtitle=${order.supplierName},
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <div class="d-flex gap-2 mb-3 align-items-center flex-wrap">
+        <a th:href="@{/ordini-fornitore}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i>Torna alla lista
+        </a>
+        <a th:href="@{/fornitori(q=${order.supplierCode != null ? order.supplierCode.trim() : ''})}"
+           class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-truck me-1"></i>Apri fornitore
+        </a>
+        <span class="badge"
+              th:classappend="${order.statusLabel == 'Chiuso'} ? 'bg-secondary-subtle text-secondary-emphasis' : 'bg-success-subtle text-success-emphasis'"
+              th:text="${order.statusLabel}">Aperto</span>
+        <span class="text-muted small ms-auto">Consultazione — modifica ed evasione restano sul gestionale</span>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-3">
+        <div class="card-header bg-white">
+            <h6 class="detail-card-title"><i class="bi bi-card-text me-1"></i>Testata</h6>
+        </div>
+        <div class="card-body">
+            <dl class="row mb-0 small">
+                <dt class="col-md-2 text-muted">Numero / data</dt>
+                <dd class="col-md-4">
+                    <span class="font-monospace" th:text="${order.orderNumber != null ? order.orderNumber.trim() : '—'}"></span>
+                    del <span th:replace="~{fragments/list-tools :: itDate(${order.orderDate})}"></span>
+                </dd>
+                <dt class="col-md-2 text-muted">Fornitore</dt>
+                <dd class="col-md-4">
+                    <span class="font-monospace" th:text="${order.supplierCode != null ? order.supplierCode.trim() : ''}"></span>
+                    — <span th:text="${order.supplierName ?: ''}"></span>
+                </dd>
+                <dt class="col-md-2 text-muted">Consegna richiesta</dt>
+                <dd class="col-md-4" th:text="${order.deliveryDate != null and !order.deliveryDate.trim().isEmpty() ? order.deliveryDate.trim() : '—'}">—</dd>
+                <dt class="col-md-2 text-muted">Riferimento</dt>
+                <dd class="col-md-4" th:text="${order.reference != null and !order.reference.trim().isEmpty() ? order.reference : '—'}">—</dd>
+                <dt class="col-md-2 text-muted">Imponibile</dt>
+                <dd class="col-md-4 font-monospace" th:text="${order.taxableAmount != null ? #numbers.formatDecimal(order.taxableAmount, 1, 'POINT', 2, 'COMMA') : '—'}">—</dd>
+                <dt class="col-md-2 text-muted">Totale con IVA</dt>
+                <dd class="col-md-4 font-monospace fw-semibold" th:text="${#numbers.formatDecimal(order.total, 1, 'POINT', 2, 'COMMA')}">—</dd>
+                <dt class="col-md-2 text-muted" th:if="${order.linkedCustomerOrderNumber != null and !order.linkedCustomerOrderNumber.trim().isEmpty()}">Ordine cliente collegato</dt>
+                <dd class="col-md-4" th:if="${order.linkedCustomerOrderNumber != null and !order.linkedCustomerOrderNumber.trim().isEmpty()}">
+                    <span class="font-monospace" th:text="${order.linkedCustomerOrderNumber.trim()}"></span>
+                    del <span th:replace="~{fragments/list-tools :: itDate(${order.linkedCustomerOrderDate})}"></span>
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white d-flex align-items-center">
+            <h6 class="detail-card-title mb-0"><i class="bi bi-list-ol me-1"></i>Righe ordine</h6>
+            <span class="badge bg-light text-dark border ms-2" th:text="${#lists.size(rows)} + ' righe'">0</span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-sm mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-end">#</th>
+                            <th>Articolo</th>
+                            <th>Descrizione</th>
+                            <th class="text-end">Ordinata</th>
+                            <th class="text-end">Evasa</th>
+                            <th class="text-end">Prezzo netto</th>
+                            <th class="text-end">Valore riga</th>
+                            <th>Consegna</th>
+                            <th>IVA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="r : ${rows}" th:classappend="${r.isCommento()} ? 'table-light text-muted' : ''">
+                            <td class="text-end font-monospace small" th:text="${r.sequence != null ? #numbers.formatDecimal(r.sequence, 1, 0) : ''}">1</td>
+                            <td class="font-monospace small">
+                                <a th:href="@{/articoli(q=${r.articleCode != null ? r.articleCode.trim() : ''})}"
+                                   class="text-decoration-none">
+                                    <span th:text="${r.articleCode != null ? r.articleCode.trim() : ''}"></span><span
+                                        th:if="${r.articleExtension != null and !r.articleExtension.trim().isEmpty()}"
+                                        class="text-muted" th:text="'/' + ${r.articleExtension.trim()}"></span>
+                                </a>
+                            </td>
+                            <td class="small">
+                                <span th:text="${r.description ?: ''}"></span>
+                                <div class="text-muted" th:if="${r.description2 != null and !r.description2.trim().isEmpty()}" th:text="${r.description2}"></div>
+                            </td>
+                            <td class="text-end font-monospace small" th:text="${r.orderedQuantity != null ? #numbers.formatDecimal(r.orderedQuantity, 1, 'POINT', 2, 'COMMA') : ''}">1,00</td>
+                            <td class="text-end font-monospace small"
+                                th:classappend="${r.receivedQuantity != null and r.orderedQuantity != null and r.receivedQuantity.compareTo(r.orderedQuantity) >= 0} ? 'text-success' : ''"
+                                th:text="${r.receivedQuantity != null ? #numbers.formatDecimal(r.receivedQuantity, 1, 'POINT', 2, 'COMMA') : ''}">0,00</td>
+                            <td class="text-end font-monospace small" th:text="${r.netPrice != null ? #numbers.formatDecimal(r.netPrice, 1, 'POINT', 2, 'COMMA') : ''}">0,00</td>
+                            <td class="text-end font-monospace small" th:text="${r.rowValue != null ? #numbers.formatDecimal(r.rowValue, 1, 'POINT', 2, 'COMMA') : ''}">0,00</td>
+                            <td class="small"><span th:replace="~{fragments/list-tools :: itDate(${r.deliveryDate})}"></span></td>
+                            <td><span class="badge bg-info-subtle text-info-emphasis"
+                                      th:if="${r.vatCode != null and !r.vatCode.trim().isEmpty()}"
+                                      th:text="${r.vatCode.trim()}">22</span></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(rows)}">
+                            <td colspan="9" class="text-center text-muted py-4">Nessuna riga collegata (verificare chiave di aggancio sui dati storici).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</section></body>
+</html>

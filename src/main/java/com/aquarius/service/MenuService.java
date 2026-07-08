@@ -105,7 +105,13 @@ public class MenuService {
         // Slice: magazzino / distinta base / produzione standard (consultazione)
         Map.entry("menu_movimenti_mag", "/magazzino/movimenti"),
         Map.entry("menu_dis000", "/distinte"),
-        Map.entry("std_programmazione", "/produzione")
+        Map.entry("std_programmazione", "/produzione"),
+        // Slice: acquisti + anagrafiche minori (consultazione)
+        Map.entry("menu_orf000", "/ordini-fornitore"),
+        Map.entry("menu_bfo000", "/ddt-fornitore"),
+        Map.entry("menu_age000", "/agenti"),
+        Map.entry("menu_ban000", "/banche"),
+        Map.entry("menu_car000", "/capi-area")
     );
 
     /**

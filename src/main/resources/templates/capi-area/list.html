@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Capi area – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-diagram-3',
+        title='Agenti per capo area',
+        subtitle='Associazioni capo area ↔ agente con % provvigione su imponibile del venduto (tabella U_CAR_AN)',
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <form method="get" th:action="@{/capi-area}" class="mb-3">
+        <input type="hidden" name="size" th:value="${size}">
+        <input type="hidden" name="sort" th:value="${sort}">
+        <input type="hidden" name="dir" th:value="${dir}">
+        <div class="input-group" style="max-width:600px">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" name="q" th:value="${q}" class="form-control"
+                   placeholder="Capo area o agente…">
+            <button type="submit" class="btn btn-primary">Cerca</button>
+            <a th:href="@{/capi-area}" class="btn btn-outline-secondary" th:if="${q != null and q != ''}">
+                <i class="bi bi-x"></i>
+            </a>
+        </div>
+    </form>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-sm mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/capi-area','areaManagerCode','Capo area',${q},${size},${sort},${dir},'')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/capi-area','areaManagerName','Nome capo area',${q},${size},${sort},${dir},'')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/capi-area','agentCode','Agente',${q},${size},${sort},${dir},'')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/capi-area','agentName','Nome agente',${q},${size},${sort},${dir},'')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/capi-area','commissionPct','% Provvigione',${q},${size},${sort},${dir},'text-end')}"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="c : ${associazioni.content}">
+                            <td class="font-monospace small" th:text="${c.areaManagerCode != null ? c.areaManagerCode.trim() : ''}">C01</td>
+                            <td th:text="${c.areaManagerName ?: '—'}">Capo area</td>
+                            <td class="font-monospace small" th:text="${c.agentCode != null ? c.agentCode.trim() : ''}">A01</td>
+                            <td th:text="${c.agentName ?: '—'}">Agente</td>
+                            <td class="text-end font-monospace small"
+                                th:text="${c.commissionPct != null ? #numbers.formatDecimal(c.commissionPct, 1, 'POINT', 2, 'COMMA') + ' %' : '—'}">—</td>
+                        </tr>
+                        <tr th:if="${associazioni.empty}">
+                            <td colspan="5" class="text-center text-muted py-5">
+                                <i class="bi bi-inbox" style="font-size:2rem"></i>
+                                <p class="mt-2 mb-0">Nessuna associazione capo area / agente trovata.</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/list-tools :: pager('/capi-area',${associazioni.number},${q},${size},${sort},${dir},${associazioni})}"></div>
+
+</section></body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Agente – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-person-badge',
+        title=${agente.name != null ? agente.name.trim() : 'Agente'},
+        subtitle='Agente ' + ${agente.code != null ? agente.code.trim() : ''},
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <div class="d-flex gap-2 mb-3 align-items-center">
+        <a th:href="@{/agenti}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i>Torna alla lista
+        </a>
+        <a th:href="@{/capi-area(q=${agente.code != null ? agente.code.trim() : ''})}"
+           class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-diagram-3 me-1"></i>Capi area collegati
+        </a>
+        <span class="text-muted small ms-auto">Consultazione — aggiornamento anagrafica sul gestionale</span>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white">
+            <h6 class="detail-card-title"><i class="bi bi-card-text me-1"></i>Dati anagrafici</h6>
+        </div>
+        <div class="card-body">
+            <dl class="row mb-0 small">
+                <dt class="col-md-2 text-muted">Codice</dt>
+                <dd class="col-md-4 font-monospace" th:text="${agente.code != null ? agente.code.trim() : '—'}">—</dd>
+                <dt class="col-md-2 text-muted">% Provvigione base</dt>
+                <dd class="col-md-4 font-monospace" th:text="${agente.commissionPct != null ? #numbers.formatDecimal(agente.commissionPct, 1, 'POINT', 2, 'COMMA') + ' %' : '—'}">—</dd>
+                <dt class="col-md-2 text-muted">Indirizzo</dt>
+                <dd class="col-md-4" th:text="${agente.address != null and !agente.address.trim().isEmpty() ? agente.address.trim() : '—'}">—</dd>
+                <dt class="col-md-2 text-muted">Codice fiscale</dt>
+                <dd class="col-md-4 font-monospace" th:text="${agente.fiscalCode != null and !agente.fiscalCode.trim().isEmpty() ? agente.fiscalCode.trim() : '—'}">—</dd>
+                <dt class="col-md-2 text-muted">Località</dt>
+                <dd class="col-md-4"
+                    th:text="${(agente.zip != null and !agente.zip.trim().isEmpty() ? agente.zip.trim() + ' ' : '')
+                              + (agente.city != null and !agente.city.trim().isEmpty() ? agente.city.trim() : '—')
+                              + (agente.province != null and !agente.province.trim().isEmpty() ? ' (' + agente.province.trim() + ')' : '')}">—</dd>
+                <dt class="col-md-2 text-muted">Partita IVA</dt>
+                <dd class="col-md-4 font-monospace" th:text="${agente.vatNumber != null and !agente.vatNumber.trim().isEmpty() ? agente.vatNumber.trim() : '—'}">—</dd>
+                <dt class="col-md-2 text-muted">Valuta</dt>
+                <dd class="col-md-4 font-monospace" th:text="${agente.currency != null and !agente.currency.trim().isEmpty() ? agente.currency.trim() : '—'}">—</dd>
+                <dt class="col-md-2 text-muted">Data inserimento</dt>
+                <dd class="col-md-4"><span th:replace="~{fragments/list-tools :: itDate(${agente.insertDate})}"></span></dd>
+            </dl>
+        </div>
+    </div>
+
+</section></body>
+</html>

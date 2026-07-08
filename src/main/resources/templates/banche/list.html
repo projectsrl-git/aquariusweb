@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Banche – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-bank',
+        title='Banche',
+        subtitle='Anagrafica banche (tabella U_BAN_AN)',
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <form method="get" th:action="@{/banche}" class="mb-3">
+        <input type="hidden" name="size" th:value="${size}">
+        <input type="hidden" name="sort" th:value="${sort}">
+        <input type="hidden" name="dir" th:value="${dir}">
+        <div class="input-group" style="max-width:600px">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" name="q" th:value="${q}" class="form-control"
+                   placeholder="Codice, nome, località, ABI o IBAN…">
+            <button type="submit" class="btn btn-primary">Cerca</button>
+            <a th:href="@{/banche}" class="btn btn-outline-secondary" th:if="${q != null and q != ''}">
+                <i class="bi bi-x"></i>
+            </a>
+        </div>
+    </form>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-sm mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/banche','code','Codice',${q},${size},${sort},${dir},'')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/banche','name','Banca',${q},${size},${sort},${dir},'')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/banche','city','Località',${q},${size},${sort},${dir},'')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/banche','abi','ABI',${q},${size},${sort},${dir},'')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/banche','cab','CAB',${q},${size},${sort},${dir},'')}"></th>
+                            <th>IBAN</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="b : ${banche.content}">
+                            <td>
+                                <a th:href="@{/banche/{id}(id=${b.id})}"
+                                   class="font-monospace small text-decoration-none"
+                                   th:text="${b.code != null ? b.code.trim() : ''}">B01</a>
+                            </td>
+                            <td>
+                                <a th:href="@{/banche/{id}(id=${b.id})}"
+                                   class="text-decoration-none text-dark"
+                                   th:text="${b.name ?: '—'}">Banca</a>
+                            </td>
+                            <td class="small" th:text="${b.city != null and !b.city.trim().isEmpty() ? b.city.trim() : '—'}">—</td>
+                            <td class="font-monospace small" th:text="${b.abi != null and !b.abi.trim().isEmpty() ? b.abi.trim() : '—'}">—</td>
+                            <td class="font-monospace small" th:text="${b.cab != null and !b.cab.trim().isEmpty() ? b.cab.trim() : '—'}">—</td>
+                            <td class="font-monospace small" th:text="${b.iban != null and !b.iban.trim().isEmpty() ? b.iban.trim() : '—'}">—</td>
+                        </tr>
+                        <tr th:if="${banche.empty}">
+                            <td colspan="6" class="text-center text-muted py-5">
+                                <i class="bi bi-inbox" style="font-size:2rem"></i>
+                                <p class="mt-2 mb-0">Nessuna banca trovata.</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/list-tools :: pager('/banche',${banche.number},${q},${size},${sort},${dir},${banche})}"></div>
+
+</section></body>
+</html>

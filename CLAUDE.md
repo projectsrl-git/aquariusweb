@@ -134,9 +134,11 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
   - 0.3.0 — magazzino / distinta base / produzione standard,
     consultazione (+ sessione 1: articoli, ordini, DDT, fatture+proforma,
     cruscotto ristampa documenti).
-  - **0.3.1 (corrente)** — cesello dettaglio righe documento: righe espandibili
+  - 0.3.1 — cesello dettaglio righe documento: righe espandibili
     + esplosione commenti dal CLOB ORD_NOTE (per ora sulle fatture, poi
     ordini/DDT/proforma).
+  - **0.4.0 (corrente)** — acquisti (ordini/carichi da fornitore) +
+    anagrafiche agenti/banche/capi area, consultazione.
 
 ## 4c. Migration tracker (.scx logic ↔ web)
 
@@ -242,6 +244,9 @@ size ai byte 6-7). I form contengono MOLTA logica nei bottoni/validazioni
 | Magazzino movimenti+giacenze (read-only) | `/magazzino/movimenti`, `/magazzino/giacenze` | U_MAG_MO / U_MAG_GG. Causale movimento = MOV_TOP via PARA 'TOP'+codice. Giacenze SEMPRE pre-aggregate (SUM GROUP BY MAG_ANAART+MAG_CODMAG, StockBalanceDao nativo: count di gruppi con HAVING richiede derived table, non JPQL). Anomalie esposte: Negativa, Zero con storico. Menu giacenze via FUNCTION_TO_URL (=determina_form_giacenze()) |
 | Distinta base (read-only) | `/distinte` | U_DIS_TT/DD. DIT_GRUPPO = codice ARTICOLO padre (join U_ART_PR.ART_CODPRI). DIS_ESPLOD='X' = sotto-distinta (navigazione un livello alla volta via /distinte/articolo/{code}). Esplosione multi-livello e costing DEFERRED |
 | Produzione STANDARD (read-only) | `/produzione` | PRODUZIONE (albero IDNODE/PARENT): radici = PARENT='' AND TIPO='STD' (filtro legacy VERIFICATO). PROD_ORDINI/PROD_LEGAMI/PROD_AVANZA linkate per IDPRG (nessuna colonna soc/anno). GRUPRD via PARA 'PRD'+codice. Solo standard per mandato |
+| Ordini a fornitore (read-only) | `/ordini-fornitore` | U_ORF_TT/DD, speculare a /ordini. Controparte in ORD_CODCLI/ORD_RAGSOC (riuso legacy su documenti acquisto). MENU_ORF000 gestisce anche le PROPOSTE via flag di lancio senza colonna discriminante → lista intero archivio (NEEDS_DOMAIN) |
+| Carichi da fornitore (read-only) | `/ddt-fornitore` | U_BFO_TT/DD (NON U_BOF_*: quello e' il flusso bollette fiscali verso clienti — BOFCONSE apre U_CLI_AN). ORD_TIPO=9 = reso da cliente (badge). Righe: ordine fornitore via coppia ORC, fattura fornitore via MOV_NUMFAT/DATFAT |
+| Agenti / Banche / Capi area (read-only) | `/agenti`, `/banche`, `/capi-area` | U_AGE_AN, U_BAN_AN, U_CAR_AN. GOTCHA: U_CAR_AN = "agenti per capo area" (provvigioni), non vettori (vettori = PARA VET in /parametri/VET); condizioni pagamento = PARA CPA in /parametri/CPA (U_PAG_AN e' un archivio morto: incassi su ordine, solo replica+pulizia) |
 
 ## 7. Security notes (PUBLIC repository!)
 

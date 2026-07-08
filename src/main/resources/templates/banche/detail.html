@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Banca – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-bank',
+        title=${banca.name != null ? banca.name.trim() : 'Banca'},
+        subtitle='Banca ' + ${banca.code != null ? banca.code.trim() : ''},
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <div class="d-flex gap-2 mb-3 align-items-center">
+        <a th:href="@{/banche}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i>Torna alla lista
+        </a>
+        <span class="text-muted small ms-auto">Consultazione — aggiornamento anagrafica sul gestionale</span>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white">
+            <h6 class="detail-card-title"><i class="bi bi-card-text me-1"></i>Dati anagrafici e coordinate</h6>
+        </div>
+        <div class="card-body">
+            <dl class="row mb-0 small">
+                <dt class="col-md-2 text-muted">Codice</dt>
+                <dd class="col-md-4 font-monospace" th:text="${banca.code != null ? banca.code.trim() : '—'}">—</dd>
+                <dt class="col-md-2 text-muted">ABI / CAB / CIN</dt>
+                <dd class="col-md-4 font-monospace"
+                    th:text="${(banca.abi != null and !banca.abi.trim().isEmpty() ? banca.abi.trim() : '—') + ' / '
+                              + (banca.cab != null and !banca.cab.trim().isEmpty() ? banca.cab.trim() : '—') + ' / '
+                              + (banca.cin != null and !banca.cin.trim().isEmpty() ? banca.cin.trim() : '—')}">—</dd>
+                <dt class="col-md-2 text-muted">Indirizzo</dt>
+                <dd class="col-md-4" th:text="${banca.address != null and !banca.address.trim().isEmpty() ? banca.address.trim() : '—'}">—</dd>
+                <dt class="col-md-2 text-muted">IBAN</dt>
+                <dd class="col-md-4 font-monospace" th:text="${banca.iban != null and !banca.iban.trim().isEmpty() ? banca.iban.trim() : '—'}">—</dd>
+                <dt class="col-md-2 text-muted">Località</dt>
+                <dd class="col-md-4"
+                    th:text="${(banca.zip != null and !banca.zip.trim().isEmpty() ? banca.zip.trim() + ' ' : '')
+                              + (banca.city != null and !banca.city.trim().isEmpty() ? banca.city.trim() : '—')
+                              + (banca.province != null and !banca.province.trim().isEmpty() ? ' (' + banca.province.trim() + ')' : '')}">—</dd>
+                <dt class="col-md-2 text-muted">SWIFT / BIC</dt>
+                <dd class="col-md-4 font-monospace" th:text="${banca.swift != null and !banca.swift.trim().isEmpty() ? banca.swift.trim() : '—'}">—</dd>
+                <dt class="col-md-2 text-muted">Note</dt>
+                <dd class="col-md-10">
+                    <span th:text="${banca.note1 != null and !banca.note1.trim().isEmpty() ? banca.note1.trim() : ''}"></span>
+                    <span th:text="${banca.note2 != null and !banca.note2.trim().isEmpty() ? ' ' + banca.note2.trim() : ''}"></span>
+                    <span th:if="${(banca.note1 == null or banca.note1.trim().isEmpty()) and (banca.note2 == null or banca.note2.trim().isEmpty())}">—</span>
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+</section></body>
+</html>
