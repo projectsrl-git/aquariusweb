@@ -150,8 +150,10 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
     (Bilancio di verifica, Prog. Dare/Avere/Saldo); quadratura stabile col toggle C/F.
   - 0.7.1 — bilancio: banner quadratura esteso + sub-tab
     Attività/Passività e Costi/Ricavi.
-  - **0.8.0 (corrente)** — bilancio: switch vista mastri/gruppi ↔ sezioni
+  - 0.8.0 — bilancio: switch vista mastri/gruppi ↔ sezioni
     contrapposte (Attività|Passività, Costi|Ricavi).
+  - **0.8.1 (corrente)** — menu Bilancio CEE attivato (voce sintetica);
+    sintesi bilancio: Differenza in testa + riquadro quadratura prominente.
 
 ## 4c. Migration tracker (.scx logic ↔ web)
 

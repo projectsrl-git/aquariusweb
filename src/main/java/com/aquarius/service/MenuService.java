@@ -113,13 +113,10 @@ public class MenuService {
         Map.entry("menu_ban000", "/banche"),
         Map.entry("menu_car000", "/capi-area"),
         // Slice: viewer parametri aziendali (analisi MENU_AZI000)
-        Map.entry("menu_azi000", "/parametri-aziendali"),
-        // Slice: bilancio CEE — viewer struttura (il calcolo arrivera' con Opus)
-        Map.entry("menu_cee000", "/contabilita/bilancio-cee-struttura"),
-        Map.entry("menu_ceepdc", "/contabilita/bilancio-cee-struttura"),
-        Map.entry("menu_ceetot", "/contabilita/bilancio-cee-struttura"),
-        Map.entry("menu_ceecori", "/contabilita/bilancio-cee-struttura"),
-        Map.entry("menu_ceeric", "/contabilita/bilancio-cee-struttura")
+        Map.entry("menu_azi000", "/parametri-aziendali")
+        // NB: Bilancio CEE è esposto come voce SINTETICA sotto Contabilità
+        // (vedi injectSyntheticEntries): il nome form legacy non è certo, quindi
+        // non ci affidiamo a FORM_TO_URL per evitare voci mancanti o duplicate.
     );
 
     /**
@@ -355,32 +352,38 @@ public class MenuService {
                     .hasReachableLeaf(true)
                     .build());
                 children.add(2, MenuNode.builder()
+                    .label("Bilancio CEE")
+                    .icon("bi-file-earmark-bar-graph")
+                    .url("/contabilita/bilancio-cee-struttura")
+                    .hasReachableLeaf(true)
+                    .build());
+                children.add(3, MenuNode.builder()
                     .label("Partitario clienti")
                     .icon("bi-person-lines-fill")
                     .url("/contabilita/partitari/clienti")
                     .hasReachableLeaf(true)
                     .build());
-                children.add(3, MenuNode.builder()
+                children.add(4, MenuNode.builder()
                     .label("Partitario fornitori")
                     .icon("bi-person-lines-fill")
                     .url("/contabilita/partitari/fornitori")
                     .hasReachableLeaf(true)
                     .build());
-                children.add(4, MenuNode.builder().separator(true).build());
+                children.add(5, MenuNode.builder().separator(true).build());
                 // Shortcut diretti al piano dei conti (web feature, non in VFP)
-                children.add(5, MenuNode.builder()
+                children.add(6, MenuNode.builder()
                     .label("Piano dei conti (albero)")
                     .icon("bi-diagram-3")
                     .url("/conti/tree")
                     .hasReachableLeaf(true)
                     .build());
-                children.add(6, MenuNode.builder()
+                children.add(7, MenuNode.builder()
                     .label("Piano dei conti (lista)")
                     .icon("bi-list-ul")
                     .url("/conti")
                     .hasReachableLeaf(true)
                     .build());
-                children.add(7, MenuNode.builder().separator(true).build());
+                children.add(8, MenuNode.builder().separator(true).build());
             }
             // Si possono aggiungere altre top-section sintetiche qui in futuro
         }

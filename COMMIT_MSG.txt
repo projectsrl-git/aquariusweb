@@ -1,10 +1,13 @@
-Bilancio: add side-by-side (sezioni contrapposte) view switch
+Activate CEE menu entry + make bilancio key figures prominent
 
-New ?vista=mastri|contrapposte switch (btn-group next to the C/F toggle):
-- mastri: existing mastro/gruppo tree with tabs.
-- contrapposte: Attivita|Passivita side by side, then Costi|Ricavi side by side
-  (saldo per account, section total in footer) — the pre-grouping layout.
-C/F leaves still respect the toggle; section totals include everything so the
-quadratura is unchanged. New sezioneFlat fragment; controller gains a vista param.
+- Bilancio CEE menu: Fable 5 had wired it via guessed FORM_TO_URL form names that
+  don't match the legacy tbl_menu COMANDO, so it never showed. Replaced with a
+  synthetic "Bilancio CEE" entry under Contabilita (always present); removed the
+  five guessed FORM_TO_URL entries to avoid missing/duplicate voices.
+- Synthesis: the Stato Patrimoniale card now also shows Differenza
+  (Attivita - Passivita), coloured like the result.
+- Quadratura: replaced the thin banner with a prominent card (same size as the
+  synthesis cards): "(Attivita - Passivita) = result, Differenza = 0", green when
+  balanced / red when not.
 
-Version 0.8.0. Sandbox checks only.
+Version 0.8.1. Sandbox checks only.
