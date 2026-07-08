@@ -96,7 +96,10 @@ public class MenuService {
         // Slice: Ordini clienti (consultazione)
         Map.entry("menu_ord000", "/ordini"),
         // Slice: DDT / documenti di trasporto (consultazione)
-        Map.entry("menu_bol000", "/ddt")
+        Map.entry("menu_bol000", "/ddt"),
+        // Slice: Fatture di vendita + proforma (consultazione)
+        Map.entry("menu_fat000", "/fatture"),
+        Map.entry("menu_fap000", "/proforma")
     );
 
     /**

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Fatture proforma – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-receipt',
+        title='Fatture proforma',
+        subtitle='Consultazione proforma — anno ' + ${currentFiscalYear} + ' (tabelle U_FAP_TT / U_FAP_DD)',
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <form method="get" th:action="@{/proforma}" class="mb-3">
+        <input type="hidden" name="size" th:value="${size}">
+        <input type="hidden" name="sort" th:value="${sort}">
+        <input type="hidden" name="dir" th:value="${dir}">
+        <div class="input-group" style="max-width:600px">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" name="q" th:value="${q}" class="form-control"
+                   placeholder="Numero, cliente, P.IVA o riferimento…">
+            <button type="submit" class="btn btn-primary">Cerca</button>
+            <a th:href="@{/proforma}" class="btn btn-outline-secondary" th:if="${q != null and q != ''}">
+                <i class="bi bi-x"></i>
+            </a>
+        </div>
+    </form>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-sm mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/proforma','invoiceNumber','Numero',${q},${size},${sort},${dir},'')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/proforma','invoiceDate','Data',${q},${size},${sort},${dir},'')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/proforma','customerCode','Cliente',${q},${size},${sort},${dir},'')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/proforma','customerName','Ragione sociale',${q},${size},${sort},${dir},'')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/proforma','documentType','Tipo',${q},${size},${sort},${dir},'')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/proforma','taxableAmount','Imponibile',${q},${size},${sort},${dir},'end')}"></th>
+                            <th>FE</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="f : ${invoices.content}">
+                            <td>
+                                <a th:href="@{/proforma/{id}(id=${f.id})}"
+                                   class="font-monospace small text-decoration-none"
+                                   th:text="${f.invoiceNumber != null ? f.invoiceNumber.trim() : ''}">000123</a>
+                            </td>
+                            <td class="small"><span th:replace="~{fragments/list-tools :: itDate(${f.invoiceDate})}"></span></td>
+                            <td class="font-monospace small" th:text="${f.customerCode != null ? f.customerCode.trim() : '—'}">CLI001</td>
+                            <td>
+                                <a th:href="@{/proforma/{id}(id=${f.id})}"
+                                   class="text-decoration-none text-dark"
+                                   th:text="${f.customerName ?: '—'}">Cliente S.r.l.</a>
+                            </td>
+                            <td><span class="badge bg-secondary-subtle text-secondary-emphasis"
+                                      th:if="${f.documentType != null and !f.documentType.trim().isEmpty()}"
+                                      th:text="${f.documentType.trim()}">FAT</span></td>
+                            <td class="text-end font-monospace small"
+                                th:text="${f.taxableAmount != null ? #numbers.formatDecimal(f.taxableAmount, 1, 'POINT', 2, 'COMMA') : '—'}">0,00</td>
+                            <td>
+                                <span class="badge bg-success-subtle text-success-emphasis" th:if="${f.isTransmitted()}"
+                                      title="Fattura elettronica trasmessa">Trasmessa</span>
+                            </td>
+                        </tr>
+                        <tr th:if="${invoices.empty}">
+                            <td colspan="7" class="text-center text-muted py-5">
+                                <i class="bi bi-inbox" style="font-size:2rem"></i>
+                                <p class="mt-2 mb-0" th:text="${q != null and q != '' ? 'Nessuna proforma trovata per «' + q + '»' : 'Nessuna proforma trovata per questo anno.'}">Nessuna fattura</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/list-tools :: pager('/proforma',${invoices.number},${q},${size},${sort},${dir},${invoices})}"></div>
+
+</section></body>
+</html>

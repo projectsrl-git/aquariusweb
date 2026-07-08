@@ -230,6 +230,7 @@ size ai byte 6-7). I form contengono MOLTA logica nei bottoni/validazioni
 | Articles (read-only) | `/articoli` | Consultation of U_ART_PR (VFP MENU_ART000): shared list pattern + 4-card detail. ~30 of 254 columns mapped, no edit path (maintenance stays on VFP). ART_COORD1..4 in the form are memvars — real column is ART_COORD |
 | Customer orders (read-only) | `/ordini` | U_ORD_TT + U_ORD_DD (VFP MENU_ORD000), scoped to FiscalContext year. TT↔DD join: TAGGANCIO=DAGGANCIO hook (fallback ORS_ triple key). Row value = ORD_PRZNET × ORD_QTAORD (APPLILIB) |
 | DDT (read-only) | `/ddt` | U_BOL_TT + U_BOL_DD (VFP menu_BOL000), year-scoped. GOTCHA: BOL columns reuse the ORD_ prefix (ORD_NUMDDT = DDT number; ORD_NUMORD = linked order). Join TAGGANCIO=DAGGANCIO |
+| Invoices + proforma (read-only) | `/fatture`, `/proforma` | U_FAT_TT/DD + U_FAP_TT/DD (VFP MENU_FAT000 / menu_FAP000), year-scoped. GOTCHA: ORD_NUMORD/ORD_DATORD on these tables are the invoice's OWN number/date; U_FAP_* = fatture PROFORMA (not acquisto). FE flags (ORD_TRASME/ORD_IDSDI) read-only |
 
 ## 7. Security notes (PUBLIC repository!)
 
