@@ -1,0 +1,14 @@
+tabella,colonna,ruolo,semantica,evidenza,confidence
+U_INT_TT,INT_CODSOC,chiave,Societa' della regola di confluenza,ceecont.PRG r.30: where int_codsoc = PUB_CODSOC,ALTA
+U_INT_TT,INT_CONTO,chiave,Conto contabile di origine (CONTI.CON_CONTO). UNA regola per conto: il loop di calcolo scorre U_INT_TT ordinata per conto e ogni conto confluisce in UNA sola voce per esecuzione,"ceecont.PRG r.31 (order by int_codsoc,int_conto) e r.45-55 (lookup saldo del conto)",ALTA
+U_INT_TT,INT_DESCRI,descrittivo,Descrizione del conto (denormalizzata),menu_ceepdc: campo M.INT_DESCRI,ALTA
+U_INT_TT,INT_CODRIG,regola,Riga CEE di destinazione quando il saldo (dare-avere) e' >= 0: la 'riga DARE',menu_ceepdc label 'Codice riga dare' + help verbatim; ceecont.PRG r.99-101,ALTA
+U_INT_TT,INT_CODRIA,regola,"Riga CEE ALTERNATIVA quando il saldo e' NEGATIVO ('riga AVERE'), se valorizzata; altrimenti si usa comunque INT_CODRIG. Caso d'uso commentato nei sorgenti: 'BANCHE IN PASSIVO' (conti che cambiano sezione col segno del saldo)",menu_ceepdc help verbatim: 'Se il saldo del conto contabile (dare-avere) risulta negativo la procedura assegna il codice riga avere in alternativa se digitato'; ceecont.PRG r.103-110,ALTA
+U_INT_TT,SELEZIONE,tecnico,Campo di selezione/lavoro non usato dal calcolo,Nessun uso in ceecont.PRG,INCERTO
+U_COR_TT,COR_CODSOC,chiave,Societa' della confluenza di totale,ceecont.PRG r.213: where cor_codsoc = PUB_CODSOC,ALTA
+U_COR_TT,COR_RIGA,regola,Riga CEE COMPONENTE (dettaglio o totale intermedio) il cui valore CORRENTE confluisce nel totale,ceecont.PRG r.231-243 (legge CORRENTE della riga),ALTA
+U_COR_TT,COR_DESRIG,descrittivo,Descrizione della riga componente (denormalizzata),menu_ceetot campi X_RIGDETT/X_DESDETT,ALTA
+U_COR_TT,COR_CONFLU,regola,"Riga CEE di TOTALE destinataria: CORRENTE(confluenza) += segno x CORRENTE(riga). Se la riga di confluenza non esiste in BILNEW il calcolo si INTERROMPE ('Non trovata la riga di confluenza, aggiornamento annullato')",ceecont.PRG r.249-266,ALTA
+U_COR_TT,COR_DESCON,descrittivo,Descrizione della riga totale (denormalizzata),menu_ceetot campi X_RIGTOT/X_DESTOT,ALTA
+U_COR_TT,COR_SEGNO,regola,"Segno della confluenza: '+' somma, qualsiasi altro valore SOTTRAE (else = sottrazione)",ceecont.PRG r.240-244: IF SEGNO='+' V_TOTALE=V_TOTALE+CORRENTE ELSE V_TOTALE=V_TOTALE-CORRENTE,ALTA
+U_COR_TT,SELEZIONE,tecnico,Campo di selezione/lavoro non usato dal calcolo,Nessun uso in ceecont.PRG,INCERTO

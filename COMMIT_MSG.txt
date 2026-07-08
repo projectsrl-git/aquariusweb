@@ -1,17 +1,39 @@
-Fix bilancio (toggle/tabs/quadratura/align) and /documenti ORDER BY
+Add CEE balance DEEP analysis: structure, mapping, algorithm
 
-/documenti (ristampa documenti): DocumentArchiveDao built
-"ORDER BY <col> <dir>, ORD_NUMORD <dir>" — sorting by number duplicated the
-column and SQL Server rejected it. Tie-breaker now added only when the sort
-column isn't already ORD_NUMORD.
+Sources-verified decode of the legacy "Bilancio IV direttiva CEE" flow so
+Opus can implement the calculation engine on certain ground. No code
+changes: catalogs + README + tracker.
 
-Bilancio:
-- "Mostra conti clienti/fornitori" toggle: unchecked checkbox sent nothing so
-  defaultValue=true always won; now a hidden cf field updated by JS.
-- Tabs for Stato Patrimoniale / Conto Economico (no more scrolling to switch).
-- Section totals moved to a card-footer so the two columns' totals align at the
-  bottom (h-100 + align-items-stretch).
-- Quadratura banner: checks Attivo - Passivo == result (tol 0.01), shows the
-  imbalance otherwise.
+KEY FINDINGS (all cited file/line in the deliverables)
+- BILNEW holds structure AND values: of 39 columns the CEE flow uses six
+  (CODSOC, CODRIG, TIPO_DATO, DESCRIZION, CORRENTE computed/reset each
+  run, PRECEDENTE rolled by menu_ceeanno: PRECEDENTE=CORRENTE;CORRENTE=0).
+  The other 33 are never read by the flow (generic-table legacy, INCERTO).
+- NO parent-child tree in BILNEW. Structure = print order BIL_CODRIG
+  (numeric-in-varchar, PADL-10 comparisons) + row type TIPO_DATO with
+  verbatim validation "I=Commenti, V=Dettagli di riga, T=Totali"
+  (menu_cee000; STBILCEE.FRX styles T rows) + totals hierarchy stored in
+  U_COR_TT as a signed edge list riga->totale ('+' adds, else subtracts;
+  missing CONFLU row ABORTS the run).
+- BIL_CODRIG number space encodes the section: VAL(codrig) >= 21600 =
+  conto economico (ABS at end of phase 2), < 21600 = stato patrimoniale.
+  Attivo/passivo boundary is data, not code (INCERTO for Opus).
+- U_INT_TT dual destination: INT_CODRIG "Codice riga dare" (saldo >= 0),
+  INT_CODRIA "Codice riga avere" used when the saldo is NEGATIVE if
+  filled (form help verbatim; source comment "BANCHE IN PASSIVO").
+- Full ceecont.PRG pseudocode in resources/cee/README.md, with the
+  previsionali option (PRE_IMP_D-PRE_IMP_A), the three data-quality
+  behaviors (unmapped accounts SILENTLY excluded; mappings to missing
+  rows skip the account with verbatim warning; broken total edges abort)
+  and ready SSMS queries. Commented-out cases 21900/24400 ("da vedere col
+  commercialista") flagged INCERTO.
 
-Version 0.5.1. Sandbox checks only; confirm build/SQL on deploy.
+DECLARED DEVIATION: the handoff asked a CSV with one row per CEE voce,
+but the voci are DB data with no seed in either repo - a static CSV would
+be a stale, unverifiable copy. Delivered instead: the 39-column decode
+(what sources can verify); the real rows are shown live by the viewer in
+the follow-up patch.
+
+Tracker: +9 rows (ceecont DEFERRED->Opus with pseudocode; CEESAVE floppy
+export NOT_APPLICABLE; cee forms WRITE_SIDE/PRINT_REPORT; menu_ceecori
+PARTIAL = anomalies panel). CSVs parse-back verified quote-aware.
