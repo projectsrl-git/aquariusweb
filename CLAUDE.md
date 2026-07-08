@@ -152,8 +152,10 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
     Attività/Passività e Costi/Ricavi.
   - 0.8.0 — bilancio: switch vista mastri/gruppi ↔ sezioni
     contrapposte (Attività|Passività, Costi|Ricavi).
-  - **0.8.1 (corrente)** — menu Bilancio CEE attivato (voce sintetica);
+  - 0.8.1 — menu Bilancio CEE attivato (voce sintetica);
     sintesi bilancio: Differenza in testa + riquadro quadratura prominente.
+  - **0.9.0 (corrente)** — bilancio: export Excel + ritocchi sintesi
+    (Differenza in testa, riquadro quadratura, bordi card).
 
 ## 4c. Migration tracker (.scx logic ↔ web)
 

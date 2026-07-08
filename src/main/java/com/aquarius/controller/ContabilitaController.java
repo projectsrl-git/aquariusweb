@@ -64,6 +64,7 @@ public class ContabilitaController {
     private final AccountRepository accountRepository;
     private final BreadcrumbService breadcrumbService;
     private final FiscalContext fiscalContext;
+    private final com.aquarius.service.BilancioExcelExporter bilancioExcelExporter;
 
     // ─────────────────────────────────────────── PRIMANOTA ──────────────
     @GetMapping("/primanota")
@@ -347,6 +348,62 @@ public class ContabilitaController {
         model.addAttribute("breadcrumbs",
             breadcrumbService.forUrl("/contabilita/bilancio", principal.getUsername()));
         return "contabilita/bilancio";
+    }
+
+    /** Estrazione Excel del bilancio (foglio Dettaglio + Sintesi). */
+    @GetMapping("/bilancio/export")
+    @Transactional(transactionManager = "tenantTransactionManager", readOnly = true)
+    public org.springframework.http.ResponseEntity<byte[]> bilancioExport() throws java.io.IOException {
+        String soc = fiscalContext.getSocietyCode();
+        String anno = fiscalContext.getFiscalYear();
+        com.aquarius.service.BilancioExcelExporter.Data d = buildBilancioExportData(soc, anno);
+        byte[] bytes = bilancioExcelExporter.export(d);
+        String filename = "Bilancio_" + anno + ".xlsx";
+        return org.springframework.http.ResponseEntity.ok()
+            .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION,
+                    "attachment; filename=\"" + filename + "\"")
+            .contentType(org.springframework.http.MediaType.parseMediaType(
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+            .body(bytes);
+    }
+
+    /** Ricalcola i dati di bilancio per l'export (stessa classificazione della vista). */
+    private com.aquarius.service.BilancioExcelExporter.Data buildBilancioExportData(String soc, String anno) {
+        Map<String, Account> accByCode = accountByCode();
+        List<BilancioLine> all = movRepository.findBilancio(soc, anno).stream()
+            .map(r -> {
+                String code = r.getAccount() != null ? r.getAccount().trim() : "";
+                Account a = accByCode.get(code);
+                return new BilancioLine(code, a != null ? a.getDescription() : null,
+                    r.getTotDare(), r.getTotAvere(),
+                    a != null ? trimUpper(a.getBalancePosition()) : null,
+                    a != null ? trimUpper(a.getAccountType()) : null);
+            })
+            .filter(l -> l.getSaldo().signum() != 0)
+            .collect(Collectors.toList());
+        List<BilancioLine> attivo = new ArrayList<>(), passivo = new ArrayList<>(),
+            costi = new ArrayList<>(), ricavi = new ArrayList<>(), nonCl = new ArrayList<>();
+        for (BilancioLine l : all) {
+            if (l.isPatrimoniale()) (l.isDareSide() ? attivo : passivo).add(l);
+            else if (l.isEconomico()) (l.isDareSide() ? costi : ricavi).add(l);
+            else nonCl.add(l);
+        }
+        java.util.Comparator<BilancioLine> byCode = java.util.Comparator.comparing(BilancioLine::getAccount);
+        attivo.sort(byCode); passivo.sort(byCode); costi.sort(byCode); ricavi.sort(byCode); nonCl.sort(byCode);
+
+        com.aquarius.service.BilancioExcelExporter.Data d = new com.aquarius.service.BilancioExcelExporter.Data();
+        d.anno = anno;
+        d.attivo = attivo; d.passivo = passivo; d.costi = costi; d.ricavi = ricavi; d.nonClassificati = nonCl;
+        d.totAttivo = sumDisplay(attivo); d.totPassivo = sumDisplay(passivo);
+        d.totCosti = sumDisplay(costi); d.totRicavi = sumDisplay(ricavi);
+        BigDecimal risultato = d.totRicavi.subtract(d.totCosti);
+        d.risultato = risultato.abs();
+        d.risultatoUtile = risultato.signum() >= 0;
+        d.quadraturaSP = d.totAttivo.subtract(d.totPassivo).abs();
+        BigDecimal sbil = d.totAttivo.subtract(d.totPassivo).subtract(risultato);
+        d.sbilancio = sbil.abs();
+        d.quadraturaOk = sbil.abs().compareTo(new BigDecimal("0.01")) <= 0;
+        return d;
     }
 
     /** Somma degli importi di prospetto (saldo assoluto) di un bucket. */

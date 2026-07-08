@@ -1,13 +1,11 @@
-Activate CEE menu entry + make bilancio key figures prominent
+Bilancio: Excel export + prominence tweaks
 
-- Bilancio CEE menu: Fable 5 had wired it via guessed FORM_TO_URL form names that
-  don't match the legacy tbl_menu COMANDO, so it never showed. Replaced with a
-  synthetic "Bilancio CEE" entry under Contabilita (always present); removed the
-  five guessed FORM_TO_URL entries to avoid missing/duplicate voices.
-- Synthesis: the Stato Patrimoniale card now also shows Differenza
-  (Attivita - Passivita), coloured like the result.
-- Quadratura: replaced the thin banner with a prominent card (same size as the
-  synthesis cards): "(Attivita - Passivita) = result, Differenza = 0", green when
-  balanced / red when not.
+- Excel export: "Esporta Excel" button -> GET /contabilita/bilancio/export
+  (ResponseEntity<byte[]>, Apache POI, same pattern as the warehouse valuation).
+  New BilancioExcelExporter: "Dettaglio" sheet (one row per account with numeric
+  Dare/Avere/Saldo, filterable) + "Sintesi" sheet (totals + quadratura).
+- "Il bilancio quadra" text enlarged; the quadratura card's "Differenza" label
+  renamed to "Quadratura"; the Stato Patrimoniale / Conto Economico summary cards
+  now have a visible border.
 
-Version 0.8.1. Sandbox checks only.
+Version 0.9.0. Sandbox checks only; confirm build/SQL on deploy.
