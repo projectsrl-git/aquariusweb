@@ -128,8 +128,12 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
   Risolve il problema "non conosco il commit prima di committare": il valore è
   il commit da cui è stato fatto il build (l'ultimo noto). Se `.git` manca o il
   token non si risolve, `AppVersionService.getCommit()` ritorna vuoto (guardia).
-- Versione corrente: **0.2.0** (shared list UX, primanota raggruppata, fix menu
-  contabilit, autocomplete storico, bilancio a sezioni, migration tracker+viewer).
+- Log versioni:
+  - 0.2.0 — shared list UX, primanota raggruppata, fix menu contabilita',
+    autocomplete storico, bilancio a sezioni, migration tracker+viewer.
+  - **0.3.0 (corrente)** — magazzino / distinta base / produzione standard,
+    consultazione (+ sessione 1: articoli, ordini, DDT, fatture+proforma,
+    cruscotto ristampa documenti).
 
 ## 4c. Migration tracker (.scx logic ↔ web)
 
@@ -232,6 +236,9 @@ size ai byte 6-7). I form contengono MOLTA logica nei bottoni/validazioni
 | DDT (read-only) | `/ddt` | U_BOL_TT + U_BOL_DD (VFP menu_BOL000), year-scoped. GOTCHA: BOL columns reuse the ORD_ prefix (ORD_NUMDDT = DDT number; ORD_NUMORD = linked order). Join TAGGANCIO=DAGGANCIO |
 | Invoices + proforma (read-only) | `/fatture`, `/proforma` | U_FAT_TT/DD + U_FAP_TT/DD (VFP MENU_FAT000 / menu_FAP000), year-scoped. GOTCHA: ORD_NUMORD/ORD_DATORD on these tables are the invoice's OWN number/date; U_FAP_* = fatture PROFORMA (not acquisto). FE flags (ORD_TRASME/ORD_IDSDI) read-only |
 | Ristampa documenti (read-only) | `/documenti` | Unified dashboard over ALL document archives (VFP MENU_RISTAMPA_DOC) + traceability ordine↔DDT↔fattura. DocumentArchiveDao: table names from DocumentType enum only (controlled identifiers, cf. WarehouseValuationDao.DateBase). GOTCHA: on every document table ORD_NUMORD/ORD_DATORD are the doc's OWN number/date; on DDT rows the linked customer order is the ORC pair (ORS_NUMORC/ORS_DATORC) |
+| Magazzino movimenti+giacenze (read-only) | `/magazzino/movimenti`, `/magazzino/giacenze` | U_MAG_MO / U_MAG_GG. Causale movimento = MOV_TOP via PARA 'TOP'+codice. Giacenze SEMPRE pre-aggregate (SUM GROUP BY MAG_ANAART+MAG_CODMAG, StockBalanceDao nativo: count di gruppi con HAVING richiede derived table, non JPQL). Anomalie esposte: Negativa, Zero con storico. Menu giacenze via FUNCTION_TO_URL (=determina_form_giacenze()) |
+| Distinta base (read-only) | `/distinte` | U_DIS_TT/DD. DIT_GRUPPO = codice ARTICOLO padre (join U_ART_PR.ART_CODPRI). DIS_ESPLOD='X' = sotto-distinta (navigazione un livello alla volta via /distinte/articolo/{code}). Esplosione multi-livello e costing DEFERRED |
+| Produzione STANDARD (read-only) | `/produzione` | PRODUZIONE (albero IDNODE/PARENT): radici = PARENT='' AND TIPO='STD' (filtro legacy VERIFICATO). PROD_ORDINI/PROD_LEGAMI/PROD_AVANZA linkate per IDPRG (nessuna colonna soc/anno). GRUPRD via PARA 'PRD'+codice. Solo standard per mandato |
 
 ## 7. Security notes (PUBLIC repository!)
 

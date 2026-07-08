@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Programma di produzione – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-gear-wide-connected',
+        title='Programma ' + ${programma.programNumber != null ? programma.programNumber.trim() : ''},
+        subtitle=${programma.articleDescription},
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <div class="d-flex gap-2 mb-3 align-items-center flex-wrap">
+        <a th:href="@{/produzione}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i>Torna alla lista
+        </a>
+        <a th:href="@{/articoli(q=${programma.articleCode != null ? programma.articleCode.trim() : ''})}"
+           class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-box me-1"></i>Apri articolo prodotto
+        </a>
+        <span class="badge"
+              th:classappend="${programma.statusLabel == 'Chiuso'} ? 'bg-secondary-subtle text-secondary-emphasis'
+                            : (${programma.statusLabel == 'Completato'} ? 'bg-success-subtle text-success-emphasis'
+                            : (${programma.statusLabel == 'In corso'} ? 'bg-primary-subtle text-primary-emphasis'
+                            : 'bg-warning-subtle text-warning-emphasis'))"
+              th:text="${programma.statusLabel}">Pianificato</span>
+        <span class="text-muted small ms-auto">Consultazione — registrazione avanzamenti e movimentazioni restano sul gestionale</span>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-3">
+        <div class="card-header bg-white">
+            <h6 class="detail-card-title"><i class="bi bi-card-text me-1"></i>Testata programma</h6>
+        </div>
+        <div class="card-body">
+            <dl class="row mb-0 small">
+                <dt class="col-md-2 text-muted">Numero / data</dt>
+                <dd class="col-md-4">
+                    <span class="font-monospace" th:text="${programma.programNumber != null ? programma.programNumber.trim() : '—'}"></span>
+                    del <span th:replace="~{fragments/list-tools :: itDate(${programma.programDate})}"></span>
+                </dd>
+                <dt class="col-md-2 text-muted">Prodotto</dt>
+                <dd class="col-md-4">
+                    <span class="font-monospace" th:text="${programma.articleCode != null ? programma.articleCode.trim() : '—'}"></span>
+                    <span class="text-muted" th:text="${programma.articleDescription != null ? ' ' + programma.articleDescription : ''}"></span>
+                </dd>
+                <dt class="col-md-2 text-muted">Quantità</dt>
+                <dd class="col-md-4 font-monospace"
+                    th:text="${(programma.quantity != null ? #numbers.formatDecimal(programma.quantity, 1, 'POINT', 2, 'COMMA') : '—')
+                              + (programma.unit != null and !programma.unit.trim().isEmpty() ? ' ' + programma.unit.trim() : '')}">—</dd>
+                <dt class="col-md-2 text-muted">Periodo previsto</dt>
+                <dd class="col-md-4">
+                    <span th:replace="~{fragments/list-tools :: itDate(${programma.plannedStart})}"></span> →
+                    <span th:replace="~{fragments/list-tools :: itDate(${programma.plannedEnd})}"></span>
+                </dd>
+                <dt class="col-md-2 text-muted">Fase</dt>
+                <dd class="col-md-4"
+                    th:text="${programma.phaseDescription != null and !programma.phaseDescription.trim().isEmpty()
+                              ? programma.phaseDescription.trim()
+                              : (programma.phase != null and !programma.phase.trim().isEmpty() ? programma.phase.trim() : '—')}">—</dd>
+                <dt class="col-md-2 text-muted">Periodo effettivo</dt>
+                <dd class="col-md-4">
+                    <span th:replace="~{fragments/list-tools :: itDate(${programma.actualStart})}"></span> →
+                    <span th:replace="~{fragments/list-tools :: itDate(${programma.actualEnd})}"></span>
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-3">
+        <div class="card-header bg-white d-flex align-items-center">
+            <h6 class="detail-card-title mb-0"><i class="bi bi-cart3 me-1"></i>Ordini clienti collegati</h6>
+            <span class="badge bg-light text-dark border ms-2" th:text="${#lists.size(ordini)} + ' ordini'">0</span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-sm mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Ordine</th><th>Data</th><th>Cliente</th><th>Articolo</th>
+                            <th class="text-end">Quantità</th><th>Consegna</th><th>Gruppo produzione</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="o : ${ordini}">
+                            <td class="font-monospace small" th:text="${o.orderNumber != null ? o.orderNumber.trim() : ''}">000123</td>
+                            <td class="small"><span th:replace="~{fragments/list-tools :: itDate(${o.orderDate})}"></span></td>
+                            <td class="small">
+                                <span class="font-monospace" th:text="${o.customerCode != null ? o.customerCode.trim() : ''}"></span>
+                                <span th:text="${o.customerName != null ? ' ' + o.customerName.trim() : ''}"></span>
+                            </td>
+                            <td class="small">
+                                <a th:href="@{/articoli(q=${o.articleCode != null ? o.articleCode.trim() : ''})}"
+                                   class="font-monospace text-decoration-none"
+                                   th:text="${o.articleCode != null ? o.articleCode.trim() : ''}"></a>
+                            </td>
+                            <td class="text-end font-monospace small"
+                                th:text="${(o.quantity != null ? #numbers.formatDecimal(o.quantity, 1, 'POINT', 2, 'COMMA') : '—')
+                                          + (o.unit != null and !o.unit.trim().isEmpty() ? ' ' + o.unit.trim() : '')}">1,00</td>
+                            <td class="small"><span th:replace="~{fragments/list-tools :: itDate(${o.deliveryDate})}"></span></td>
+                            <td>
+                                <span class="badge bg-secondary-subtle text-secondary-emphasis"
+                                      th:if="${o.productionGroup != null and !o.productionGroup.trim().isEmpty()}"
+                                      th:text="${o.productionGroup.trim()}"
+                                      th:title="${gruppiProduzione.get(o.productionGroup.trim()) ?: ''}">GRP</span>
+                                <span class="small text-muted d-none d-xl-inline"
+                                      th:if="${o.productionGroup != null and gruppiProduzione.get(o.productionGroup.trim()) != null}"
+                                      th:text="${' ' + gruppiProduzione.get(o.productionGroup.trim())}"></span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(ordini)}">
+                            <td colspan="7" class="text-center text-muted py-4">Nessun ordine cliente collegato al programma.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 detail-cards">
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white d-flex align-items-center">
+                    <h6 class="detail-card-title mb-0"><i class="bi bi-list-nested me-1"></i>Componenti</h6>
+                    <span class="badge bg-light text-dark border ms-2" th:text="${#lists.size(componenti)}">0</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-sm mb-0">
+                            <thead class="table-light">
+                                <tr><th>Articolo</th><th>Descrizione</th><th class="text-end">Quantità</th><th></th></tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="c : ${componenti}">
+                                    <td>
+                                        <a th:href="@{/articoli(q=${c.articleCode != null ? c.articleCode.trim() : ''})}"
+                                           class="font-monospace small text-decoration-none"
+                                           th:text="${c.articleCode != null ? c.articleCode.trim() : ''}"></a>
+                                    </td>
+                                    <td class="small" th:text="${c.articleDescription ?: '—'}"></td>
+                                    <td class="text-end font-monospace small"
+                                        th:text="${(c.quantity != null ? #numbers.formatDecimal(c.quantity, 1, 'POINT', 2, 'COMMA') : '—')
+                                                  + (c.unit != null and !c.unit.trim().isEmpty() ? ' ' + c.unit.trim() : '')}"></td>
+                                    <td>
+                                        <span class="badge bg-success-subtle text-success-emphasis"
+                                              th:if="${c.finishedProduct != null and c.finishedProduct}">Prodotto finito</span>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(componenti)}">
+                                    <td colspan="4" class="text-center text-muted py-4">Nessun componente collegato.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white d-flex align-items-center">
+                    <h6 class="detail-card-title mb-0"><i class="bi bi-clipboard-check me-1"></i>Avanzamenti</h6>
+                    <span class="badge bg-light text-dark border ms-2" th:text="${#lists.size(avanzamenti)}">0</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-sm mb-0">
+                            <thead class="table-light">
+                                <tr><th>Fase</th><th>Articolo</th><th class="text-end">Pianificata</th><th class="text-end">Prodotta</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="a : ${avanzamenti}">
+                                    <td><span class="badge bg-light text-dark border"
+                                              th:text="${a.phase != null and !a.phase.trim().isEmpty() ? a.phase.trim() : '—'}">F1</span></td>
+                                    <td class="small">
+                                        <span class="font-monospace" th:text="${a.articleCode != null ? a.articleCode.trim() : ''}"></span>
+                                        <div class="text-muted" th:text="${a.articleDescription ?: ''}"></div>
+                                    </td>
+                                    <td class="text-end font-monospace small"
+                                        th:text="${a.quantity != null ? #numbers.formatDecimal(a.quantity, 1, 'POINT', 2, 'COMMA') : '—'}"></td>
+                                    <td class="text-end font-monospace small"
+                                        th:classappend="${a.producedQuantity != null and a.quantity != null and a.producedQuantity.compareTo(a.quantity) >= 0} ? 'text-success fw-semibold' : ''"
+                                        th:text="${a.producedQuantity != null ? #numbers.formatDecimal(a.producedQuantity, 1, 'POINT', 2, 'COMMA') : '—'}"></td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(avanzamenti)}">
+                                    <td colspan="4" class="text-center text-muted py-4">Nessun avanzamento registrato.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section></body>
+</html>

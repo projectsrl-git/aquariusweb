@@ -13,7 +13,7 @@
 
     <groupId>com.aquarius</groupId>
     <artifactId>aquarius-web</artifactId>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
     <packaging>war</packaging>
     <name>AquariusWeb</name>
     <description>AquariusWeb — modern web front-end for the Aquarius ERP (VFP), running in parallel on the same SQL Server database (multi-tenant, plug&amp;play strategy)</description>

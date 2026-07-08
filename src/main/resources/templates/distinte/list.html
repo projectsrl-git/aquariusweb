@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Distinte base – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-diagram-2',
+        title='Distinte base',
+        subtitle='Consultazione distinte base (tabelle U_DIS_TT / U_DIS_DD)',
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <form method="get" th:action="@{/distinte}" class="mb-3">
+        <input type="hidden" name="size" th:value="${size}">
+        <input type="hidden" name="sort" th:value="${sort}">
+        <input type="hidden" name="dir" th:value="${dir}">
+        <div class="input-group" style="max-width:600px">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" name="q" th:value="${q}" class="form-control"
+                   placeholder="Articolo prodotto, descrizione o cliente…">
+            <button type="submit" class="btn btn-primary">Cerca</button>
+            <a th:href="@{/distinte}" class="btn btn-outline-secondary" th:if="${q != null and q != ''}">
+                <i class="bi bi-x"></i>
+            </a>
+        </div>
+    </form>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-sm mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/distinte','parentArticleCode','Articolo prodotto',${q},${size},${sort},${dir},'')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/distinte','description','Descrizione',${q},${size},${sort},${dir},'')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/distinte','unit','UM',${q},${size},${sort},${dir},'')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/distinte','cost','Costo',${q},${size},${sort},${dir},'text-end')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/distinte','price','Prezzo',${q},${size},${sort},${dir},'text-end')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/distinte','customerName','Cliente',${q},${size},${sort},${dir},'')}"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="d : ${distinte.content}">
+                            <td>
+                                <a th:href="@{/distinte/{id}(id=${d.id})}"
+                                   class="font-monospace small text-decoration-none"
+                                   th:text="${d.parentArticleCode != null ? d.parentArticleCode.trim() : ''}">ART001</a>
+                            </td>
+                            <td>
+                                <a th:href="@{/distinte/{id}(id=${d.id})}"
+                                   class="text-decoration-none text-dark"
+                                   th:text="${d.description ?: '—'}">Descrizione</a>
+                            </td>
+                            <td><span class="badge bg-light text-dark border"
+                                      th:if="${d.unit != null and !d.unit.trim().isEmpty()}"
+                                      th:text="${d.unit.trim()}">PZ</span></td>
+                            <td class="text-end font-monospace small"
+                                th:text="${d.cost != null ? #numbers.formatDecimal(d.cost, 1, 'POINT', 2, 'COMMA') : '—'}">0,00</td>
+                            <td class="text-end font-monospace small"
+                                th:text="${d.price != null ? #numbers.formatDecimal(d.price, 1, 'POINT', 2, 'COMMA') : '—'}">0,00</td>
+                            <td class="small" th:text="${d.customerName != null and !d.customerName.trim().isEmpty() ? d.customerName.trim() : '—'}">—</td>
+                        </tr>
+                        <tr th:if="${distinte.empty}">
+                            <td colspan="6" class="text-center text-muted py-5">
+                                <i class="bi bi-inbox" style="font-size:2rem"></i>
+                                <p class="mt-2 mb-0" th:text="${q != null and q != '' ? 'Nessuna distinta trovata per «' + q + '»' : 'Nessuna distinta trovata.'}">Nessuna distinta</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/list-tools :: pager('/distinte',${distinte.number},${q},${size},${sort},${dir},${distinte})}"></div>
+
+</section></body>
+</html>

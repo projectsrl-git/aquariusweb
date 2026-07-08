@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Movimenti magazzino – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-arrow-left-right',
+        title='Movimenti di magazzino',
+        subtitle='Consultazione movimenti — anno ' + ${currentFiscalYear} + ' (tabella U_MAG_MO)',
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <form method="get" th:action="@{/magazzino/movimenti}" class="mb-3">
+        <input type="hidden" name="size" th:value="${size}">
+        <input type="hidden" name="sort" th:value="${sort}">
+        <input type="hidden" name="dir" th:value="${dir}">
+        <div class="input-group" style="max-width:640px">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" name="q" th:value="${q}" class="form-control"
+                   placeholder="Articolo, documento, causale, cliente o fornitore…">
+            <button type="submit" class="btn btn-primary">Cerca</button>
+            <a th:href="@{/magazzino/movimenti}" class="btn btn-outline-secondary" th:if="${q != null and q != ''}">
+                <i class="bi bi-x"></i>
+            </a>
+        </div>
+    </form>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-sm mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/magazzino/movimenti','registrationDate','Data reg.',${q},${size},${sort},${dir},'')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/magazzino/movimenti','documentNumber','N. doc.',${q},${size},${sort},${dir},'')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/magazzino/movimenti','documentDate','Data doc.',${q},${size},${sort},${dir},'')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/magazzino/movimenti','warehouseCode','Mag.',${q},${size},${sort},${dir},'')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/magazzino/movimenti','articleCode','Articolo',${q},${size},${sort},${dir},'')}"></th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/magazzino/movimenti','top','Causale',${q},${size},${sort},${dir},'')}"></th>
+                            <th>Segno</th>
+                            <th th:replace="~{fragments/list-tools :: sortableHeader('/magazzino/movimenti','quantity','Quantità',${q},${size},${sort},${dir},'text-end')}"></th>
+                            <th>UM</th>
+                            <th>Cliente / Fornitore</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="m : ${movimenti.content}">
+                            <td class="small"><span th:replace="~{fragments/list-tools :: itDate(${m.registrationDate})}"></span></td>
+                            <td class="font-monospace small" th:text="${m.documentNumber != null and !m.documentNumber.trim().isEmpty() ? m.documentNumber.trim() : '—'}">DOC001</td>
+                            <td class="small"><span th:replace="~{fragments/list-tools :: itDate(${m.documentDate})}"></span></td>
+                            <td class="font-monospace small" th:text="${m.warehouseCode != null and !m.warehouseCode.trim().isEmpty() ? m.warehouseCode.trim() : '—'}">01</td>
+                            <td>
+                                <a th:href="@{/articoli(q=${m.articleCode != null ? m.articleCode.trim() : ''})}"
+                                   class="font-monospace small text-decoration-none"
+                                   th:text="${m.articleCode != null ? m.articleCode.trim() : ''}">ART001</a>
+                                <div class="small text-muted" th:text="${m.articleDescription ?: ''}">Descrizione</div>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary-subtle text-secondary-emphasis"
+                                      th:if="${m.top != null and !m.top.trim().isEmpty()}"
+                                      th:text="${m.top.trim()}"
+                                      th:title="${topDescriptions.get(m.top.trim()) ?: ''}">VEN</span>
+                                <span class="small text-muted d-none d-xl-inline"
+                                      th:if="${m.top != null and topDescriptions.get(m.top.trim()) != null}"
+                                      th:text="${' ' + topDescriptions.get(m.top.trim())}"></span>
+                            </td>
+                            <td>
+                                <span class="badge bg-success-subtle text-success-emphasis" th:if="${m.isInbound()}">+ carico</span>
+                                <span class="badge bg-danger-subtle text-danger-emphasis" th:unless="${m.isInbound()}">− scarico</span>
+                            </td>
+                            <td class="text-end font-monospace small"
+                                th:text="${m.quantity != null ? #numbers.formatDecimal(m.quantity, 1, 'POINT', 2, 'COMMA') : '—'}">1,00</td>
+                            <td class="small" th:text="${m.unit != null and !m.unit.trim().isEmpty() ? m.unit.trim() : '—'}">PZ</td>
+                            <td class="small"
+                                th:text="${m.customerName != null and !m.customerName.trim().isEmpty() ? m.customerName.trim()
+                                          : (m.supplierName != null and !m.supplierName.trim().isEmpty() ? m.supplierName.trim() : '—')}">—</td>
+                        </tr>
+                        <tr th:if="${movimenti.empty}">
+                            <td colspan="10" class="text-center text-muted py-5">
+                                <i class="bi bi-inbox" style="font-size:2rem"></i>
+                                <p class="mt-2 mb-0">Nessun movimento trovato per questo anno con i filtri impostati.</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/list-tools :: pager('/magazzino/movimenti',${movimenti.number},${q},${size},${sort},${dir},${movimenti})}"></div>
+
+</section></body>
+</html>

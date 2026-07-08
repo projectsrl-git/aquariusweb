@@ -101,7 +101,25 @@ public class MenuService {
         Map.entry("menu_fat000", "/fatture"),
         Map.entry("menu_fap000", "/proforma"),
         // Slice: Ristampa documenti (cruscotto unificato + tracciabilita')
-        Map.entry("menu_ristampa_doc", "/documenti")
+        Map.entry("menu_ristampa_doc", "/documenti"),
+        // Slice: magazzino / distinta base / produzione standard (consultazione)
+        Map.entry("menu_movimenti_mag", "/magazzino/movimenti"),
+        Map.entry("menu_dis000", "/distinte"),
+        Map.entry("std_programmazione", "/produzione")
+    );
+
+    /**
+     * Voci menu il cui COMANDO chiama una FUNZIONE ({@code =nomefunzione()})
+     * invece di "do form": mappa funzione → URL web. Caso concreto:
+     * {@code =determina_form_giacenze()} e' un dispatcher (APPLILIB) che per
+     * le installazioni non-medicali apre MENU_GIACENZE → /magazzino/giacenze.
+     */
+    private static final Map<String, String> FUNCTION_TO_URL = Map.ofEntries(
+        Map.entry("determina_form_giacenze", "/magazzino/giacenze")
+    );
+
+    private static final Pattern FUNCTION_PATTERN = Pattern.compile(
+        "(?i)^\\s*=\\s*([a-zA-Z0-9_]+)\\s*\\(\\s*\\)"
     );
 
     /**
@@ -430,8 +448,11 @@ public class MenuService {
         // dal prefisso categoria nel COMANDO, es. "TOP" → /parametri/TOP
         if (formName != null && formName.equalsIgnoreCase("paragest")) {
             url = extractParagestUrl(m.getComando());
+        } else if (formName == null) {
+            // Comando non "do form": prova la mappa funzioni (=funzione())
+            url = extractFunctionUrl(m.getComando());
         } else {
-            url = formName == null ? null : FORM_TO_URL.get(formName.toLowerCase(Locale.ROOT));
+            url = FORM_TO_URL.get(formName.toLowerCase(Locale.ROOT));
         }
         return MenuNode.builder()
             .label(safeTrim(m.getLabel()))
@@ -454,6 +475,13 @@ public class MenuService {
             return "/parametri/" + m.group(1).toUpperCase(Locale.ROOT);
         }
         return null;
+    }
+
+    /** URL per comandi menu del tipo {@code =nomefunzione()} (vedi FUNCTION_TO_URL). */
+    private String extractFunctionUrl(String comando) {
+        if (comando == null) return null;
+        Matcher m = FUNCTION_PATTERN.matcher(comando.trim());
+        return m.find() ? FUNCTION_TO_URL.get(m.group(1).toLowerCase(Locale.ROOT)) : null;
     }
 
     private String extractFormName(String comando) {
