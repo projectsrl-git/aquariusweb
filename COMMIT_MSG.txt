@@ -1,22 +1,24 @@
-Add read-only articles registry (/articoli)
+Add read-only customer orders module (/ordini)
 
-New consultation module for U_ART_PR (254-column legacy article master),
-web counterpart of VFP MENU_ART000 ("Anagrafica articoli", 986 objects).
+New consultation module for U_ORD_TT + U_ORD_DD, web counterpart of VFP
+MENU_ORD000 ("Ordini clienti"). Depends on the articles patch (applies
+after it: shared edits to MenuService/CLAUDE.md/migration tracker).
 
-- Article entity: ~30 columns mapped, all insertable/updatable=false,
-  verified against docs/db_schema/aquarius_schema_full.csv. Note: the VFP
-  form binds M.art_coord1..4 which are memvars; the real column is ART_COORD.
-- Shared list pattern (ListParams + list-tools): free-text search on
-  code/description/barcode/supplier, sortable whitelist, badges for
-  UM/IVA/commodity category/Obsoleto.
-- Detail: 4 cards (Anagrafica, Prezzi, Classificazione e fornitore,
-  Magazzino e note). No edit path: maintenance stays on the VFP client.
-- MenuService FORM_TO_URL: menu_art000 -> /articoli (tbl_menu leaf
-  'gestionearticoli' already exists; no synthetic entries needed).
-- Migration tracker: 22 rows for MENU_ART000.SCX.
+- OrderHead/OrderRow read-only entities; list scoped to society + fiscal
+  year via FiscalContext (legacy PUB_ANNO behaviour).
+- Header-rows join: primary hook TT.TAGGANCIO = DD.DAGGANCIO (the
+  "aggancio" key used by modern legacy SQL joins on ALL document tables);
+  fallback triple key ORS_DATORD/ORS_NUMORD/ORS_CODCLI (ristampelib) for
+  old records with empty hook.
+- Row semantics from APPLILIB: ORD_VALORE = ORD_PRZNET x ORD_QTAORD;
+  comment rows ('*** COMMENTO ***') rendered muted.
+- Status badge from ORD_CHIUSO/ORD_EVATOT/ORD_EVAPAR
+  (Chiuso/Evaso/Evaso parz./Aperto).
+- MenuService FORM_TO_URL: menu_ord000 -> /ordini.
+- Migration tracker: 14 rows for MENU_ORD000.SCX.
 
-Verification (sandbox only, no Maven/JDK/SQL Server): Java brace/paren
-balance OK; duplicate @Column grep empty; fragment arity OK (sortableHeader
-8 args, pager 7); tracker CSV 12 columns per row. git apply --check OK on
-fresh clone of HEAD d4652ec. Maven build and live-DB behaviour to be
-confirmed at first deploy.
+Verification (sandbox only): brace balance OK, duplicate @Column empty,
+fragment arity OK, CSV OK. Applies cleanly after the articles patch
+(chain verified on fresh clone of HEAD d4652ec). Maven build, live-DB
+behaviour and LIKE-search performance on large archives to be confirmed
+at first deploy.

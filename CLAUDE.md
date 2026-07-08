@@ -228,6 +228,7 @@ size ai byte 6-7). I form contengono MOLTA logica nei bottoni/validazioni
 | Warehouse valuation | `/magazzino/valorizzazione` | FIFO + FX + Pareto + Excel |
 | Custom reports | `/custom-reports…` | self-service SQL reports (foundation for "Project-JDBCapy") |
 | Articles (read-only) | `/articoli` | Consultation of U_ART_PR (VFP MENU_ART000): shared list pattern + 4-card detail. ~30 of 254 columns mapped, no edit path (maintenance stays on VFP). ART_COORD1..4 in the form are memvars — real column is ART_COORD |
+| Customer orders (read-only) | `/ordini` | U_ORD_TT + U_ORD_DD (VFP MENU_ORD000), scoped to FiscalContext year. TT↔DD join: TAGGANCIO=DAGGANCIO hook (fallback ORS_ triple key). Row value = ORD_PRZNET × ORD_QTAORD (APPLILIB) |
 
 ## 7. Security notes (PUBLIC repository!)
 

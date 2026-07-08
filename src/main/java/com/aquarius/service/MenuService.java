@@ -92,7 +92,9 @@ public class MenuService {
         Map.entry("viewpartitario", "/contabilita/partitari/clienti"),
         Map.entry("partitario_soprad", "/contabilita/partitari/clienti"),
         // Slice: Anagrafica articoli (consultazione)
-        Map.entry("menu_art000", "/articoli")
+        Map.entry("menu_art000", "/articoli"),
+        // Slice: Ordini clienti (consultazione)
+        Map.entry("menu_ord000", "/ordini")
     );
 
     /**

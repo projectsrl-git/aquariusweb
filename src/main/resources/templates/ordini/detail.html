@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Ordine – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-cart3',
+        title='Ordine ' + ${order.orderNumber != null ? order.orderNumber.trim() : ''},
+        subtitle=${order.customerName},
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <div class="d-flex gap-2 mb-3 align-items-center">
+        <a th:href="@{/ordini}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i>Torna alla lista
+        </a>
+        <span class="badge"
+              th:classappend="${order.statusLabel == 'Chiuso'} ? 'bg-secondary-subtle text-secondary-emphasis'
+                             : (${order.statusLabel == 'Evaso'} ? 'bg-success-subtle text-success-emphasis'
+                             : (${order.statusLabel == 'Evaso parz.'} ? 'bg-warning-subtle text-warning-emphasis'
+                             : 'bg-primary-subtle text-primary-emphasis'))"
+              th:text="${order.statusLabel}">Aperto</span>
+        <span class="text-muted small ms-auto">Consultazione — la gestione ordini resta sul gestionale</span>
+    </div>
+
+    <div class="row g-3 detail-cards mb-3">
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white">
+                    <h6 class="detail-card-title"><i class="bi bi-card-text me-1"></i>Testata</h6>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0 small">
+                        <dt class="col-5 text-muted">Numero ordine</dt>
+                        <dd class="col-7 font-monospace" th:text="${order.orderNumber != null ? order.orderNumber.trim() : '—'}">—</dd>
+                        <dt class="col-5 text-muted">Data ordine</dt>
+                        <dd class="col-7"><span th:replace="~{fragments/list-tools :: itDate(${order.orderDate})}"></span></dd>
+                        <dt class="col-5 text-muted">Cliente</dt>
+                        <dd class="col-7"><span class="font-monospace" th:text="${order.customerCode != null ? order.customerCode.trim() : ''}"></span>
+                            — <span th:text="${order.customerName ?: ''}"></span></dd>
+                        <dt class="col-5 text-muted">Riferimento</dt>
+                        <dd class="col-7" th:text="${order.reference != null and !order.reference.trim().isEmpty() ? order.reference : '—'}">—</dd>
+                        <dt class="col-5 text-muted">Consegna richiesta</dt>
+                        <dd class="col-7"><span th:replace="~{fragments/list-tools :: itDate(${order.deliveryDate})}"></span></dd>
+                        <dt class="col-5 text-muted">Agente</dt>
+                        <dd class="col-7 font-monospace" th:text="${order.agentCode != null and !order.agentCode.trim().isEmpty() ? order.agentCode.trim() : '—'}">—</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white">
+                    <h6 class="detail-card-title"><i class="bi bi-currency-euro me-1"></i>Importi</h6>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0 small">
+                        <dt class="col-5 text-muted">Imponibile</dt>
+                        <dd class="col-7 font-monospace" th:text="${order.taxableAmount != null ? #numbers.formatDecimal(order.taxableAmount, 1, 'POINT', 2, 'COMMA') : '—'}">—</dd>
+                        <dt class="col-5 text-muted">Imposta</dt>
+                        <dd class="col-7 font-monospace" th:text="${order.taxAmount != null ? #numbers.formatDecimal(order.taxAmount, 1, 'POINT', 2, 'COMMA') : '—'}">—</dd>
+                        <dt class="col-5 text-muted">Totale documento</dt>
+                        <dd class="col-7 font-monospace fw-semibold" th:text="${#numbers.formatDecimal(order.total, 1, 'POINT', 2, 'COMMA')}">—</dd>
+                        <dt class="col-5 text-muted">Valuta</dt>
+                        <dd class="col-7 font-monospace" th:text="${order.currency != null and !order.currency.trim().isEmpty() ? order.currency.trim() : '—'}">EUR</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white d-flex align-items-center">
+            <h6 class="detail-card-title mb-0"><i class="bi bi-list-ol me-1"></i>Righe ordine</h6>
+            <span class="badge bg-light text-dark border ms-2" th:text="${#lists.size(rows)} + ' righe'">0 righe</span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-sm mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-end">#</th>
+                            <th>Articolo</th>
+                            <th>Descrizione</th>
+                            <th class="text-end">Quantità</th>
+                            <th class="text-end">Prezzo netto</th>
+                            <th class="text-end">Valore riga</th>
+                            <th>IVA</th>
+                            <th>Evasa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="r : ${rows}" th:classappend="${r.isComment()} ? 'table-light text-muted' : ''">
+                            <td class="text-end font-monospace small" th:text="${r.sequence != null ? #numbers.formatDecimal(r.sequence, 1, 0) : ''}">1</td>
+                            <td class="font-monospace small">
+                                <span th:text="${r.articleCode != null ? r.articleCode.trim() : ''}"></span><span
+                                    th:if="${r.articleExtension != null and !r.articleExtension.trim().isEmpty()}"
+                                    class="text-muted" th:text="'/' + ${r.articleExtension.trim()}"></span>
+                            </td>
+                            <td class="small">
+                                <span th:text="${r.description ?: ''}"></span>
+                                <div class="text-muted" th:if="${r.description2 != null and !r.description2.trim().isEmpty()}" th:text="${r.description2}"></div>
+                            </td>
+                            <td class="text-end font-monospace small" th:text="${r.quantity != null ? #numbers.formatDecimal(r.quantity, 1, 'POINT', 2, 'COMMA') : ''}">1,00</td>
+                            <td class="text-end font-monospace small" th:text="${r.netPrice != null ? #numbers.formatDecimal(r.netPrice, 1, 'POINT', 2, 'COMMA') : ''}">0,00</td>
+                            <td class="text-end font-monospace small" th:text="${r.rowValue != null ? #numbers.formatDecimal(r.rowValue, 1, 'POINT', 2, 'COMMA') : ''}">0,00</td>
+                            <td><span class="badge bg-info-subtle text-info-emphasis"
+                                      th:if="${r.vatCode != null and !r.vatCode.trim().isEmpty()}"
+                                      th:text="${r.vatCode.trim()}">22</span></td>
+                            <td><span class="badge bg-success-subtle text-success-emphasis"
+                                      th:if="${r.fulfilled != null and r.fulfilled}">Sì</span></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(rows)}">
+                            <td colspan="8" class="text-center text-muted py-4">Nessuna riga collegata a questo ordine.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</section></body>
+</html>
