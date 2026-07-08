@@ -143,9 +143,11 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
     MENU_AZI000→U_AZI_*) + viewer read-only /parametri-aziendali.
   - 0.5.1 — fix bilancio (toggle C/F, TAB SP/CE,
     quadratura, allineamento totali) + fix bug /documenti (ORDER BY duplicato).
-  - **0.6.0 (corrente)** — analisi DEEP bilancio CEE (BILNEW/U_INT_TT/
+  - 0.6.0 — analisi DEEP bilancio CEE (BILNEW/U_INT_TT/
     U_COR_TT + pseudocodice ceecont per Opus) + viewer struttura e
     mappatura con pannello anomalie.
+  - **0.7.0 (corrente)** — bilancio raggruppato per mastri/gruppi
+    (Bilancio di verifica, Prog. Dare/Avere/Saldo); quadratura stabile col toggle C/F.
 
 ## 4c. Migration tracker (.scx logic ↔ web)
 

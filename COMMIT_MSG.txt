@@ -1,30 +1,16 @@
-Add CEE balance structure viewer with anomalies panel
+Bilancio grouped by mastri/gruppi (trial-balance tree)
 
-Read-only viewer /contabilita/bilancio-cee-struttura on top of the
-patch-1 analysis (apply after "Add CEE balance DEEP analysis"). Version
-bump 0.5.1 -> 0.6.0 (MINOR, one bump per session; log in CLAUDE.md 4b).
+Restructures the bilancio into a Mastro -> Gruppo -> Sottoconto tree with
+progressive Dare/Avere/Saldo columns, like the legacy "Bilancio di verifica".
 
-- CeeStructureDao (NamedParameterJdbcTemplate on tenantDataSource, same
-  pattern as DocumentArchiveDao): BILNEW rows in legacy print order;
-  U_INT_TT mappings with CONTI current-year descriptions (INT_DESCRI
-  fallback); U_COR_TT edges; three anomaly queries emulating PADL with
-  RIGHT(REPLICATE(' ',10)+LTRIM(RTRIM(x)),10).
-- Viewer: I/V/T badges (verbatim legend), SP/CE section from the 21600
-  threshold, per-voce expandable panels (conti confluenti with "avere"
-  badge on negative-balance alternative rows; totals composition with
-  signs; where each row flows into), text filter, and an anomalies panel
-  mirroring the three ceecont checks - unmapped accounts (capped at 200
-  with total count; silently excluded from the legacy calculation),
-  mappings to non-existent rows (account skipped), broken total edges
-  (calculation-blocking, highlighted). NO computed values: the engine is
-  Opus's (pseudocode in resources/cee/README.md).
-- Menu FORM_TO_URL: menu_cee000 / menu_ceepdc / menu_ceetot /
-  menu_ceecori / menu_ceeric -> the viewer (verified in tbl_menu under
-  gestionebilanci1 "Bilancio iv direttiva cee").
+- Account hierarchy derived by code prefix (mastro = first 2 chars, gruppo =
+  first 4), using the multilevel CONTI rows for descriptions (parameter-free;
+  verified against Impresind data).
+- New BilancioGroup tree DTO; controller buildGroups() aggregates Dare/Avere from
+  ALL lines (customers/suppliers included) so section totals and the quadratura
+  no longer change with the C/F toggle (fixes the imbalance when hiding C/F).
+  showCF now only hides C/F leaf rows; their amounts stay in the group totals.
+- Full-width sections inside the SP/CE tabs; quadratura banner shows the
+  difference (0,00 when balanced, green; imbalance when not, red).
 
-Verification (sandbox only): brace/paren balance with string-literal
-stripping on 3 Java files; div/details/table balance on the template;
-SQL alias <-> row-mapper coherence; model attrs <-> template usage; both
-patches verified as a chain on a fresh clone of HEAD 0dc3b3e. Maven build
-and execution on SQL Server 2012 to be confirmed at first deploy
-(volumes are per-society and expected small).
+Version 0.7.0 (on top of Fable 5's 0.6.0 CEE viewer). Sandbox checks only.

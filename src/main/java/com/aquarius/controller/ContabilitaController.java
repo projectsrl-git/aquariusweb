@@ -282,11 +282,10 @@ public class ContabilitaController {
             .filter(l -> l.getSaldo().signum() != 0)   // solo conti movimentati
             .collect(Collectors.toList());
 
-        // Opzione 2.1: mostra/nascondi i conti clienti/fornitori
-        if (!showCF) {
-            all = all.stream().filter(l -> !l.isCustomerOrSupplier())
-                     .collect(Collectors.toList());
-        }
+        // NB: NON filtro qui i C/F. I totali di sezione e la quadratura devono
+        // includere sempre clienti/fornitori; il toggle showCF agisce solo sulla
+        // VISUALIZZAZIONE delle foglie (i loro importi restano nei progressivi di
+        // gruppo/mastro → la quadratura non dipende dal toggle). Risolve 1.2.
 
         // Bucket a sezioni contrapposte
         List<BilancioLine> attivo = new ArrayList<>();
@@ -323,6 +322,11 @@ public class ContabilitaController {
         model.addAttribute("passivo", passivo);
         model.addAttribute("costi", costi);
         model.addAttribute("ricavi", ricavi);
+        // Alberi mastro→gruppo→sottoconto (Bilancio di verifica), per sezione
+        model.addAttribute("attivoTree",  buildGroups(attivo,  accByCode, showCF));
+        model.addAttribute("passivoTree", buildGroups(passivo, accByCode, showCF));
+        model.addAttribute("costiTree",   buildGroups(costi,   accByCode, showCF));
+        model.addAttribute("ricaviTree",  buildGroups(ricavi,  accByCode, showCF));
         model.addAttribute("nonClassificati", nonClassificati);
         model.addAttribute("totAttivo", totAttivo);
         model.addAttribute("totPassivo", totPassivo);
@@ -347,6 +351,51 @@ public class ContabilitaController {
     private BigDecimal sumDisplay(List<BilancioLine> lines) {
         return lines.stream().map(BilancioLine::getDisplayAmount)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    /**
+     * Costruisce l'albero mastro (2 char) → gruppo (4 char) → sottoconti a partire
+     * dalle righe (già ordinate per codice) di una sezione. I progressivi
+     * Dare/Avere sono aggregati da TUTTE le righe; le foglie C/F sono nascoste dal
+     * display se {@code showCF} è false, ma i loro importi restano nei totali.
+     */
+    private List<com.aquarius.dto.BilancioGroup> buildGroups(
+            List<BilancioLine> lines, Map<String, Account> accByCode, boolean showCF) {
+        java.util.Map<String, com.aquarius.dto.BilancioGroup> mastri = new java.util.LinkedHashMap<>();
+        java.util.Map<String, com.aquarius.dto.BilancioGroup> gruppi = new java.util.LinkedHashMap<>();
+        for (BilancioLine l : lines) {
+            String code = l.getAccount() != null ? l.getAccount() : "";
+            String mCode = code.length() >= 2 ? code.substring(0, 2) : code;
+            String gCode = code.length() >= 4 ? code.substring(0, 4) : code;
+
+            com.aquarius.dto.BilancioGroup mastro = mastri.get(mCode);
+            if (mastro == null) {
+                mastro = new com.aquarius.dto.BilancioGroup(mCode, descOf(accByCode, mCode, "Mastro " + mCode), 1);
+                mastri.put(mCode, mastro);
+            }
+            com.aquarius.dto.BilancioGroup gruppo = gruppi.get(gCode);
+            if (gruppo == null) {
+                gruppo = new com.aquarius.dto.BilancioGroup(gCode, descOf(accByCode, gCode, "Gruppo " + gCode), 2);
+                gruppi.put(gCode, gruppo);
+                mastro.addSubGroup(gruppo);
+            }
+            // progressivi: sempre (C/F inclusi)
+            mastro.addTotals(l.getTotDare(), l.getTotAvere());
+            gruppo.addTotals(l.getTotDare(), l.getTotAvere());
+            // display foglia: rispetta il toggle C/F
+            if (showCF || !l.isCustomerOrSupplier()) {
+                gruppo.addLine(l);
+            } else {
+                gruppo.markHiddenCF();
+            }
+        }
+        return new java.util.ArrayList<>(mastri.values());
+    }
+
+    private String descOf(Map<String, Account> accByCode, String code, String fallback) {
+        Account a = accByCode.get(code);
+        String d = a != null ? a.getDescription() : null;
+        return (d != null && !d.trim().isEmpty()) ? d.trim() : fallback;
     }
 
     private String trimUpper(String s) {

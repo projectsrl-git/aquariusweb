@@ -7,7 +7,7 @@
     <div th:replace="~{fragments/page-header :: pageHeader(
         icon='bi-bar-chart-steps',
         title='Bilancio contabile',
-        subtitle='Prospetto a sezioni contrapposte — esercizio ' + ${anno},
+        subtitle='Bilancio di verifica a mastri e gruppi — esercizio ' + ${anno},
         crumbs=${breadcrumbs}
     )}"></div>
 
@@ -64,17 +64,19 @@
         </div>
     </div>
 
-    <!-- ─── Quadratura di bilancio ─────────────────────────────────────── -->
+    <!-- ─── Quadratura: differenza (Attività−Passività) − Utile = 0 se quadra ─ -->
     <div class="alert d-flex justify-content-between align-items-center py-2 mb-4"
          th:classappend="${quadraturaOk ? 'alert-success' : 'alert-danger'}">
         <span>
             <i class="bi me-1" th:classappend="${quadraturaOk ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill'}"></i>
-            <span class="fw-semibold">Quadratura</span>: Attività − Passività =
-            <span class="fw-bold font-monospace" th:text="${#numbers.formatDecimal(quadraturaSP,1,'POINT',2,'COMMA')}">0,00</span>
-            <span th:if="${quadraturaOk}" th:text="${' = ' + (risultatoUtile ? 'utile' : 'perdita') + ' d''esercizio'}"> = utile</span>
+            <span class="fw-semibold">Quadratura</span>:
+            (Attività − Passività) − <span th:text="${risultatoUtile ? 'utile' : 'perdita'}">utile</span> d'esercizio
         </span>
-        <span th:unless="${quadraturaOk}" class="small">
-            Sbilancio: <span class="fw-bold font-monospace" th:text="${#numbers.formatDecimal(sbilancio,1,'POINT',2,'COMMA')}">0,00</span>
+        <span>
+            Differenza:
+            <span class="fw-bold font-monospace"
+                  th:text="${quadraturaOk ? '0,00' : #numbers.formatDecimal(sbilancio,1,'POINT',2,'COMMA')}">0,00</span>
+            <i class="bi bi-check2 ms-1" th:if="${quadraturaOk}"></i>
         </span>
     </div>
 
@@ -90,27 +92,13 @@
         </li>
     </ul>
     <div class="tab-content">
-        <!-- Stato Patrimoniale -->
         <div class="tab-pane fade show active" id="tab-sp" role="tabpanel">
-            <div class="row g-3 mb-4 align-items-stretch">
-                <div class="col-lg-6">
-                    <div th:replace="~{contabilita/bilancio :: sezione('Attività', ${attivo}, 'attivo', ${totAttivo})}"></div>
-                </div>
-                <div class="col-lg-6">
-                    <div th:replace="~{contabilita/bilancio :: sezione('Passività', ${passivo}, 'passivo', ${totPassivo})}"></div>
-                </div>
-            </div>
+            <div th:replace="~{contabilita/bilancio :: sezioneTree('Attività', ${attivoTree}, ${totAttivo})}"></div>
+            <div th:replace="~{contabilita/bilancio :: sezioneTree('Passività', ${passivoTree}, ${totPassivo})}"></div>
         </div>
-        <!-- Conto Economico -->
         <div class="tab-pane fade" id="tab-ce" role="tabpanel">
-            <div class="row g-3 mb-4 align-items-stretch">
-                <div class="col-lg-6">
-                    <div th:replace="~{contabilita/bilancio :: sezione('Costi', ${costi}, 'costi', ${totCosti})}"></div>
-                </div>
-                <div class="col-lg-6">
-                    <div th:replace="~{contabilita/bilancio :: sezione('Ricavi', ${ricavi}, 'ricavi', ${totRicavi})}"></div>
-                </div>
-            </div>
+            <div th:replace="~{contabilita/bilancio :: sezioneTree('Costi', ${costiTree}, ${totCosti})}"></div>
+            <div th:replace="~{contabilita/bilancio :: sezioneTree('Ricavi', ${ricaviTree}, ${totRicavi})}"></div>
             <div class="card shadow-sm border-0 mb-4"
                  th:classappend="${risultatoUtile ? 'border-start border-success border-4' : 'border-start border-danger border-4'}">
                 <div class="card-body d-flex justify-content-between align-items-center">
@@ -134,31 +122,62 @@
 </section>
 
 
-<!-- ═══════════════ FRAGMENT: sezione (totale nel footer → si allinea in fondo) ═══════════════ -->
-<div th:fragment="sezione(titolo, righe, key, totale)" class="card shadow-sm border-0 h-100">
-    <div class="card-header bg-light py-2 d-flex justify-content-between align-items-center">
-        <span class="fw-semibold" th:text="${titolo}">Sezione</span>
-        <span class="badge bg-secondary" th:text="${righe != null ? righe.size() : 0}">0</span>
-    </div>
+<!-- ═══════════ FRAGMENT: sezioneTree (mastro → gruppo → sottoconto) ═══════════ -->
+<div th:fragment="sezioneTree(titolo, mastri, totale)" class="card shadow-sm border-0 mb-3">
+    <div class="card-header bg-light py-2 fw-semibold" th:text="${titolo}">Sezione</div>
     <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-hover table-sm mb-0">
-                <tbody>
-                    <tr th:each="l : ${righe}">
-                        <td style="width:120px">
-                            <a th:href="@{/contabilita/storico(conto=${l.account})}"
-                               class="font-monospace small text-decoration-none" th:text="${l.account}">01.05.001</a>
-                        </td>
-                        <td class="small">
-                            <span th:text="${l.description ?: '—'}">Conto</span>
-                            <span th:if="${l.accountType == 'C'}" class="badge bg-info-subtle text-info-emphasis ms-1">Cliente</span>
-                            <span th:if="${l.accountType == 'F'}" class="badge bg-warning-subtle text-warning-emphasis ms-1">Fornitore</span>
-                        </td>
-                        <td class="text-end font-monospace small fw-semibold"
-                            th:text="${#numbers.formatDecimal(l.displayAmount,1,'POINT',2,'COMMA')}">0,00</td>
+            <table class="table table-sm mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Conto / Descrizione</th>
+                        <th class="text-end" style="width:150px">Prog. Dare</th>
+                        <th class="text-end" style="width:150px">Prog. Avere</th>
+                        <th class="text-end" style="width:150px">Saldo</th>
                     </tr>
-                    <tr th:if="${righe == null or righe.isEmpty()}">
-                        <td colspan="3" class="text-center text-muted py-4 small">Nessun conto.</td>
+                </thead>
+                <tbody>
+                    <th:block th:each="m : ${mastri}">
+                        <!-- MASTRO -->
+                        <tr class="table-secondary fw-bold">
+                            <td><span class="font-monospace me-2" th:text="${m.code}">01</span><span th:text="${m.description}">Mastro</span></td>
+                            <td class="text-end font-monospace" th:text="${#numbers.formatDecimal(m.totDare,1,'POINT',2,'COMMA')}">0,00</td>
+                            <td class="text-end font-monospace" th:text="${#numbers.formatDecimal(m.totAvere,1,'POINT',2,'COMMA')}">0,00</td>
+                            <td class="text-end font-monospace" th:classappend="${m.saldo.signum() < 0 ? 'text-danger' : ''}"
+                                th:text="${#numbers.formatDecimal(m.saldo,1,'POINT',2,'COMMA')}">0,00</td>
+                        </tr>
+                        <th:block th:each="g : ${m.subGroups}">
+                            <!-- GRUPPO -->
+                            <tr class="fw-semibold" style="background:#f5f8fb">
+                                <td class="ps-4"><span class="font-monospace me-2" th:text="${g.code}">0101</span><span th:text="${g.description}">Gruppo</span></td>
+                                <td class="text-end font-monospace" th:text="${#numbers.formatDecimal(g.totDare,1,'POINT',2,'COMMA')}">0,00</td>
+                                <td class="text-end font-monospace" th:text="${#numbers.formatDecimal(g.totAvere,1,'POINT',2,'COMMA')}">0,00</td>
+                                <td class="text-end font-monospace" th:classappend="${g.saldo.signum() < 0 ? 'text-danger' : ''}"
+                                    th:text="${#numbers.formatDecimal(g.saldo,1,'POINT',2,'COMMA')}">0,00</td>
+                            </tr>
+                            <!-- SOTTOCONTI -->
+                            <tr th:each="l : ${g.lines}">
+                                <td class="ps-5 small">
+                                    <a th:href="@{/contabilita/storico(conto=${l.account})}"
+                                       class="font-monospace text-decoration-none" th:text="${l.account}">01010001</a>
+                                    <span th:text="${l.description ?: '—'}">Conto</span>
+                                    <span th:if="${l.accountType == 'C'}" class="badge bg-info-subtle text-info-emphasis ms-1">Cliente</span>
+                                    <span th:if="${l.accountType == 'F'}" class="badge bg-warning-subtle text-warning-emphasis ms-1">Fornitore</span>
+                                </td>
+                                <td class="text-end font-monospace small" th:text="${#numbers.formatDecimal(l.totDare,1,'POINT',2,'COMMA')}">0,00</td>
+                                <td class="text-end font-monospace small" th:text="${#numbers.formatDecimal(l.totAvere,1,'POINT',2,'COMMA')}">0,00</td>
+                                <td class="text-end font-monospace small" th:classappend="${l.saldo.signum() < 0 ? 'text-danger' : ''}"
+                                    th:text="${#numbers.formatDecimal(l.saldo,1,'POINT',2,'COMMA')}">0,00</td>
+                            </tr>
+                            <tr th:if="${g.hasHiddenCF}">
+                                <td colspan="4" class="ps-5 small text-muted fst-italic">
+                                    Conti clienti/fornitori nascosti — importi inclusi nel totale del gruppo
+                                </td>
+                            </tr>
+                        </th:block>
+                    </th:block>
+                    <tr th:if="${mastri == null or mastri.isEmpty()}">
+                        <td colspan="4" class="text-center text-muted py-4 small">Nessun conto movimentato.</td>
                     </tr>
                 </tbody>
             </table>
@@ -175,21 +194,14 @@
     <div class="table-responsive">
         <table class="table table-hover table-sm mb-0">
             <thead class="table-light">
-                <tr>
-                    <th style="width:120px">Conto</th>
-                    <th>Descrizione</th>
-                    <th class="text-end" style="width:150px">Saldo</th>
-                </tr>
+                <tr><th style="width:120px">Conto</th><th>Descrizione</th><th class="text-end" style="width:150px">Saldo</th></tr>
             </thead>
             <tbody>
                 <tr th:each="l : ${righe}">
-                    <td>
-                        <a th:href="@{/contabilita/storico(conto=${l.account})}"
-                           class="font-monospace small text-decoration-none" th:text="${l.account}">01.05.001</a>
-                    </td>
+                    <td><a th:href="@{/contabilita/storico(conto=${l.account})}"
+                           class="font-monospace small text-decoration-none" th:text="${l.account}">01.05.001</a></td>
                     <td class="small" th:text="${l.description ?: '—'}">Conto</td>
-                    <td class="text-end font-monospace small"
-                        th:classappend="${l.saldo.signum() < 0 ? 'text-danger' : ''}"
+                    <td class="text-end font-monospace small" th:classappend="${l.saldo.signum() < 0 ? 'text-danger' : ''}"
                         th:text="${#numbers.formatDecimal(l.saldo,1,'POINT',2,'COMMA')}">0,00</td>
                 </tr>
             </tbody>
