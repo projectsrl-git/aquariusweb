@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Parametri aziendali – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-sliders',
+        title='Parametri aziendali',
+        subtitle='Consultazione dei parametri di MENU_AZI000 (U_AZI_AN / U_AZI_PA / U_AZI_PB) con analisi di scopo e funzionamento',
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <div class="d-flex gap-3 align-items-center mb-3 flex-wrap">
+        <form method="get" th:action="@{/parametri-aziendali}" class="d-flex gap-2 flex-wrap align-items-center">
+            <div class="input-group input-group-sm" style="width:340px">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" name="q" th:value="${q}" class="form-control"
+                       placeholder="Etichetta, colonna, scopo, funzionamento…">
+            </div>
+            <select name="gruppo" class="form-select form-select-sm" style="width:auto" onchange="this.form.submit()">
+                <option value="" th:selected="${gruppo == ''}">Tutti i tab</option>
+                <option th:each="g : ${allGroups}" th:value="${g}" th:text="${g}" th:selected="${g == gruppo}">Tab</option>
+            </select>
+            <select name="conf" class="form-select form-select-sm" style="width:auto" onchange="this.form.submit()">
+                <option value="" th:selected="${conf == ''}">Ogni confidenza</option>
+                <option value="ALTA" th:selected="${conf == 'ALTA'}">ALTA</option>
+                <option value="MEDIA" th:selected="${conf == 'MEDIA'}">MEDIA</option>
+                <option value="INCERTO" th:selected="${conf == 'INCERTO'}">INCERTO</option>
+            </select>
+            <button type="submit" class="btn btn-primary btn-sm">Filtra</button>
+            <a th:href="@{/parametri-aziendali}" class="btn btn-outline-secondary btn-sm"
+               th:if="${q != '' or gruppo != '' or conf != ''}"><i class="bi bi-x"></i></a>
+        </form>
+        <span class="small text-muted ms-auto">
+            <span th:text="${mostrati}">0</span> / <span th:text="${totale}">0</span> parametri
+            · <span class="badge bg-warning-subtle text-warning-emphasis" th:text="${incerti + ' INCERTO'}">0</span>
+            · Sola lettura: la modifica resta sul gestionale
+        </span>
+    </div>
+
+    <div class="accordion" id="accParametri">
+        <div class="accordion-item" th:each="entry, st : ${grouped}">
+            <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                        th:attr="data-bs-target='#grp' + ${st.index}"
+                        th:classappend="${st.index > 0 and q == '' and gruppo == ''} ? 'collapsed' : ''">
+                    <i class="bi bi-folder2-open me-2"></i>
+                    <span th:text="${entry.key}">Tab</span>
+                    <span class="badge bg-light text-dark border ms-2" th:text="${#lists.size(entry.value)}">0</span>
+                </button>
+            </h2>
+            <div th:id="'grp' + ${st.index}" class="accordion-collapse collapse"
+                 th:classappend="${st.index == 0 or q != '' or gruppo != ''} ? 'show' : ''"
+                 data-bs-parent="#accParametri">
+                <div class="accordion-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-sm mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width:36%">Parametro</th>
+                                    <th style="width:14%">Valore corrente</th>
+                                    <th style="width:8%">Tipo</th>
+                                    <th style="width:22%">Colonna</th>
+                                    <th style="width:12%">Sezione</th>
+                                    <th style="width:8%" class="text-end">Info</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="p : ${entry.value}">
+                                    <td class="small">
+                                        <span th:text="${p.label != '' ? p.label : p.objectName}">Etichetta</span>
+                                        <span class="badge bg-warning-subtle text-warning-emphasis ms-1"
+                                              th:if="${p.isUncertain()}">INCERTO</span>
+                                    </td>
+                                    <td>
+                                        <span th:if="${p.isBoolean() and p.valuePresent}">
+                                            <span class="badge bg-success-subtle text-success-emphasis"
+                                                  th:if="${p.currentValue == 'true'}">Attivo</span>
+                                            <span class="badge bg-secondary-subtle text-secondary-emphasis"
+                                                  th:unless="${p.currentValue == 'true'}">Non attivo</span>
+                                        </span>
+                                        <span class="font-monospace small" th:if="${!p.isBoolean() and p.valuePresent}"
+                                              th:text="${p.currentValue != '' ? p.currentValue : '—'}">—</span>
+                                        <span class="badge bg-light text-muted border" th:if="${!p.valuePresent}"
+                                              th:title="${p.isAbsentColumn() ? 'Colonna assente nel DB Impresind' : 'Valore non disponibile'}">n.d.</span>
+                                    </td>
+                                    <td><span class="badge bg-info-subtle text-info-emphasis" th:text="${p.type}">boolean</span></td>
+                                    <td class="font-monospace small" th:text="${p.tableColumn}">U_AZI_AN.AZI_X</td>
+                                    <td class="small text-muted"
+                                        th:text="${p.group.contains(' > ') ? p.group.substring(p.group.indexOf(' > ') + 3) : '—'}">—</td>
+                                    <td class="text-end">
+                                        <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2 param-info"
+                                                data-bs-toggle="popover" data-bs-html="true" data-bs-trigger="focus"
+                                                data-bs-placement="left"
+                                                th:attr="data-bs-title=${p.label != '' ? p.label : p.objectName},
+                                                         data-purpose=${p.purpose},
+                                                         data-how=${p.howItWorks},
+                                                         data-used=${p.usedIn},
+                                                         data-allowed=${p.allowedValues},
+                                                         data-notes=${p.notes}">
+                                            <i class="bi bi-info-circle"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center text-muted py-5" th:if="${#maps.isEmpty(grouped)}">
+            <i class="bi bi-inbox" style="font-size:2rem"></i>
+            <p class="mt-2 mb-0">Nessun parametro corrisponde ai filtri.</p>
+        </div>
+    </div>
+
+    <script>
+        // Popover (i): scopo + funzionamento + evidenze, costruiti da data-attribute
+        // con escape del testo (nessun HTML dal CSV viene interpretato).
+        document.querySelectorAll('.param-info').forEach(function (btn) {
+            var esc = function (s) {
+                var d = document.createElement('div');
+                d.innerText = s || '';
+                return d.innerHTML;
+            };
+            var html = '';
+            if (btn.dataset.purpose) html += '<div class="mb-2"><strong>A cosa serve</strong><br>' + esc(btn.dataset.purpose) + '</div>';
+            if (btn.dataset.allowed) html += '<div class="mb-2"><strong>Valori possibili</strong><br>' + esc(btn.dataset.allowed) + '</div>';
+            if (btn.dataset.how) html += '<div class="mb-2"><strong>Come funziona</strong><br>' + esc(btn.dataset.how) + '</div>';
+            if (btn.dataset.used) html += '<div class="mb-2"><strong>Usato in</strong><br><span class="font-monospace">' + esc(btn.dataset.used).split(';').join('<br>') + '</span></div>';
+            if (btn.dataset.notes) html += '<div class="text-muted">' + esc(btn.dataset.notes) + '</div>';
+            new bootstrap.Popover(btn, { content: html || 'Nessuna analisi disponibile.', sanitize: false });
+        });
+    </script>
+
+</section></body>
+</html>

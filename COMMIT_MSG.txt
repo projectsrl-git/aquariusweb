@@ -1,36 +1,37 @@
-Add company parameters DEEP-analysis catalog (MENU_AZI000)
+Add read-only company parameters viewer (/parametri-aziendali)
 
-Part 1 of 2 (the viewer patch applies on top of this one). DEEP analysis
-of EVERY parameter exposed by the legacy form MENU_AZI000.SCX
-("Definizione dati azienda"), published as a runtime-readable catalog:
-src/main/resources/parametri/parametri_aziendali_catalog.csv (UTF-8,
-quote-aware, 11 stable columns) + README with schema, method and
-confidence criteria.
+Part 2 of 2 - apply AFTER the catalog patch. Read-only consultation of
+the company parameters, grouped as in the legacy form, with an info
+popover per parameter fed by the DEEP-analysis catalog. NOT an editable
+settings page: writing the parameters drives ERP behavior and stays on
+the VFP client (future Opus slices). Version bump 0.4.0 -> 0.5.0.
 
-KEY ARCHITECTURAL FINDING (the reading key for every parameter):
-APPLILIB.PRG, function AQUADOCU (startup), loads every AZI_X column of
-U_AZI_AN/PA/PB into a public variable PUB_X (712 verified mappings).
-The ERP reads the PUB_* variables, almost never the tables - so the real
-usage of a parameter lives on its PUB. Exception: print/FE libraries
-read some registry columns directly for headers and XML.
+- CompanyParameterCatalogService: loads the catalog CSV from the
+  classpath (RFC-4180 quote-aware parser, MigrationTrackerService
+  pattern).
+- CompanyParameterValuesDao: current values via SELECT TOP 1 * FROM
+  U_AZI_{AN,PA,PB} WHERE AZI_CODSOC = :soc, metadata-driven
+  (ResultSetMetaData -> column map): no 700-column entity; columns
+  absent in this DB release simply don't appear and the viewer shows
+  "n.d." with an explanatory tooltip. Table names are controlled
+  identifiers (fixed list).
+- CompanyParametersController: catalog+values merge; free-text search
+  (label/column/purpose/how/group), top-tab filter, confidence filter.
+- Template: Bootstrap accordion per top tab; per row label, current
+  value (Attivo/Non attivo badges for booleans), type badge,
+  table.column, sub-section, and an (i) popover with "A cosa serve /
+  Valori possibili / Come funziona / Usato in / note". Popover content
+  is text-ESCAPED client-side (no HTML from the CSV is interpreted).
+  INCERTO badge on uncertain rows.
+- Menu: FORM_TO_URL menu_azi000 -> /parametri-aziendali (legacy leaf
+  "Definizione dati azienda") + synthetic entry "Parametri aziendali"
+  under the "parametri" L1.
+- CLAUDE.md: version log 0.5.0 + slice table row with the AQUADOCU
+  architecture gotcha.
 
-Numbers:
-- 845 parameter controls parsed from the form (1717 objects, 14 top
-  tabs, 103 pages incl. nested pageframes); labels from checkbox
-  captions or geometric label attachment; optiongroup values extracted.
-- 743 columns resolved on the Impresind schema (234 AN / 249 PA /
-  260 PB); 98 form columns ABSENT in this DB (other release/vertical),
-  included with an explicit note.
-- Catalog: 841 rows - confidence 622 ALTA / 66 MEDIA / 153 INCERTO.
-  purpose = the form's own descriptive caption; how_it_works = AZI->PUB
-  load chain + cited code excerpt (conditionals preferred) with
-  file.function; used_in = current sources only (dated backups and
-  replication/cleanup libs excluded from evidence).
-- No invented interpretations: 31 possible orphans and every ambiguous
-  case marked INCERTO with a note.
-
-Migration tracker: 3 rows for MENU_AZI000.SCX (analysis PARTIAL, editing
-WRITE_SIDE). Slice doc in .claude/.
-
-Verification (sandbox only): CSV parse-back 841 rows x 11 fields, no
-embedded newlines; applies cleanly on fresh clone of current HEAD.
+Verification (sandbox only): brace/paren balance OK (one apparent
+imbalance is a "(" inside a string literal - verified balanced after
+literal stripping); div balance OK; chain (catalog -> viewer) applies
+cleanly on fresh clone of current HEAD. Maven build and execution on
+SQL Server 2012 to be confirmed at first deploy (notably: one U_AZI_*
+row per society; popovers with long used_in lists).

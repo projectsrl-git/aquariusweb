@@ -111,7 +111,9 @@ public class MenuService {
         Map.entry("menu_bfo000", "/ddt-fornitore"),
         Map.entry("menu_age000", "/agenti"),
         Map.entry("menu_ban000", "/banche"),
-        Map.entry("menu_car000", "/capi-area")
+        Map.entry("menu_car000", "/capi-area"),
+        // Slice: viewer parametri aziendali (analisi MENU_AZI000)
+        Map.entry("menu_azi000", "/parametri-aziendali")
     );
 
     /**
@@ -321,7 +323,13 @@ public class MenuService {
                     .url("/parametri")
                     .hasReachableLeaf(true)
                     .build());
-                children.add(1, MenuNode.builder().separator(true).build());
+                children.add(1, MenuNode.builder()
+                    .label("Parametri aziendali")
+                    .icon("bi-sliders")
+                    .url("/parametri-aziendali")
+                    .hasReachableLeaf(true)
+                    .build());
+                children.add(2, MenuNode.builder().separator(true).build());
             }
             case "contabilit", "contabilita" -> {
                 // Consultazione contabile (web). La "Primanota" NON è qui:

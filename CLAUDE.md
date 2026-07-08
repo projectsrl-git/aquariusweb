@@ -137,8 +137,10 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
   - 0.3.1 — cesello dettaglio righe documento: righe espandibili
     + esplosione commenti dal CLOB ORD_NOTE (per ora sulle fatture, poi
     ordini/DDT/proforma).
-  - **0.4.0 (corrente)** — acquisti (ordini/carichi da fornitore) +
+  - 0.4.0 — acquisti (ordini/carichi da fornitore) +
     anagrafiche agenti/banche/capi area, consultazione.
+  - **0.5.0 (corrente)** — analisi DEEP parametri aziendali (catalogo
+    MENU_AZI000→U_AZI_*) + viewer read-only /parametri-aziendali.
 
 ## 4c. Migration tracker (.scx logic ↔ web)
 
@@ -247,6 +249,7 @@ size ai byte 6-7). I form contengono MOLTA logica nei bottoni/validazioni
 | Ordini a fornitore (read-only) | `/ordini-fornitore` | U_ORF_TT/DD, speculare a /ordini. Controparte in ORD_CODCLI/ORD_RAGSOC (riuso legacy su documenti acquisto). MENU_ORF000 gestisce anche le PROPOSTE via flag di lancio senza colonna discriminante → lista intero archivio (NEEDS_DOMAIN) |
 | Carichi da fornitore (read-only) | `/ddt-fornitore` | U_BFO_TT/DD (NON U_BOF_*: quello e' il flusso bollette fiscali verso clienti — BOFCONSE apre U_CLI_AN). ORD_TIPO=9 = reso da cliente (badge). Righe: ordine fornitore via coppia ORC, fattura fornitore via MOV_NUMFAT/DATFAT |
 | Agenti / Banche / Capi area (read-only) | `/agenti`, `/banche`, `/capi-area` | U_AGE_AN, U_BAN_AN, U_CAR_AN. GOTCHA: U_CAR_AN = "agenti per capo area" (provvigioni), non vettori (vettori = PARA VET in /parametri/VET); condizioni pagamento = PARA CPA in /parametri/CPA (U_PAG_AN e' un archivio morto: incassi su ordine, solo replica+pulizia) |
+| Parametri aziendali (analisi+viewer, read-only) | `/parametri-aziendali` | Catalogo DEEP di MENU_AZI000 (841 parametri) in resources/parametri/ + viewer con popover scopo/funzionamento/evidenze. ARCHITETTURA CHIAVE: APPLILIB.AQUADOCU carica ogni AZI_X in PUB_X allo startup (712 mappature) — gli usi reali dei parametri sono sulle PUB_*. Valori via SELECT TOP 1 * metadata-driven (colonne assenti → n.d.). Scrittura parametri = Opus |
 
 ## 7. Security notes (PUBLIC repository!)
 
