@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Struttura bilancio CEE – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-diagram-3',
+        title='Struttura bilancio CEE',
+        subtitle='Voci del prospetto (BILNEW), confluenze dei conti (U_INT_TT) e confluenze di totale (U_COR_TT) — solo struttura: il calcolo dei valori non è ancora migrato',
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <!-- ─── Pannello anomalie (i tre controlli di ceecont) ─── -->
+    <div class="row g-3 mb-3" th:if="${unmappedTotal > 0 or !#lists.isEmpty(broken) or !#lists.isEmpty(brokenEdges)}">
+        <div class="col-12">
+            <div class="card border-warning-subtle shadow-sm">
+                <div class="card-header bg-warning-subtle">
+                    <h6 class="mb-0"><i class="bi bi-exclamation-triangle me-1"></i>Anomalie di configurazione (stesse verifiche del calcolo legacy)</h6>
+                </div>
+                <div class="card-body py-2">
+                    <details class="mb-2" th:if="${unmappedTotal > 0}">
+                        <summary class="small">
+                            <strong th:text="${unmappedTotal}">0</strong> conti dell'esercizio
+                            <span th:text="${anno}">2026</span> senza confluenza CEE
+                            <span class="text-muted">— verrebbero esclusi silenziosamente dal bilancio</span>
+                            <span class="text-muted" th:if="${unmappedTotal > unmappedLimit}"
+                                  th:text="'(mostrati i primi ' + ${unmappedLimit} + ')'"></span>
+                        </summary>
+                        <div class="table-responsive mt-2" style="max-height:260px; overflow:auto">
+                            <table class="table table-sm mb-0">
+                                <thead class="table-light"><tr><th>Conto</th><th>Descrizione</th><th class="text-end">Saldo (D−A)</th></tr></thead>
+                                <tbody>
+                                    <tr th:each="c : ${unmapped}">
+                                        <td class="font-monospace small" th:text="${c.conto}">—</td>
+                                        <td class="small" th:text="${c.descrizione}">—</td>
+                                        <td class="text-end font-monospace small"
+                                            th:text="${c.saldo != null ? #numbers.formatDecimal(c.saldo, 1, 'POINT', 2, 'COMMA') : '—'}">—</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </details>
+                    <details class="mb-2" th:if="${!#lists.isEmpty(broken)}">
+                        <summary class="small">
+                            <strong th:text="${#lists.size(broken)}">0</strong> confluenze conti verso voci inesistenti
+                            <span class="text-muted">— il calcolo salterebbe questi conti con avviso</span>
+                        </summary>
+                        <div class="table-responsive mt-2">
+                            <table class="table table-sm mb-0">
+                                <thead class="table-light"><tr><th>Conto</th><th>Descrizione</th><th>Riga dare</th><th>Riga avere</th></tr></thead>
+                                <tbody>
+                                    <tr th:each="m : ${broken}">
+                                        <td class="font-monospace small" th:text="${m.conto}">—</td>
+                                        <td class="small" th:text="${m.descrizione}">—</td>
+                                        <td class="font-monospace small" th:text="${m.rigaDare != '' ? m.rigaDare : '—'}">—</td>
+                                        <td class="font-monospace small" th:text="${m.rigaAvere != '' ? m.rigaAvere : '—'}">—</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </details>
+                    <details th:if="${!#lists.isEmpty(brokenEdges)}">
+                        <summary class="small">
+                            <strong th:text="${#lists.size(brokenEdges)}">0</strong> confluenze di totale verso voci inesistenti
+                            <span class="text-danger">— nel legacy INTERROMPONO il calcolo</span>
+                        </summary>
+                        <div class="table-responsive mt-2">
+                            <table class="table table-sm mb-0">
+                                <thead class="table-light"><tr><th>Riga</th><th>Segno</th><th>Totale (mancante)</th></tr></thead>
+                                <tbody>
+                                    <tr th:each="e : ${brokenEdges}">
+                                        <td class="font-monospace small" th:text="${e.riga}">—</td>
+                                        <td class="small" th:text="${e.segno}">+</td>
+                                        <td class="font-monospace small text-danger" th:text="${e.totale}">—</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-3 align-items-center mb-3 flex-wrap">
+        <form method="get" th:action="@{/contabilita/bilancio-cee-struttura}" class="d-flex gap-2">
+            <div class="input-group input-group-sm" style="width:340px">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" name="q" th:value="${q}" class="form-control"
+                       placeholder="Codice o descrizione voce…">
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm">Filtra</button>
+            <a th:href="@{/contabilita/bilancio-cee-struttura}" class="btn btn-outline-secondary btn-sm"
+               th:if="${q != ''}"><i class="bi bi-x"></i></a>
+        </form>
+        <span class="small text-muted ms-auto">
+            <span th:text="${totRows}">0</span> voci ·
+            <span th:text="${mappingsCount}">0</span> confluenze conti ·
+            <span th:text="${edgesCount}">0</span> confluenze totali ·
+            Legenda tipo: <span class="badge bg-light text-dark border">I</span> commenti
+            <span class="badge bg-primary-subtle text-primary-emphasis">V</span> dettagli
+            <span class="badge bg-success-subtle text-success-emphasis">T</span> totali
+        </span>
+    </div>
+
+    <!-- ─── Struttura del prospetto ─── -->
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-sm mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width:10%">Voce</th>
+                            <th style="width:6%">Sez.</th>
+                            <th style="width:6%">Tipo</th>
+                            <th>Descrizione</th>
+                            <th style="width:34%">Confluenze</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="r : ${rows}"
+                            th:with="conti=${byRow.get(r.codRiga)}, comp=${composition.get(r.codRiga)}, dest=${flowsInto.get(r.codRiga)}"
+                            th:classappend="${r.tipo == 'T'} ? 'table-light' : ''">
+                            <td class="font-monospace small" th:text="${r.codRiga}">21600</td>
+                            <td>
+                                <span class="badge" th:if="${section.get(r.codRiga) != ''}"
+                                      th:classappend="${section.get(r.codRiga) == 'CE'} ? 'bg-info-subtle text-info-emphasis' : 'bg-secondary-subtle text-secondary-emphasis'"
+                                      th:text="${section.get(r.codRiga)}"
+                                      th:title="${section.get(r.codRiga) == 'CE'} ? 'Conto economico (VAL(codice) ≥ 21600, valori in assoluto)' : 'Stato patrimoniale'">SP</span>
+                            </td>
+                            <td>
+                                <span class="badge"
+                                      th:classappend="${r.tipo == 'T'} ? 'bg-success-subtle text-success-emphasis'
+                                                    : (${r.tipo == 'V'} ? 'bg-primary-subtle text-primary-emphasis'
+                                                    : 'bg-light text-dark border')"
+                                      th:text="${r.tipo != '' ? r.tipo : '—'}"
+                                      th:title="${r.tipo == 'T' ? 'Totale' : (r.tipo == 'V' ? 'Dettaglio di riga' : 'Commento')}">V</span>
+                            </td>
+                            <td class="small" th:classappend="${r.tipo == 'T'} ? 'fw-semibold' : ''"
+                                th:text="${r.descrizione}">Descrizione voce</td>
+                            <td class="small">
+                                <details th:if="${conti != null}">
+                                    <summary><span th:text="${#lists.size(conti)}">0</span> conti confluenti</summary>
+                                    <ul class="list-unstyled mb-0 mt-1" style="max-height:200px; overflow:auto">
+                                        <li th:each="m : ${conti}">
+                                            <span class="font-monospace" th:text="${m.conto}"></span>
+                                            <span th:text="${' ' + m.descrizione}"></span>
+                                            <span class="badge bg-warning-subtle text-warning-emphasis"
+                                                  th:if="${m.rigaAvere == r.codRiga and m.rigaDare != r.codRiga}"
+                                                  title="Riga AVERE alternativa: usata quando il saldo del conto è negativo">avere</span>
+                                        </li>
+                                    </ul>
+                                </details>
+                                <details th:if="${comp != null}">
+                                    <summary>Totale di <span th:text="${#lists.size(comp)}">0</span> righe</summary>
+                                    <ul class="list-unstyled mb-0 mt-1">
+                                        <li th:each="e : ${comp}">
+                                            <span class="font-monospace" th:text="${e.segno == '+' ? '+' : '−'}"></span>
+                                            <span class="font-monospace" th:text="${e.riga}"></span>
+                                            <span class="text-muted" th:text="${' ' + e.descrizioneRiga}"></span>
+                                        </li>
+                                    </ul>
+                                </details>
+                                <div th:if="${dest != null}" class="text-muted">
+                                    <i class="bi bi-arrow-return-right"></i> confluisce in
+                                    <span th:each="e, st : ${dest}">
+                                        <span class="font-monospace" th:text="${e.totale}"></span><span
+                                            th:text="${e.segno == '+' ? ' (+)' : ' (−)'}"></span><span
+                                            th:if="${!st.last}">, </span>
+                                    </span>
+                                </div>
+                                <span class="text-muted" th:if="${conti == null and comp == null and dest == null}">—</span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(rows)}">
+                            <td colspan="5" class="text-center text-muted py-5">
+                                <i class="bi bi-inbox" style="font-size:2rem"></i>
+                                <p class="mt-2 mb-0" th:text="${totRows == 0 ? 'Nessuna voce CEE definita per questa società (BILNEW vuota).' : 'Nessuna voce corrisponde al filtro.'}">—</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <p class="small text-muted mt-3 mb-0">
+        Regola dare/avere (dal form legacy): se il saldo del conto (dare−avere) è negativo, il calcolo
+        usa la riga <em>avere</em> in alternativa, se indicata — es. banche in passivo. Il calcolo dei
+        valori (motore <code>ceecont</code>) non è ancora migrato: l'algoritmo decodificato è in
+        <code>resources/cee/README.md</code>.
+    </p>
+
+</section></body>
+</html>

@@ -113,7 +113,13 @@ public class MenuService {
         Map.entry("menu_ban000", "/banche"),
         Map.entry("menu_car000", "/capi-area"),
         // Slice: viewer parametri aziendali (analisi MENU_AZI000)
-        Map.entry("menu_azi000", "/parametri-aziendali")
+        Map.entry("menu_azi000", "/parametri-aziendali"),
+        // Slice: bilancio CEE — viewer struttura (il calcolo arrivera' con Opus)
+        Map.entry("menu_cee000", "/contabilita/bilancio-cee-struttura"),
+        Map.entry("menu_ceepdc", "/contabilita/bilancio-cee-struttura"),
+        Map.entry("menu_ceetot", "/contabilita/bilancio-cee-struttura"),
+        Map.entry("menu_ceecori", "/contabilita/bilancio-cee-struttura"),
+        Map.entry("menu_ceeric", "/contabilita/bilancio-cee-struttura")
     );
 
     /**

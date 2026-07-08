@@ -1,39 +1,30 @@
-Add CEE balance DEEP analysis: structure, mapping, algorithm
+Add CEE balance structure viewer with anomalies panel
 
-Sources-verified decode of the legacy "Bilancio IV direttiva CEE" flow so
-Opus can implement the calculation engine on certain ground. No code
-changes: catalogs + README + tracker.
+Read-only viewer /contabilita/bilancio-cee-struttura on top of the
+patch-1 analysis (apply after "Add CEE balance DEEP analysis"). Version
+bump 0.5.1 -> 0.6.0 (MINOR, one bump per session; log in CLAUDE.md 4b).
 
-KEY FINDINGS (all cited file/line in the deliverables)
-- BILNEW holds structure AND values: of 39 columns the CEE flow uses six
-  (CODSOC, CODRIG, TIPO_DATO, DESCRIZION, CORRENTE computed/reset each
-  run, PRECEDENTE rolled by menu_ceeanno: PRECEDENTE=CORRENTE;CORRENTE=0).
-  The other 33 are never read by the flow (generic-table legacy, INCERTO).
-- NO parent-child tree in BILNEW. Structure = print order BIL_CODRIG
-  (numeric-in-varchar, PADL-10 comparisons) + row type TIPO_DATO with
-  verbatim validation "I=Commenti, V=Dettagli di riga, T=Totali"
-  (menu_cee000; STBILCEE.FRX styles T rows) + totals hierarchy stored in
-  U_COR_TT as a signed edge list riga->totale ('+' adds, else subtracts;
-  missing CONFLU row ABORTS the run).
-- BIL_CODRIG number space encodes the section: VAL(codrig) >= 21600 =
-  conto economico (ABS at end of phase 2), < 21600 = stato patrimoniale.
-  Attivo/passivo boundary is data, not code (INCERTO for Opus).
-- U_INT_TT dual destination: INT_CODRIG "Codice riga dare" (saldo >= 0),
-  INT_CODRIA "Codice riga avere" used when the saldo is NEGATIVE if
-  filled (form help verbatim; source comment "BANCHE IN PASSIVO").
-- Full ceecont.PRG pseudocode in resources/cee/README.md, with the
-  previsionali option (PRE_IMP_D-PRE_IMP_A), the three data-quality
-  behaviors (unmapped accounts SILENTLY excluded; mappings to missing
-  rows skip the account with verbatim warning; broken total edges abort)
-  and ready SSMS queries. Commented-out cases 21900/24400 ("da vedere col
-  commercialista") flagged INCERTO.
+- CeeStructureDao (NamedParameterJdbcTemplate on tenantDataSource, same
+  pattern as DocumentArchiveDao): BILNEW rows in legacy print order;
+  U_INT_TT mappings with CONTI current-year descriptions (INT_DESCRI
+  fallback); U_COR_TT edges; three anomaly queries emulating PADL with
+  RIGHT(REPLICATE(' ',10)+LTRIM(RTRIM(x)),10).
+- Viewer: I/V/T badges (verbatim legend), SP/CE section from the 21600
+  threshold, per-voce expandable panels (conti confluenti with "avere"
+  badge on negative-balance alternative rows; totals composition with
+  signs; where each row flows into), text filter, and an anomalies panel
+  mirroring the three ceecont checks - unmapped accounts (capped at 200
+  with total count; silently excluded from the legacy calculation),
+  mappings to non-existent rows (account skipped), broken total edges
+  (calculation-blocking, highlighted). NO computed values: the engine is
+  Opus's (pseudocode in resources/cee/README.md).
+- Menu FORM_TO_URL: menu_cee000 / menu_ceepdc / menu_ceetot /
+  menu_ceecori / menu_ceeric -> the viewer (verified in tbl_menu under
+  gestionebilanci1 "Bilancio iv direttiva cee").
 
-DECLARED DEVIATION: the handoff asked a CSV with one row per CEE voce,
-but the voci are DB data with no seed in either repo - a static CSV would
-be a stale, unverifiable copy. Delivered instead: the 39-column decode
-(what sources can verify); the real rows are shown live by the viewer in
-the follow-up patch.
-
-Tracker: +9 rows (ceecont DEFERRED->Opus with pseudocode; CEESAVE floppy
-export NOT_APPLICABLE; cee forms WRITE_SIDE/PRINT_REPORT; menu_ceecori
-PARTIAL = anomalies panel). CSVs parse-back verified quote-aware.
+Verification (sandbox only): brace/paren balance with string-literal
+stripping on 3 Java files; div/details/table balance on the template;
+SQL alias <-> row-mapper coherence; model attrs <-> template usage; both
+patches verified as a chain on a fresh clone of HEAD 0dc3b3e. Maven build
+and execution on SQL Server 2012 to be confirmed at first deploy
+(volumes are per-society and expected small).
