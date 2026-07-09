@@ -1,9 +1,16 @@
-Global loading overlay + stronger borders on SP/CE summary cards
+Bilancio CEE: add computed values view (IV directive prospect)
 
-- Loading overlay ("Caricamento in corso...") in the layout, shown on internal
-  navigation clicks and form submits (covers the wait for slow pages like the
-  bilancio) and hidden on pageshow. Downloads / target=_blank / [data-no-loader]
-  are excluded (the Excel export link is marked data-no-loader).
-- Stato Patrimoniale / Conto Economico summary cards: border -> border border-2.
+Fable 5's viewer only showed the CEE structure/mapping. Added the values view
+without reimplementing the fiscal calculation: BILNEW already stores the values
+(CORRENTE/PRECEDENTE) written by the legacy "Calcolo bilancio cee"; the web reads
+and renders them as the legacy prospect (Riga / Descrizione / current / previous),
+formatted by TIPO_DATO (I=comment/header, V=detail, T=total). No web-side recompute.
 
-Version 0.9.1. Sandbox checks only.
+- CeeStructureDao: +CeeValueRow DTO and values(soc) (numeric order via PADL/zero-pad).
+- CeeBalanceController -> GET /contabilita/bilancio-cee (read-only tenant); warns
+  if no values (calc never run on the gestionale).
+- Template contabilita/bilancio-cee.html with TIPO_DATO formatting + link to the
+  structure/mapping viewer.
+- The synthetic "Bilancio CEE" menu entry now points to the values view.
+
+Version 0.10.0. Sandbox checks only.

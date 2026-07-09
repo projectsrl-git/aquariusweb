@@ -50,6 +50,23 @@ public class CeeStructureDao {
         private String descrizione;  // DESCRIZION
     }
 
+    /** Riga del prospetto CEE con i valori calcolati (letti da BILNEW). */
+    @Data @AllArgsConstructor
+    public static class CeeValueRow {
+        private String codRiga;      // BIL_CODRIG (trim)
+        private String tipo;         // I=commento, V=dettaglio, T=totale
+        private String descrizione;  // DESCRIZION
+        private BigDecimal corrente;    // CORRENTE
+        private BigDecimal precedente;  // PRECEDENTE
+        public boolean isTotale()   { return "T".equals(tipo); }
+        public boolean isCommento() { return "I".equals(tipo); }
+        /** Sezione: conto economico se VAL(codrig) >= 21600 (soglia legacy ceecont). */
+        public boolean isEconomico() {
+            try { return Integer.parseInt(codRiga.trim()) >= 21600; }
+            catch (Exception e) { return false; }
+        }
+    }
+
     @Data @AllArgsConstructor
     public static class ContoMappato {
         private String conto;        // INT_CONTO
@@ -89,6 +106,27 @@ public class CeeStructureDao {
                 t(rs.getString("BIL_CODRIG")),
                 t(rs.getString("TIPO_DATO")),
                 t(rs.getString("DESCRIZION"))));
+    }
+
+    /**
+     * Prospetto CEE con i VALORI calcolati (CORRENTE / PRECEDENTE), letti da
+     * BILNEW così come li ha lasciati l'ultimo "Calcolo bilancio cee" del
+     * gestionale (read-only). Ordine numerico di stampa (PADL a 10 come il legacy).
+     */
+    public List<CeeValueRow> values(String soc) {
+        return jdbc.query("""
+            SELECT BIL_CODRIG, TIPO_DATO, DESCRIZION, CORRENTE, PRECEDENTE
+            FROM BILNEW
+            WHERE BIL_CODSOC = :soc
+            ORDER BY RIGHT('0000000000' + LTRIM(RTRIM(BIL_CODRIG)), 10)
+            """,
+            new MapSqlParameterSource("soc", soc),
+            (rs, i) -> new CeeValueRow(
+                t(rs.getString("BIL_CODRIG")),
+                t(rs.getString("TIPO_DATO")),
+                t(rs.getString("DESCRIZION")),
+                rs.getBigDecimal("CORRENTE"),
+                rs.getBigDecimal("PRECEDENTE")));
     }
 
     /**

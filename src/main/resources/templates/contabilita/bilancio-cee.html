@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Bilancio CEE – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-file-earmark-bar-graph',
+        title='Bilancio CEE',
+        subtitle='Prospetto IV direttiva CEE — esercizio ' + ${anno},
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
+        <a class="btn btn-sm btn-outline-secondary" th:href="@{/contabilita/bilancio-cee-struttura}">
+            <i class="bi bi-diagram-2 me-1"></i>Struttura e mappatura conti</a>
+        <span class="text-muted small ms-auto">
+            <i class="bi bi-info-circle me-1"></i>Valori all'ultimo «Calcolo bilancio CEE» eseguito sul gestionale
+        </span>
+    </div>
+
+    <!-- Nessun valore: il calcolo non è mai stato eseguito sul gestionale -->
+    <div th:unless="${hasValues}" class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle me-1"></i>
+        Il prospetto CEE non contiene ancora valori. Eseguire «Calcolo bilancio CEE»
+        sul gestionale Aquarius; il web ne mostrerà poi i risultati (sola lettura).
+    </div>
+
+    <div class="card shadow-sm border">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-sm mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width:70px" class="text-end">Riga</th>
+                            <th>Descrizione</th>
+                            <th class="text-end" style="width:170px">Esercizio in corso</th>
+                            <th class="text-end" style="width:170px">Esercizio precedente</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="r : ${rows}"
+                            th:classappend="${r.totale} ? 'fw-bold border-top' : (${r.commento} ? 'table-light fw-semibold' : '')">
+                            <td class="text-end font-monospace small text-muted" th:text="${r.codRiga}">100</td>
+                            <td th:classappend="${r.commento} ? 'text-uppercase' : ''"
+                                style="white-space:pre-wrap" th:text="${r.descrizione}">Descrizione voce</td>
+                            <td class="text-end font-monospace"
+                                th:text="${!r.commento and r.corrente != null ? #numbers.formatDecimal(r.corrente,1,'POINT',2,'COMMA') : ''}">0,00</td>
+                            <td class="text-end font-monospace text-muted"
+                                th:text="${!r.commento and r.precedente != null ? #numbers.formatDecimal(r.precedente,1,'POINT',2,'COMMA') : ''}">0,00</td>
+                        </tr>
+                        <tr th:if="${rows == null or rows.isEmpty()}">
+                            <td colspan="4" class="text-center text-muted py-5">
+                                Struttura del bilancio CEE non definita per questa società.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-text mt-2">
+        Prospetto in sola lettura (tabella legacy <span class="font-monospace">BILNEW</span>).
+        Il ricalcolo dei valori resta sul gestionale Aquarius.
+    </div>
+
+</section></body>
+</html>

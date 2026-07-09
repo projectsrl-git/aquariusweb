@@ -354,7 +354,7 @@ public class MenuService {
                 children.add(2, MenuNode.builder()
                     .label("Bilancio CEE")
                     .icon("bi-file-earmark-bar-graph")
-                    .url("/contabilita/bilancio-cee-struttura")
+                    .url("/contabilita/bilancio-cee")
                     .hasReachableLeaf(true)
                     .build());
                 children.add(3, MenuNode.builder()
