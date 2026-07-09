@@ -1,11 +1,9 @@
-Bilancio: Excel export + prominence tweaks
+Global loading overlay + stronger borders on SP/CE summary cards
 
-- Excel export: "Esporta Excel" button -> GET /contabilita/bilancio/export
-  (ResponseEntity<byte[]>, Apache POI, same pattern as the warehouse valuation).
-  New BilancioExcelExporter: "Dettaglio" sheet (one row per account with numeric
-  Dare/Avere/Saldo, filterable) + "Sintesi" sheet (totals + quadratura).
-- "Il bilancio quadra" text enlarged; the quadratura card's "Differenza" label
-  renamed to "Quadratura"; the Stato Patrimoniale / Conto Economico summary cards
-  now have a visible border.
+- Loading overlay ("Caricamento in corso...") in the layout, shown on internal
+  navigation clicks and form submits (covers the wait for slow pages like the
+  bilancio) and hidden on pageshow. Downloads / target=_blank / [data-no-loader]
+  are excluded (the Excel export link is marked data-no-loader).
+- Stato Patrimoniale / Conto Economico summary cards: border -> border border-2.
 
-Version 0.9.0. Sandbox checks only; confirm build/SQL on deploy.
+Version 0.9.1. Sandbox checks only.

@@ -369,6 +369,17 @@
 </head>
 <body>
 
+<!-- Overlay di caricamento durante la navigazione (pagine lente, es. bilancio) -->
+<div id="pageLoader" aria-live="polite"
+     style="display:none; position:fixed; inset:0; z-index:2000;
+            background:rgba(255,255,255,.72); backdrop-filter:blur(1px);
+            align-items:center; justify-content:center;">
+    <div class="text-center">
+        <div class="spinner-border text-primary" style="width:2.5rem;height:2.5rem" role="status"></div>
+        <div class="mt-2 fw-semibold text-secondary">Caricamento in corso…</div>
+    </div>
+</div>
+
 <aside id="sidebar">
     <div class="sidebar-brand">
         <img th:src="@{/img/aquarius-icon.jpg}" alt="" class="brand-icon">
@@ -580,6 +591,30 @@ function renderNode(node, depth) {
         document.body.classList.toggle('sidebar-collapsed', collapsed);
         try { sessionStorage.setItem(KEY, collapsed ? '1' : '0'); } catch (e) {}
     });
+})();
+</script>
+<script th:inline="none">
+(function () {
+    var loader = document.getElementById('pageLoader');
+    if (!loader) return;
+    function show() { loader.style.display = 'flex'; }
+    function isNav(a) {
+        if (!a) return false;
+        var href = a.getAttribute('href');
+        if (!href || href.charAt(0) === '#' || href.indexOf('javascript:') === 0) return false;
+        if (a.hasAttribute('download') || a.getAttribute('target') === '_blank') return false;
+        if (a.hasAttribute('data-no-loader')) return false;
+        return true;
+    }
+    document.addEventListener('click', function (e) {
+        var a = e.target.closest ? e.target.closest('a') : null;
+        if (isNav(a)) show();
+    });
+    document.addEventListener('submit', function (e) {
+        if (!e.target.hasAttribute('data-no-loader')) show();
+    });
+    // Nasconde l'overlay quando la nuova pagina è pronta (anche da bfcache/back)
+    window.addEventListener('pageshow', function () { loader.style.display = 'none'; });
 })();
 </script>
 </body>

@@ -154,8 +154,10 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
     contrapposte (Attività|Passività, Costi|Ricavi).
   - 0.8.1 — menu Bilancio CEE attivato (voce sintetica);
     sintesi bilancio: Differenza in testa + riquadro quadratura prominente.
-  - **0.9.0 (corrente)** — bilancio: export Excel + ritocchi sintesi
+  - 0.9.0 — bilancio: export Excel + ritocchi sintesi
     (Differenza in testa, riquadro quadratura, bordi card).
+  - **0.9.1 (corrente)** — overlay "Caricamento in corso" globale;
+    bordi più marcati sulle card di sintesi SP/CE.
 
 ## 4c. Migration tracker (.scx logic ↔ web)
 

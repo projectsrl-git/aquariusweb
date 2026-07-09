@@ -31,14 +31,14 @@
                 <label class="form-check-label small" for="cfToggle">Mostra conti clienti / fornitori</label>
             </div>
         </form>
-        <a class="btn btn-sm btn-outline-success ms-auto" th:href="@{/contabilita/bilancio/export}">
+        <a class="btn btn-sm btn-outline-success ms-auto" data-no-loader th:href="@{/contabilita/bilancio/export}">
             <i class="bi bi-file-earmark-excel me-1"></i>Esporta Excel</a>
     </div>
 
     <!-- ─── Quadro di sintesi ──────────────────────────────────────────── -->
     <div class="row g-3 mb-3">
         <div class="col-lg-6">
-            <div class="card shadow-sm border h-100">
+            <div class="card shadow-sm border border-2 h-100">
                 <div class="card-header bg-white py-2 fw-semibold"><i class="bi bi-bank me-1"></i>Stato Patrimoniale</div>
                 <div class="card-body d-flex justify-content-around text-center">
                     <div>
@@ -60,7 +60,7 @@
             </div>
         </div>
         <div class="col-lg-6">
-            <div class="card shadow-sm border h-100">
+            <div class="card shadow-sm border border-2 h-100">
                 <div class="card-header bg-white py-2 fw-semibold"><i class="bi bi-graph-up-arrow me-1"></i>Conto Economico</div>
                 <div class="card-body d-flex justify-content-around text-center align-items-center">
                     <div>
