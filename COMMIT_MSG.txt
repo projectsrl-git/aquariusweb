@@ -1,16 +1,20 @@
-Bilancio CEE: add computed values view (IV directive prospect)
+Bilancio CEE: autonomous calculation engine (writes BILNEW)
 
-Fable 5's viewer only showed the CEE structure/mapping. Added the values view
-without reimplementing the fiscal calculation: BILNEW already stores the values
-(CORRENTE/PRECEDENTE) written by the legacy "Calcolo bilancio cee"; the web reads
-and renders them as the legacy prospect (Riga / Descrizione / current / previous),
-formatted by TIPO_DATO (I=comment/header, V=detail, T=total). No web-side recompute.
+The web now recalculates the CEE balance itself (no longer needs the gestionale).
+Safe because BILNEW is volatile: fully rewritten on each recalculation.
 
-- CeeStructureDao: +CeeValueRow DTO and values(soc) (numeric order via PADL/zero-pad).
-- CeeBalanceController -> GET /contabilita/bilancio-cee (read-only tenant); warns
-  if no values (calc never run on the gestionale).
-- Template contabilita/bilancio-cee.html with TIPO_DATO formatting + link to the
-  structure/mapping viewer.
-- The synthetic "Bilancio CEE" menu entry now points to the values view.
+Faithful port of ceecont.PRG (per resources/cee/README.md):
+- Phase 1+2: for each U_INT_TT mapping, account balance = CON_IMP_D - CON_IMP_A
+  (+forecast if requested); target row = INT_CODRIG if balance >= 0 else INT_CODRIA
+  when present ("banche in passivo"); accumulate into the row's CORRENTE. Missing
+  accounts / missing target rows are warned and skipped.
+- Phase 2b: ABS on economic rows (VAL(codrig) >= 21600).
+- Phase 3: totals from U_COR_TT signed edges (COR_RIGA order); a missing
+  confluence row aborts with nothing written ("aggiornamento annullato").
+- In-memory compute, single batch write at the end; robust numeric code keys.
 
-Version 0.10.0. Sandbox checks only.
+CeeStructureDao gains accountBalances()/updateCorrente(); new
+CeeCalculationService; POST /contabilita/bilancio-cee/ricalcola with a button.
+
+MUST be reconciled against the legacy "Calcolo bilancio cee" on the same
+society/year before trusting the numbers. Version 0.11.0. Sandbox checks only.

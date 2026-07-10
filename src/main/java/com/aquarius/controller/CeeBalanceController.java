@@ -4,6 +4,7 @@ import com.aquarius.repository.tenant.CeeStructureDao;
 import com.aquarius.repository.tenant.CeeStructureDao.CeeValueRow;
 import com.aquarius.security.AquariusPrincipal;
 import com.aquarius.service.BreadcrumbService;
+import com.aquarius.service.CeeCalculationService;
 import com.aquarius.context.FiscalContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -11,7 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -29,6 +32,7 @@ import java.util.List;
 public class CeeBalanceController {
 
     private final CeeStructureDao dao;
+    private final CeeCalculationService calcService;
     private final BreadcrumbService breadcrumbService;
     private final FiscalContext fiscalContext;
 
@@ -51,5 +55,24 @@ public class CeeBalanceController {
         model.addAttribute("breadcrumbs",
             breadcrumbService.forUrl("/contabilita/bilancio-cee", principal.getUsername()));
         return "contabilita/bilancio-cee";
+    }
+
+    /** Ricalcola i valori CEE dal web (scrive su BILNEW, tabella volatile). */
+    @PostMapping("/ricalcola")
+    @Transactional(transactionManager = "tenantTransactionManager")
+    public String ricalcola(RedirectAttributes ra,
+                            @AuthenticationPrincipal AquariusPrincipal principal) {
+        String soc = fiscalContext.getSocietyCode();
+        String anno = fiscalContext.getFiscalYear();
+        CeeCalculationService.Result r = calcService.recalcola(soc, anno, false);
+        if (r.ok) {
+            String msg = "Ricalcolo CEE eseguito: " + r.righeAggiornate + " righe aggiornate.";
+            if (!r.warnings.isEmpty()) msg += " " + r.warnings.size() + " avvisi (conti non confluiti).";
+            ra.addFlashAttribute("ceeMsg", msg);
+            if (!r.warnings.isEmpty()) ra.addFlashAttribute("ceeWarnings", r.warnings);
+        } else {
+            ra.addFlashAttribute("ceeErr", r.error);
+        }
+        return "redirect:/contabilita/bilancio-cee";
     }
 }

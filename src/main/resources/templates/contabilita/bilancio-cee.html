@@ -11,19 +11,34 @@
         crumbs=${breadcrumbs}
     )}"></div>
 
+    <!-- Esiti ricalcolo -->
+    <div th:if="${ceeMsg}" class="alert alert-success alert-dismissible">
+        <i class="bi bi-check-circle me-1"></i><span th:text="${ceeMsg}">ok</span>
+        <ul class="mb-0 mt-2 small" th:if="${ceeWarnings}">
+            <li th:each="w : ${ceeWarnings}" th:text="${w}">avviso</li>
+        </ul>
+    </div>
+    <div th:if="${ceeErr}" class="alert alert-danger">
+        <i class="bi bi-x-octagon me-1"></i><span th:text="${ceeErr}">errore</span>
+    </div>
+
     <div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
+        <form method="post" th:action="@{/contabilita/bilancio-cee/ricalcola}" class="mb-0">
+            <button type="submit" class="btn btn-sm btn-primary">
+                <i class="bi bi-calculator me-1"></i>Ricalcola bilancio CEE</button>
+        </form>
         <a class="btn btn-sm btn-outline-secondary" th:href="@{/contabilita/bilancio-cee-struttura}">
             <i class="bi bi-diagram-2 me-1"></i>Struttura e mappatura conti</a>
         <span class="text-muted small ms-auto">
-            <i class="bi bi-info-circle me-1"></i>Valori all'ultimo «Calcolo bilancio CEE» eseguito sul gestionale
+            <i class="bi bi-info-circle me-1"></i>Valori dall'ultimo ricalcolo (web o gestionale)
         </span>
     </div>
 
     <!-- Nessun valore: il calcolo non è mai stato eseguito sul gestionale -->
     <div th:unless="${hasValues}" class="alert alert-warning">
         <i class="bi bi-exclamation-triangle me-1"></i>
-        Il prospetto CEE non contiene ancora valori. Eseguire «Calcolo bilancio CEE»
-        sul gestionale Aquarius; il web ne mostrerà poi i risultati (sola lettura).
+        Il prospetto CEE non contiene ancora valori. Premi «Ricalcola bilancio CEE»
+        per calcolarli dal web (oppure esegui il calcolo sul gestionale Aquarius).
     </div>
 
     <div class="card shadow-sm border">
@@ -61,8 +76,9 @@
     </div>
 
     <div class="form-text mt-2">
-        Prospetto in sola lettura (tabella legacy <span class="font-monospace">BILNEW</span>).
-        Il ricalcolo dei valori resta sul gestionale Aquarius.
+        I valori risiedono nella tabella <span class="font-monospace">BILNEW</span> (volatile,
+        riscritta a ogni ricalcolo). Il «Ricalcola» applica l'algoritmo del gestionale
+        (saldi conti → voci CEE via U_INT_TT, totali via U_COR_TT).
     </div>
 
 </section></body>

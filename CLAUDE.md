@@ -158,8 +158,10 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
     (Differenza in testa, riquadro quadratura, bordi card).
   - 0.9.1 — overlay "Caricamento in corso" globale;
     bordi più marcati sulle card di sintesi SP/CE.
-  - **0.10.0 (corrente)** — bilancio CEE: vista valori (prospetto IV
+  - 0.10.0 — bilancio CEE: vista valori (prospetto IV
     direttiva, lettura BILNEW; nessun ricalcolo lato web).
+  - **0.11.0 (corrente)** — bilancio CEE: motore di calcolo autonomo
+    (scrive BILNEW volatile; algoritmo ceecont.PRG). Da riconciliare col gestionale.
 
 ## 4c. Migration tracker (.scx logic ↔ web)
 

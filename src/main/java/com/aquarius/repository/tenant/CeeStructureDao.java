@@ -129,6 +129,43 @@ public class CeeStructureDao {
                 rs.getBigDecimal("PRECEDENTE")));
     }
 
+    // ─── Supporto al CALCOLO (scrittura su BILNEW, tabella volatile) ─────
+
+    /** Saldi annuali per conto: (CON_IMP_D - CON_IMP_A), +previsionali se richiesto. */
+    public java.util.Map<String, BigDecimal> accountBalances(String soc, String anno, boolean previsionali) {
+        java.util.Map<String, BigDecimal> m = new java.util.HashMap<>();
+        jdbc.query("""
+            SELECT LTRIM(RTRIM(CON_CONTO)) AS CONTO,
+                   (CON_IMP_D - CON_IMP_A) AS SALDO,
+                   (PRE_IMP_D - PRE_IMP_A) AS PREV
+            FROM CONTI WHERE CON_SOC = :soc AND CON_ANNO = :anno
+            """,
+            new MapSqlParameterSource("soc", soc).addValue("anno", anno),
+            (java.sql.ResultSet rs) -> {
+                BigDecimal saldo = rs.getBigDecimal("SALDO");
+                if (saldo == null) saldo = BigDecimal.ZERO;
+                if (previsionali) {
+                    BigDecimal prev = rs.getBigDecimal("PREV");
+                    if (prev != null && prev.signum() != 0) saldo = saldo.add(prev);
+                }
+                m.put(rs.getString("CONTO"), saldo);
+            });
+        return m;
+    }
+
+    /** Scrive i valori CORRENTE su BILNEW (una UPDATE per riga, per società). */
+    public void updateCorrente(String soc, java.util.Map<String, BigDecimal> byCode) {
+        java.util.List<org.springframework.jdbc.core.namedparam.SqlParameterSource> batch = new java.util.ArrayList<>();
+        for (java.util.Map.Entry<String, BigDecimal> e : byCode.entrySet()) {
+            batch.add(new MapSqlParameterSource("soc", soc)
+                .addValue("code", e.getKey())
+                .addValue("val", e.getValue()));
+        }
+        jdbc.batchUpdate(
+            "UPDATE BILNEW SET CORRENTE = :val WHERE BIL_CODSOC = :soc AND LTRIM(RTRIM(BIL_CODRIG)) = :code",
+            batch.toArray(new org.springframework.jdbc.core.namedparam.SqlParameterSource[0]));
+    }
+
     /**
      * Mappature conto→voce della societa', con descrizione conto presa da
      * CONTI (anno corrente) e fallback sulla denormalizzata INT_DESCRI.
