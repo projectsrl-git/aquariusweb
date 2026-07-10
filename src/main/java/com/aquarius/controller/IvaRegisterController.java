@@ -50,6 +50,56 @@ public class IvaRegisterController {
         return "redirect:/contabilita/registri-iva/vendite";
     }
 
+    @GetMapping("/statistiche")
+    public String statistics(@RequestParam(value = "lato", required = false) String lato,
+                             @RequestParam(value = "mese", required = false) String mese,
+                             Model model,
+                             @AuthenticationPrincipal AquariusPrincipal principal) {
+        String soc = fiscalContext.getSocietyCode();
+        String anno = fiscalContext.getFiscalYear();
+        String mm = normalizeMonth(mese);
+        String lt = lato == null ? "" : lato.trim().toLowerCase();
+        if (!Set.of("", "vendite", "acquisti", "cee").contains(lt)) lt = "";
+
+        List<IvaRegisterDao.PeriodTotal> totals = dao.periodTotals(soc, anno, lt, mm);
+
+        // vista mensile: mese -> somma imponibile/imposta per FATNOT (F/N/C separati)
+        java.util.Map<String, java.util.Map<String, BigDecimal[]>> byMonth =
+            new java.util.TreeMap<>();
+        // vista per aliquota: codiva -> per FATNOT
+        java.util.Map<String, java.util.Map<String, BigDecimal[]>> byCode =
+            new java.util.TreeMap<>();
+        java.util.Map<String, String> codeDesc = new java.util.HashMap<>();
+        for (IvaRegisterDao.PeriodTotal pt : totals) {
+            String fn = pt.getFatNot().isEmpty() ? "F" : pt.getFatNot();
+            accumulate(byMonth, pt.getMese(), fn, pt.getImponibile(), pt.getImposta());
+            accumulate(byCode, pt.getCodIva(), fn, pt.getImponibile(), pt.getImposta());
+            codeDesc.putIfAbsent(pt.getCodIva(), pt.getDesIva());
+        }
+
+        model.addAttribute("totals", totals);
+        model.addAttribute("byMonth", byMonth);
+        model.addAttribute("byCode", byCode);
+        model.addAttribute("codeDesc", codeDesc);
+        model.addAttribute("lato", lt);
+        model.addAttribute("mese", mm);
+        model.addAttribute("anno", anno);
+        model.addAttribute("breadcrumbs",
+            breadcrumbService.forUrl("/contabilita/registri-iva/statistiche",
+                principal.getUsername()));
+        return "contabilita/registri-iva-statistiche";
+    }
+
+    private static void accumulate(java.util.Map<String, java.util.Map<String, BigDecimal[]>> map,
+                                   String key, String fatNot,
+                                   BigDecimal imponibile, BigDecimal imposta) {
+        BigDecimal[] acc = map
+            .computeIfAbsent(key, k -> new java.util.TreeMap<>())
+            .computeIfAbsent(fatNot, k -> new BigDecimal[]{BigDecimal.ZERO, BigDecimal.ZERO});
+        acc[0] = acc[0].add(imponibile == null ? BigDecimal.ZERO : imponibile);
+        acc[1] = acc[1].add(imposta == null ? BigDecimal.ZERO : imposta);
+    }
+
     @GetMapping("/{registro}")
     public String view(@PathVariable String registro,
                        @RequestParam(value = "mese", required = false) String mese,

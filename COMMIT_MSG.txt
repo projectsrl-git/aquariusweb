@@ -1,42 +1,19 @@
-Add IVA registers consultation (bollati read-only)
+Add IVA statistics from precomputed period totals
 
-Part 1 of 2. Web equivalent of "Stampa bollati IVA": read-only
-consultation of the sales/purchases/receipts IVA registers as loaded by
-the legacy. The LOAD itself (BOLLATI.PRG, from prima nota) and all
-fiscal duties stay on the VFP client. Version bump 0.11.0 -> 0.12.0
-(rebased on HEAD 0dfb86b, which took 0.11.0 for the CEE calculation
-engine).
+Part 2 of 2 - apply AFTER the registers patch. Read-only statistics at
+/contabilita/registri-iva/statistiche from U_IVA_TO (period totals
+written by every legacy bollati load; grain soc+anno+mese+codiva+
+clifor+fatnot).
 
-TABLE SEMANTICS (verified in BOLLATI.PRG - the analysis half):
-- rows are LOADED from MOV_CONT per soc/anno/MONTH; each load deletes
-  and regenerates that month ("ANNULLO DEL BOLLATO PRECEDENTE") - the
-  page states it shows registers as last loaded per month;
-- U_IVA_CL = vendite + corrispettivi (CORRISP writes IVA_FATNOT='C';
-  vendite = 'F' fattura / 'N' nota di accredito);
-- U_IVF_CL = acquisti (IVF_IND100 'S' = indeducibile 100%,
-  IVF_DEDUCIBILE, IVF_BDOG bolla doganale);
-- IVA_CHIAVE / IVF_CHIAVE = register PROTOCOL number (VNUMPRT);
-- U_IVA_TO = per-aliquota period totals precomputed by the load;
-  ITO_CLIFOR decoded with verbatim evidence: C=clienti, F=fornitori,
-  D=fatture differite da DDT, E=fatture CEE, R=reverse charge,
-  A=autofatture (comment r.719).
+- Filters: lato (vendite = CLIFOR C,D; acquisti = F,A; cee = E,R;
+  tutti) and month.
+- Per-month and per-IVA-code aggregations. Fatture (F), note di
+  accredito (N) and corrispettivi (C) are kept as SEPARATE rows in both
+  views: the netting conventions (F-N) belong to the liquidazione -
+  fiscal logic reserved to Opus - so the viewer deliberately does not
+  compensate between types.
+- Raw-grain <details> table for transparency, with decoded lato labels.
+- Nav pills wired both ways with the three register views.
 
-MODULE /contabilita/registri-iva/{vendite|acquisti|corrispettivi}:
-nav pills; month filter + free-text search; sortable columns (whitelist
-enum) with native OFFSET/FETCH pagination (StockBalanceDao pattern),
-default order = protocol; "Totali per aliquota" card computed live on
-the FILTERED set with grand total; acquisti badges Indeducibile /
-Parz. deduc. / Dogana. Menu: SYNTHETIC entry "Registri IVA" under
-contabilita (per mandate - no FORM_TO_URL guessing), synthetic indexes
-renumbered coherently with the upstream CEE entry.
-
-NOT built (tracker): sospensione U_IVA_CS/TS (NEEDS_DOMAIN - regime),
-*_DTDOC variants (NEEDS_DOMAIN - PUB_LIQDTDOC), liquidazione U_IVA_CR
-and plafond U_IVA_FE/ES (OUT_OF_SCOPE - fiscal logic for Opus). No
-drill to /primanota/{nreg}: rows carry MOV_NUMPRO but the route keys on
-numero registrazione - to verify on data first.
-
-Verification (sandbox only): brace/paren with literal stripping; div/
-table balance; SQL alias <-> mapper coherence; menu add() sequence; CSV
-12 cols; chain verified on fresh clone of HEAD 0dfb86b. Maven build and
-SQL Server 2012 execution to be confirmed at first deploy.
+Verification (sandbox only): checks as in part 1; chain verified on
+fresh clone of HEAD 0dfb86b.

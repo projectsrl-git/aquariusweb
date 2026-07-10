@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Statistiche IVA – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-graph-up',
+        title='Statistiche IVA',
+        subtitle='Riepiloghi dai totali di caricamento bollati (U_IVA_TO) — anno ' + ${anno} + '. Fatture, note di accredito e corrispettivi sono esposti separatamente, senza compensazioni',
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <ul class="nav nav-pills mb-3">
+        <li class="nav-item"><a class="nav-link" th:href="@{/contabilita/registri-iva/vendite}">Vendite</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/contabilita/registri-iva/acquisti}">Acquisti</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/contabilita/registri-iva/corrispettivi}">Corrispettivi</a></li>
+        <li class="nav-item"><a class="nav-link active" th:href="@{/contabilita/registri-iva/statistiche}">Statistiche</a></li>
+    </ul>
+
+    <form method="get" th:action="@{/contabilita/registri-iva/statistiche}"
+          class="d-flex gap-2 flex-wrap align-items-center mb-3">
+        <select name="lato" class="form-select form-select-sm" style="width:auto" onchange="this.form.submit()">
+            <option value="" th:selected="${lato == ''}">Tutti i lati</option>
+            <option value="vendite" th:selected="${lato == 'vendite'}">Vendite (clienti + fatture differite)</option>
+            <option value="acquisti" th:selected="${lato == 'acquisti'}">Acquisti (fornitori + autofatture)</option>
+            <option value="cee" th:selected="${lato == 'cee'}">CEE / reverse charge</option>
+        </select>
+        <select name="mese" class="form-select form-select-sm" style="width:auto" onchange="this.form.submit()">
+            <option value="" th:selected="${mese == ''}">Tutto l'anno</option>
+            <option th:each="m : ${#numbers.sequence(1, 12)}"
+                    th:value="${m < 10 ? '0' + m : '' + m}"
+                    th:text="${T(java.time.Month).of(m).getDisplayName(T(java.time.format.TextStyle).FULL, new java.util.Locale('it'))}"
+                    th:selected="${mese == (m < 10 ? '0' + m : '' + m)}">Gennaio</option>
+        </select>
+        <a th:href="@{/contabilita/registri-iva/statistiche}" class="btn btn-outline-secondary btn-sm"
+           th:if="${lato != '' or mese != ''}"><i class="bi bi-x"></i></a>
+        <span class="small text-muted ms-auto">
+            Legenda tipo: F = fatture · N = note di accredito · C = corrispettivi
+        </span>
+    </form>
+
+    <div class="row g-3">
+        <!-- andamento mensile -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white">
+                    <h6 class="detail-card-title mb-0"><i class="bi bi-calendar3 me-1"></i>Per mese</h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0">
+                            <thead class="table-light">
+                                <tr><th>Mese</th><th>Tipo</th>
+                                    <th class="text-end">Imponibile</th><th class="text-end">Imposta</th></tr>
+                            </thead>
+                            <tbody>
+                                <th:block th:each="me : ${byMonth}">
+                                    <tr th:each="ft, st : ${me.value}">
+                                        <td class="small" th:text="${st.first ? me.key : ''}">01</td>
+                                        <td><span class="badge"
+                                              th:classappend="${ft.key == 'N'} ? 'bg-warning-subtle text-warning-emphasis'
+                                                            : (${ft.key == 'C'} ? 'bg-info-subtle text-info-emphasis'
+                                                            : 'bg-secondary-subtle text-secondary-emphasis')"
+                                              th:text="${ft.key}">F</span></td>
+                                        <td class="text-end font-monospace small"
+                                            th:text="${#numbers.formatDecimal(ft.value[0], 1, 'POINT', 2, 'COMMA')}">0,00</td>
+                                        <td class="text-end font-monospace small"
+                                            th:text="${#numbers.formatDecimal(ft.value[1], 1, 'POINT', 2, 'COMMA')}">0,00</td>
+                                    </tr>
+                                </th:block>
+                                <tr th:if="${#maps.isEmpty(byMonth)}">
+                                    <td colspan="4" class="text-center text-muted py-4">
+                                        Nessun totale caricato per i filtri scelti.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- per codice IVA -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white">
+                    <h6 class="detail-card-title mb-0"><i class="bi bi-percent me-1"></i>Per codice IVA</h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0">
+                            <thead class="table-light">
+                                <tr><th>Codice</th><th>Descrizione</th><th>Tipo</th>
+                                    <th class="text-end">Imponibile</th><th class="text-end">Imposta</th></tr>
+                            </thead>
+                            <tbody>
+                                <th:block th:each="ce : ${byCode}">
+                                    <tr th:each="ft, st : ${ce.value}">
+                                        <td class="font-monospace small" th:text="${st.first ? ce.key : ''}">22</td>
+                                        <td class="small" th:text="${st.first ? codeDesc.get(ce.key) : ''}">IVA 22%</td>
+                                        <td><span class="badge"
+                                              th:classappend="${ft.key == 'N'} ? 'bg-warning-subtle text-warning-emphasis'
+                                                            : (${ft.key == 'C'} ? 'bg-info-subtle text-info-emphasis'
+                                                            : 'bg-secondary-subtle text-secondary-emphasis')"
+                                              th:text="${ft.key}">F</span></td>
+                                        <td class="text-end font-monospace small"
+                                            th:text="${#numbers.formatDecimal(ft.value[0], 1, 'POINT', 2, 'COMMA')}">0,00</td>
+                                        <td class="text-end font-monospace small"
+                                            th:text="${#numbers.formatDecimal(ft.value[1], 1, 'POINT', 2, 'COMMA')}">0,00</td>
+                                    </tr>
+                                </th:block>
+                                <tr th:if="${#maps.isEmpty(byCode)}">
+                                    <td colspan="5" class="text-center text-muted py-4">
+                                        Nessun totale caricato per i filtri scelti.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- dettaglio grezzo per trasparenza -->
+    <details class="mt-3">
+        <summary class="small text-muted">Dettaglio totali per mese / codice / lato (come in U_IVA_TO)</summary>
+        <div class="card shadow-sm border-0 mt-2">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-sm mb-0">
+                        <thead class="table-light">
+                            <tr><th>Mese</th><th>Codice IVA</th><th>Descrizione</th><th>Lato</th><th>Tipo</th>
+                                <th class="text-end">Imponibile</th><th class="text-end">Imposta</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="t : ${totals}">
+                                <td class="small" th:text="${t.mese}">01</td>
+                                <td class="font-monospace small" th:text="${t.codIva}">22</td>
+                                <td class="small" th:text="${t.desIva}">IVA 22%</td>
+                                <td>
+                                    <span class="badge bg-light text-dark border"
+                                          th:text="${t.cliFor == 'C' ? 'Clienti'
+                                                   : (t.cliFor == 'F' ? 'Fornitori'
+                                                   : (t.cliFor == 'D' ? 'Fatt. differite'
+                                                   : (t.cliFor == 'E' ? 'CEE'
+                                                   : (t.cliFor == 'R' ? 'Reverse charge'
+                                                   : (t.cliFor == 'A' ? 'Autofatture' : t.cliFor)))))}">Clienti</span>
+                                </td>
+                                <td class="small" th:text="${t.fatNot}">F</td>
+                                <td class="text-end font-monospace small"
+                                    th:text="${t.imponibile != null ? #numbers.formatDecimal(t.imponibile, 1, 'POINT', 2, 'COMMA') : '—'}">0,00</td>
+                                <td class="text-end font-monospace small"
+                                    th:text="${t.imposta != null ? #numbers.formatDecimal(t.imposta, 1, 'POINT', 2, 'COMMA') : '—'}">0,00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </details>
+
+</section></body>
+</html>

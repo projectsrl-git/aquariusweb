@@ -227,5 +227,54 @@ public class IvaRegisterDao {
             .addValue("q", qq).addValue("qLike", "%" + qq + "%");
     }
 
+    // ─── Statistiche (U_IVA_TO: totali precalcolati dal caricamento) ─────
+
+    @Data @AllArgsConstructor
+    public static class PeriodTotal {
+        private String mese;
+        private String codIva;
+        private String desIva;
+        private String cliFor;   // C/F/D/E/R/A (decodifica nel viewer)
+        private String fatNot;   // F/N/C — esposti separati: nessuna assunzione sui segni
+        private BigDecimal imponibile;
+        private BigDecimal imposta;
+    }
+
+    /**
+     * Totali U_IVA_TO per la societa'/anno, filtrabili per lato e mese.
+     * lato: 'vendite' = CLIFOR IN (C,D); 'acquisti' = (F,A);
+     * 'cee' = (E,R — fatture CEE / reverse charge); '' = tutti.
+     * Le righe restano distinte per CLIFOR e FATNOT (fatture vs note di
+     * accredito vs corrispettivi): il viewer non somma tra tipi diversi.
+     */
+    public List<PeriodTotal> periodTotals(String soc, String anno, String lato, String mese) {
+        String sql = """
+            SELECT ITO_MESE, ITO_CODIVA, MAX(ITO_DESIVA) AS DESIVA,
+                   ITO_CLIFOR, ITO_FATNOT,
+                   SUM(ITO_IMPONI) AS IMPONI, SUM(ITO_IMPOST) AS IMPOST
+            FROM U_IVA_TO
+            WHERE ITO_CODSOC = :soc AND ITO_ANNO = :anno
+              AND (:mese = '' OR ITO_MESE = :mese)
+              AND (:lato = ''
+                   OR (:lato = 'vendite'  AND ITO_CLIFOR IN ('C','D'))
+                   OR (:lato = 'acquisti' AND ITO_CLIFOR IN ('F','A'))
+                   OR (:lato = 'cee'      AND ITO_CLIFOR IN ('E','R')))
+            GROUP BY ITO_MESE, ITO_CODIVA, ITO_CLIFOR, ITO_FATNOT
+            ORDER BY ITO_MESE, ITO_CODIVA, ITO_CLIFOR, ITO_FATNOT
+            """;
+        MapSqlParameterSource p = new MapSqlParameterSource()
+            .addValue("soc", soc).addValue("anno", anno)
+            .addValue("lato", lato == null ? "" : lato)
+            .addValue("mese", mese == null ? "" : mese);
+        return jdbc.query(sql, p, (rs, i) -> new PeriodTotal(
+            t(rs.getString("ITO_MESE")),
+            t(rs.getString("ITO_CODIVA")),
+            t(rs.getString("DESIVA")),
+            t(rs.getString("ITO_CLIFOR")),
+            t(rs.getString("ITO_FATNOT")),
+            rs.getBigDecimal("IMPONI"),
+            rs.getBigDecimal("IMPOST")));
+    }
+
     private static String t(String s) { return s == null ? "" : s.trim(); }
 }
