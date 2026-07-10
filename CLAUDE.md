@@ -160,8 +160,11 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
     bordi più marcati sulle card di sintesi SP/CE.
   - 0.10.0 — bilancio CEE: vista valori (prospetto IV
     direttiva, lettura BILNEW; nessun ricalcolo lato web).
-  - **0.11.0 (corrente)** — bilancio CEE: motore di calcolo autonomo
+  - 0.11.0 — bilancio CEE: motore di calcolo autonomo
     (scrive BILNEW volatile; algoritmo ceecont.PRG). Da riconciliare col gestionale.
+  - **0.12.0 (corrente)** — registri IVA (bollati) vendite/acquisti/
+    corrispettivi in consultazione, con filtro periodo e totali per
+    aliquota.
 
 ## 4c. Migration tracker (.scx logic ↔ web)
 
@@ -272,6 +275,7 @@ size ai byte 6-7). I form contengono MOLTA logica nei bottoni/validazioni
 | Agenti / Banche / Capi area (read-only) | `/agenti`, `/banche`, `/capi-area` | U_AGE_AN, U_BAN_AN, U_CAR_AN. GOTCHA: U_CAR_AN = "agenti per capo area" (provvigioni), non vettori (vettori = PARA VET in /parametri/VET); condizioni pagamento = PARA CPA in /parametri/CPA (U_PAG_AN e' un archivio morto: incassi su ordine, solo replica+pulizia) |
 | Parametri aziendali (analisi+viewer, read-only) | `/parametri-aziendali` | Catalogo DEEP di MENU_AZI000 (841 parametri) in resources/parametri/ + viewer con popover scopo/funzionamento/evidenze. ARCHITETTURA CHIAVE: APPLILIB.AQUADOCU carica ogni AZI_X in PUB_X allo startup (712 mappature) — gli usi reali dei parametri sono sulle PUB_*. Valori via SELECT TOP 1 * metadata-driven (colonne assenti → n.d.). Scrittura parametri = Opus |
 | Bilancio CEE — struttura (read-only) | `/contabilita/bilancio-cee-struttura` | BILNEW+U_INT_TT+U_COR_TT. GOTCHA: nessun albero in BILNEW (ordine=BIL_CODRIG, TIPO_DATO I/V/T, gerarchia totali in U_COR_TT come edge list con segno); U_INT_TT ha doppia destinazione dare/avere (INT_CODRIA usata se saldo negativo, es. banche in passivo); VAL(codrig)>=21600 = conto economico (ABS). Il CALCOLO (ceecont) e' di Opus: pseudocodice in resources/cee/README.md |
+| Registri IVA — bollati (read-only) | `/contabilita/registri-iva/{vendite,acquisti,corrispettivi}` | Vendite+corrispettivi=U_IVA_CL (corrisp=IVA_FATNOT='C'), acquisti=U_IVF_CL (ind100/deducibile/bolla doganale). CHIAVE=protocollo. GOTCHA: righe RIGENERATE per soc/anno/MESE a ogni caricamento legacy (BOLLATI.PRG da MOV_CONT) — la vista mostra l'ultimo caricamento per mese; totali precalcolati per aliquota in U_IVA_TO (ITO_CLIFOR: C/F/D/E/R/A decodificati). Varianti *_DTDOC (PUB_LIQDTDOC) non esposte |
 
 ## 7. Security notes (PUBLIC repository!)
 

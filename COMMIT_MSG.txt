@@ -1,20 +1,42 @@
-Bilancio CEE: autonomous calculation engine (writes BILNEW)
+Add IVA registers consultation (bollati read-only)
 
-The web now recalculates the CEE balance itself (no longer needs the gestionale).
-Safe because BILNEW is volatile: fully rewritten on each recalculation.
+Part 1 of 2. Web equivalent of "Stampa bollati IVA": read-only
+consultation of the sales/purchases/receipts IVA registers as loaded by
+the legacy. The LOAD itself (BOLLATI.PRG, from prima nota) and all
+fiscal duties stay on the VFP client. Version bump 0.11.0 -> 0.12.0
+(rebased on HEAD 0dfb86b, which took 0.11.0 for the CEE calculation
+engine).
 
-Faithful port of ceecont.PRG (per resources/cee/README.md):
-- Phase 1+2: for each U_INT_TT mapping, account balance = CON_IMP_D - CON_IMP_A
-  (+forecast if requested); target row = INT_CODRIG if balance >= 0 else INT_CODRIA
-  when present ("banche in passivo"); accumulate into the row's CORRENTE. Missing
-  accounts / missing target rows are warned and skipped.
-- Phase 2b: ABS on economic rows (VAL(codrig) >= 21600).
-- Phase 3: totals from U_COR_TT signed edges (COR_RIGA order); a missing
-  confluence row aborts with nothing written ("aggiornamento annullato").
-- In-memory compute, single batch write at the end; robust numeric code keys.
+TABLE SEMANTICS (verified in BOLLATI.PRG - the analysis half):
+- rows are LOADED from MOV_CONT per soc/anno/MONTH; each load deletes
+  and regenerates that month ("ANNULLO DEL BOLLATO PRECEDENTE") - the
+  page states it shows registers as last loaded per month;
+- U_IVA_CL = vendite + corrispettivi (CORRISP writes IVA_FATNOT='C';
+  vendite = 'F' fattura / 'N' nota di accredito);
+- U_IVF_CL = acquisti (IVF_IND100 'S' = indeducibile 100%,
+  IVF_DEDUCIBILE, IVF_BDOG bolla doganale);
+- IVA_CHIAVE / IVF_CHIAVE = register PROTOCOL number (VNUMPRT);
+- U_IVA_TO = per-aliquota period totals precomputed by the load;
+  ITO_CLIFOR decoded with verbatim evidence: C=clienti, F=fornitori,
+  D=fatture differite da DDT, E=fatture CEE, R=reverse charge,
+  A=autofatture (comment r.719).
 
-CeeStructureDao gains accountBalances()/updateCorrente(); new
-CeeCalculationService; POST /contabilita/bilancio-cee/ricalcola with a button.
+MODULE /contabilita/registri-iva/{vendite|acquisti|corrispettivi}:
+nav pills; month filter + free-text search; sortable columns (whitelist
+enum) with native OFFSET/FETCH pagination (StockBalanceDao pattern),
+default order = protocol; "Totali per aliquota" card computed live on
+the FILTERED set with grand total; acquisti badges Indeducibile /
+Parz. deduc. / Dogana. Menu: SYNTHETIC entry "Registri IVA" under
+contabilita (per mandate - no FORM_TO_URL guessing), synthetic indexes
+renumbered coherently with the upstream CEE entry.
 
-MUST be reconciled against the legacy "Calcolo bilancio cee" on the same
-society/year before trusting the numbers. Version 0.11.0. Sandbox checks only.
+NOT built (tracker): sospensione U_IVA_CS/TS (NEEDS_DOMAIN - regime),
+*_DTDOC variants (NEEDS_DOMAIN - PUB_LIQDTDOC), liquidazione U_IVA_CR
+and plafond U_IVA_FE/ES (OUT_OF_SCOPE - fiscal logic for Opus). No
+drill to /primanota/{nreg}: rows carry MOV_NUMPRO but the route keys on
+numero registrazione - to verify on data first.
+
+Verification (sandbox only): brace/paren with literal stripping; div/
+table balance; SQL alias <-> mapper coherence; menu add() sequence; CSV
+12 cols; chain verified on fresh clone of HEAD 0dfb86b. Maven build and
+SQL Server 2012 execution to be confirmed at first deploy.

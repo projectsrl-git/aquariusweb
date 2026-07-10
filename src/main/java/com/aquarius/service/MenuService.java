@@ -346,44 +346,50 @@ public class MenuService {
                     .hasReachableLeaf(true)
                     .build());
                 children.add(1, MenuNode.builder()
+                    .label("Registri IVA")
+                    .icon("bi-journal-check")
+                    .url("/contabilita/registri-iva/vendite")
+                    .hasReachableLeaf(true)
+                    .build());
+                children.add(2, MenuNode.builder()
                     .label("Bilancio")
                     .icon("bi-bar-chart-steps")
                     .url("/contabilita/bilancio")
                     .hasReachableLeaf(true)
                     .build());
-                children.add(2, MenuNode.builder()
+                children.add(3, MenuNode.builder()
                     .label("Bilancio CEE")
                     .icon("bi-file-earmark-bar-graph")
                     .url("/contabilita/bilancio-cee")
                     .hasReachableLeaf(true)
                     .build());
-                children.add(3, MenuNode.builder()
+                children.add(4, MenuNode.builder()
                     .label("Partitario clienti")
                     .icon("bi-person-lines-fill")
                     .url("/contabilita/partitari/clienti")
                     .hasReachableLeaf(true)
                     .build());
-                children.add(4, MenuNode.builder()
+                children.add(5, MenuNode.builder()
                     .label("Partitario fornitori")
                     .icon("bi-person-lines-fill")
                     .url("/contabilita/partitari/fornitori")
                     .hasReachableLeaf(true)
                     .build());
-                children.add(5, MenuNode.builder().separator(true).build());
+                children.add(6, MenuNode.builder().separator(true).build());
                 // Shortcut diretti al piano dei conti (web feature, non in VFP)
-                children.add(6, MenuNode.builder()
+                children.add(7, MenuNode.builder()
                     .label("Piano dei conti (albero)")
                     .icon("bi-diagram-3")
                     .url("/conti/tree")
                     .hasReachableLeaf(true)
                     .build());
-                children.add(7, MenuNode.builder()
+                children.add(8, MenuNode.builder()
                     .label("Piano dei conti (lista)")
                     .icon("bi-list-ul")
                     .url("/conti")
                     .hasReachableLeaf(true)
                     .build());
-                children.add(8, MenuNode.builder().separator(true).build());
+                children.add(9, MenuNode.builder().separator(true).build());
             }
             // Si possono aggiungere altre top-section sintetiche qui in futuro
         }

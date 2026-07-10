@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Registri IVA – Aquarius</title></head>
+<body><section th:with="base='/contabilita/registri-iva/' + ${registro}">
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-journal-check',
+        title='Registri IVA (bollati)',
+        subtitle='Consultazione dei registri come caricati dal gestionale — anno ' + ${anno} + '. Il caricamento (da prima nota) e gli adempimenti restano sul gestionale',
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <!-- registri -->
+    <ul class="nav nav-pills mb-3">
+        <li class="nav-item">
+            <a class="nav-link" th:classappend="${registro == 'vendite'} ? 'active' : ''"
+               th:href="@{/contabilita/registri-iva/vendite}">Vendite</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" th:classappend="${registro == 'acquisti'} ? 'active' : ''"
+               th:href="@{/contabilita/registri-iva/acquisti}">Acquisti</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" th:classappend="${registro == 'corrispettivi'} ? 'active' : ''"
+               th:href="@{/contabilita/registri-iva/corrispettivi}">Corrispettivi</a>
+        </li>
+    </ul>
+
+    <!-- filtri -->
+    <form method="get" th:action="@{${base}}" class="d-flex gap-2 flex-wrap align-items-center mb-3">
+        <input type="hidden" name="size" th:value="${size}">
+        <input type="hidden" name="sort" th:value="${sort}">
+        <input type="hidden" name="dir" th:value="${dir}">
+        <select name="mese" class="form-select form-select-sm" style="width:auto" onchange="this.form.submit()">
+            <option value="" th:selected="${mese == ''}">Tutto l'anno</option>
+            <option th:each="m : ${#numbers.sequence(1, 12)}"
+                    th:value="${m < 10 ? '0' + m : '' + m}"
+                    th:text="${T(java.time.Month).of(m).getDisplayName(T(java.time.format.TextStyle).FULL, new java.util.Locale('it'))}"
+                    th:selected="${mese == (m < 10 ? '0' + m : '' + m)}">Gennaio</option>
+        </select>
+        <div class="input-group input-group-sm" style="width:320px">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" name="q" th:value="${q}" class="form-control"
+                   placeholder="Ragione sociale, numero fattura o codice…">
+        </div>
+        <button type="submit" class="btn btn-primary btn-sm">Filtra</button>
+        <a th:href="@{${base}}" class="btn btn-outline-secondary btn-sm"
+           th:if="${q != '' or mese != ''}"><i class="bi bi-x"></i></a>
+        <span class="small text-muted ms-auto">
+            <span th:text="${total}">0</span> righe registro
+            · protocollo = numerazione del bollato
+        </span>
+    </form>
+
+    <!-- totali per aliquota dell'insieme filtrato -->
+    <div class="card shadow-sm border-0 mb-3" th:if="${!#lists.isEmpty(totals)}">
+        <div class="card-header bg-white">
+            <h6 class="detail-card-title mb-0">
+                <i class="bi bi-calculator me-1"></i>Totali per aliquota
+                <span class="text-muted small" th:text="${mese == '' ? '(anno ' + anno + ')' : '(mese ' + mese + '/' + anno + ')'}"></span>
+            </h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-sm mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Codice IVA</th><th>Descrizione</th>
+                            <th class="text-end">Aliquota</th><th class="text-end">Righe</th>
+                            <th class="text-end">Imponibile</th><th class="text-end">Imposta</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="t : ${totals}">
+                            <td class="font-monospace small" th:text="${t.codIva}">22</td>
+                            <td class="small" th:text="${t.desIva}">IVA 22%</td>
+                            <td class="text-end font-monospace small"
+                                th:text="${t.aliquota != null ? #numbers.formatDecimal(t.aliquota, 1, 'POINT', 2, 'COMMA') + ' %' : '—'}">22,00 %</td>
+                            <td class="text-end font-monospace small" th:text="${t.righe}">0</td>
+                            <td class="text-end font-monospace small"
+                                th:text="${t.imponibile != null ? #numbers.formatDecimal(t.imponibile, 1, 'POINT', 2, 'COMMA') : '—'}">0,00</td>
+                            <td class="text-end font-monospace small"
+                                th:text="${t.imposta != null ? #numbers.formatDecimal(t.imposta, 1, 'POINT', 2, 'COMMA') : '—'}">0,00</td>
+                        </tr>
+                    </tbody>
+                    <tfoot class="table-light">
+                        <tr class="fw-semibold">
+                            <td colspan="4">Totale</td>
+                            <td class="text-end font-monospace small"
+                                th:text="${#numbers.formatDecimal(totImponibile, 1, 'POINT', 2, 'COMMA')}">0,00</td>
+                            <td class="text-end font-monospace small"
+                                th:text="${#numbers.formatDecimal(totImposta, 1, 'POINT', 2, 'COMMA')}">0,00</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- righe registro -->
+    <div class="card shadow-sm border-0"
+         th:with="tail='&amp;mese=' + ${mese} + '&amp;q=' + ${q} + '&amp;size=' + ${size}">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-sm mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr th:with="arrow=${dir == 'asc' ? ' ↑' : ' ↓'}">
+                            <th class="text-end"><a class="text-decoration-none text-dark"
+                                th:href="@{${base}(sort='protocollo',dir=${sort == 'protocollo' and dir == 'asc' ? 'desc' : 'asc'},mese=${mese},q=${q},size=${size})}"
+                                th:text="'Prot.' + ${sort == 'protocollo' ? arrow : ''}">Prot.</a></th>
+                            <th><a class="text-decoration-none text-dark"
+                                th:href="@{${base}(sort='data',dir=${sort == 'data' and dir == 'asc' ? 'desc' : 'asc'},mese=${mese},q=${q},size=${size})}"
+                                th:text="'Data doc.' + ${sort == 'data' ? arrow : ''}">Data doc.</a></th>
+                            <th>Numero</th>
+                            <th><a class="text-decoration-none text-dark"
+                                th:href="@{${base}(sort='ragsoc',dir=${sort == 'ragsoc' and dir == 'asc' ? 'desc' : 'asc'},mese=${mese},q=${q},size=${size})}"
+                                th:text="${(registro == 'acquisti' ? 'Fornitore' : 'Cliente') + (sort == 'ragsoc' ? arrow : '')}">Cliente</a></th>
+                            <th>Tipo</th>
+                            <th>IVA</th>
+                            <th class="text-end"><a class="text-decoration-none text-dark"
+                                th:href="@{${base}(sort='imponibile',dir=${sort == 'imponibile' and dir == 'asc' ? 'desc' : 'asc'},mese=${mese},q=${q},size=${size})}"
+                                th:text="'Imponibile' + ${sort == 'imponibile' ? arrow : ''}">Imponibile</a></th>
+                            <th class="text-end"><a class="text-decoration-none text-dark"
+                                th:href="@{${base}(sort='imposta',dir=${sort == 'imposta' and dir == 'asc' ? 'desc' : 'asc'},mese=${mese},q=${q},size=${size})}"
+                                th:text="'Imposta' + ${sort == 'imposta' ? arrow : ''}">Imposta</a></th>
+                            <th class="text-end"><a class="text-decoration-none text-dark"
+                                th:href="@{${base}(sort='totale',dir=${sort == 'totale' and dir == 'asc' ? 'desc' : 'asc'},mese=${mese},q=${q},size=${size})}"
+                                th:text="'Totale' + ${sort == 'totale' ? arrow : ''}">Totale</a></th>
+                            <th th:if="${registro == 'acquisti'}">Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="r : ${rows}">
+                            <td class="text-end font-monospace small" th:text="${r.protocollo}">1</td>
+                            <td class="small"><span th:replace="~{fragments/list-tools :: itDate(${r.dataFattura})}"></span></td>
+                            <td class="font-monospace small" th:text="${r.numeroFattura != '' ? r.numeroFattura : '—'}">—</td>
+                            <td class="small">
+                                <span class="font-monospace" th:text="${r.codice}"></span>
+                                <span th:text="${' ' + r.ragioneSociale}"></span>
+                            </td>
+                            <td>
+                                <span class="badge"
+                                      th:classappend="${r.fatNot == 'N'} ? 'bg-warning-subtle text-warning-emphasis'
+                                                    : (${r.fatNot == 'C'} ? 'bg-info-subtle text-info-emphasis'
+                                                    : 'bg-secondary-subtle text-secondary-emphasis')"
+                                      th:text="${r.fatNot == 'N' ? 'Nota accr.' : (r.fatNot == 'C' ? 'Corrisp.' : 'Fattura')}">Fattura</span>
+                            </td>
+                            <td class="small">
+                                <span class="badge bg-light text-dark border" th:text="${r.codIva}">22</span>
+                                <span class="text-muted"
+                                      th:text="${r.aliquota != null ? #numbers.formatDecimal(r.aliquota, 1, 'POINT', 0, 'COMMA') + '%' : ''}">22%</span>
+                            </td>
+                            <td class="text-end font-monospace small"
+                                th:text="${r.imponibile != null ? #numbers.formatDecimal(r.imponibile, 1, 'POINT', 2, 'COMMA') : '—'}">0,00</td>
+                            <td class="text-end font-monospace small"
+                                th:text="${r.imposta != null ? #numbers.formatDecimal(r.imposta, 1, 'POINT', 2, 'COMMA') : '—'}">0,00</td>
+                            <td class="text-end font-monospace small"
+                                th:text="${r.totale != null ? #numbers.formatDecimal(r.totale, 1, 'POINT', 2, 'COMMA') : '—'}">0,00</td>
+                            <td th:if="${registro == 'acquisti'}">
+                                <span class="badge bg-danger-subtle text-danger-emphasis" th:if="${r.ind100 == 'S'}"
+                                      title="IVA indeducibile al 100%">Indeducibile</span>
+                                <span class="badge bg-warning-subtle text-warning-emphasis"
+                                      th:if="${r.deducibile != null and !r.deducibile and r.ind100 != 'S'}"
+                                      title="IVA non interamente deducibile">Parz. deduc.</span>
+                                <span class="badge bg-secondary-subtle text-secondary-emphasis" th:if="${r.bollaDoganale}"
+                                      title="Bolla doganale">Dogana</span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(rows)}">
+                            <td th:colspan="${registro == 'acquisti' ? 10 : 9}" class="text-center text-muted py-5">
+                                <i class="bi bi-inbox" style="font-size:2rem"></i>
+                                <p class="mt-2 mb-0">Nessuna riga registro per i filtri scelti. I registri si popolano col caricamento bollati dal gestionale.</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- pager locale (propaga mese+q+size+sort+dir) -->
+    <div class="d-flex align-items-center gap-2 mt-3" th:if="${total > 0}">
+        <a class="btn btn-sm btn-outline-secondary" th:classappend="${page <= 0} ? 'disabled' : ''"
+           th:href="@{${base}(page=${page - 1},mese=${mese},q=${q},size=${size},sort=${sort},dir=${dir})}">
+            <i class="bi bi-chevron-left"></i>
+        </a>
+        <span class="small text-muted">Pagina <span th:text="${page + 1}">1</span> di <span th:text="${lastPage + 1}">1</span></span>
+        <a class="btn btn-sm btn-outline-secondary" th:classappend="${page >= lastPage} ? 'disabled' : ''"
+           th:href="@{${base}(page=${page + 1},mese=${mese},q=${q},size=${size},sort=${sort},dir=${dir})}">
+            <i class="bi bi-chevron-right"></i>
+        </a>
+        <form method="get" th:action="@{${base}}" class="ms-auto d-flex align-items-center gap-1">
+            <input type="hidden" name="mese" th:value="${mese}">
+            <input type="hidden" name="q" th:value="${q}">
+            <input type="hidden" name="sort" th:value="${sort}">
+            <input type="hidden" name="dir" th:value="${dir}">
+            <label class="small text-muted">Righe:</label>
+            <select name="size" class="form-select form-select-sm" style="width:auto" onchange="this.form.submit()">
+                <option th:each="s : ${sizes}" th:value="${s}" th:text="${s}" th:selected="${s == size}">50</option>
+            </select>
+        </form>
+    </div>
+
+</section></body>
+</html>
