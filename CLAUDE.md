@@ -173,9 +173,12 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
     logback) + tempo di elaborazione bilancio; tolti titoli sezione ridondanti.
   - 0.15.0 — bilancio Fase 2: periodo mese dal/al (movimenti,
     da riconciliare per dal>1); ricerca in-linea; timer progressivo nel loader.
-  - **0.16.0 (corrente)** — audit di copertura della migrazione:
+  - 0.16.0 — audit di copertura della migrazione:
     menu_coverage_audit.csv (1051 voci classificate) + COVERAGE_REPORT.md
     con priorita per Opus (+ viewer /utilita/copertura).
+  - **0.17.0 (corrente)** — registro cespiti in consultazione:
+    anagrafica, quote per anno, movimenti collegati, categorie con
+    riepilogo (priorita n.2 dell'audit).
 
 ## 4c. Migration tracker (.scx logic ↔ web)
 
@@ -287,6 +290,7 @@ size ai byte 6-7). I form contengono MOLTA logica nei bottoni/validazioni
 | Parametri aziendali (analisi+viewer, read-only) | `/parametri-aziendali` | Catalogo DEEP di MENU_AZI000 (841 parametri) in resources/parametri/ + viewer con popover scopo/funzionamento/evidenze. ARCHITETTURA CHIAVE: APPLILIB.AQUADOCU carica ogni AZI_X in PUB_X allo startup (712 mappature) — gli usi reali dei parametri sono sulle PUB_*. Valori via SELECT TOP 1 * metadata-driven (colonne assenti → n.d.). Scrittura parametri = Opus |
 | Bilancio CEE — struttura (read-only) | `/contabilita/bilancio-cee-struttura` | BILNEW+U_INT_TT+U_COR_TT. GOTCHA: nessun albero in BILNEW (ordine=BIL_CODRIG, TIPO_DATO I/V/T, gerarchia totali in U_COR_TT come edge list con segno); U_INT_TT ha doppia destinazione dare/avere (INT_CODRIA usata se saldo negativo, es. banche in passivo); VAL(codrig)>=21600 = conto economico (ABS). Il CALCOLO (ceecont) e' di Opus: pseudocodice in resources/cee/README.md |
 | Registri IVA — bollati (read-only) | `/contabilita/registri-iva/{vendite,acquisti,corrispettivi}` | Vendite+corrispettivi=U_IVA_CL (corrisp=IVA_FATNOT='C'), acquisti=U_IVF_CL (ind100/deducibile/bolla doganale). CHIAVE=protocollo. GOTCHA: righe RIGENERATE per soc/anno/MESE a ogni caricamento legacy (BOLLATI.PRG da MOV_CONT) — la vista mostra l'ultimo caricamento per mese; totali precalcolati per aliquota in U_IVA_TO (ITO_CLIFOR: C/F/D/E/R/A decodificati). Varianti *_DTDOC (PUB_LIQDTDOC) non esposte |
+| Cespiti (read-only) | `/cespiti`, `/cespiti/{id}`, `/cespiti/categorie` | u_amm_at anagrafica, u_amm_ca categorie, U_QUO_AM quote/anno (QUO_FLGCGE=trasferita in coge), u_amm_ad movimenti (AMD_NREGIS→drill primanota, caveat esercizio). GOTCHA verificato: archivio SENZA dimensione società (i form legacy filtrano solo i CONTI per PUB_CODSOC) — archivio unico per installazione. Ordine legacy amm_codcat+amm_codces. Scritture/quote/simulazioni/trasferimenti a Opus |
 
 ## 7. Security notes (PUBLIC repository!)
 

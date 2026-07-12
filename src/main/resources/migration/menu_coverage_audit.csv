@@ -512,7 +512,7 @@ contabilit,contabilit > Cespiti,Sblocca / blocca quote di ammortamento contabili
 contabilit,contabilit > Cespiti,Simulazione ammortamento,menu_quo_am_simu,NON_APPLICABILE,,DEFERRED,Logica fiscale: Opus,screenshot+web
 contabilit,contabilit > Cespiti,Stampa bollato del registro cespite,menu_reg_cesp_bol,NON_APPLICABILE,,PRINT_REPORT,Coperta dalla futura consultazione cespiti,screenshot+web
 contabilit,contabilit > Cespiti,Trasferimento in contabilita quote amm. ordinarie,menu_tfcquoteamm,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
-contabilit,contabilit > Cespiti,Visualizzazione e stampa cespiti,menu_stat_cesp,MANCANTE,,,PRIORITARIO: consultazione registro cespiti read-only,screenshot+web
+contabilit,contabilit > Cespiti,Visualizzazione e stampa cespiti,menu_stat_cesp,MIGRATO,/cespiti + /cespiti/{id},,Registro cespiti read-only con quote e movimenti (sessione 8),screenshot+web
 contabilit,contabilit > Cespiti > Procedure di supporto,Popolamento automatico Categorie e Cespiti,popola_cespiti_categorie_da_conti_e_mov_cont,MANCANTE,,,,default
 contabilit,contabilit > Compensazioni clienti/fornitori,Compensazioni clienti/fornitori,menu_compe00,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
 contabilit,contabilit > Compensi amministratore,Annullo con selezione,menu_raannu,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web

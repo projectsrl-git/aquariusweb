@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Cespiti – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-building-gear',
+        title='Registro cespiti',
+        subtitle='Consultazione anagrafica cespiti, quote e movimenti (u_amm_at / U_QUO_AM). Archivio unico: il legacy non ha la dimensione società sui cespiti',
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <form method="get" th:action="@{/cespiti}" class="d-flex gap-2 flex-wrap align-items-center mb-3">
+        <input type="hidden" name="size" th:value="${size}">
+        <input type="hidden" name="sort" th:value="${sort}">
+        <input type="hidden" name="dir" th:value="${dir}">
+        <select name="cat" class="form-select form-select-sm" style="width:auto; max-width:320px" onchange="this.form.submit()">
+            <option value="" th:selected="${cat == ''}">Tutte le categorie</option>
+            <option th:each="c : ${categorie}" th:value="${c.code != null ? c.code.trim() : ''}"
+                    th:text="${(c.code != null ? c.code.trim() : '') + ' — ' + (c.description1 ?: '')}"
+                    th:selected="${cat == (c.code != null ? c.code.trim() : '')}">cat</option>
+        </select>
+        <select name="stato" class="form-select form-select-sm" style="width:auto" onchange="this.form.submit()">
+            <option value="" th:selected="${stato == ''}">Tutti</option>
+            <option value="attivi" th:selected="${stato == 'attivi'}">Attivi</option>
+            <option value="ceduti" th:selected="${stato == 'ceduti'}">Ceduti/dismessi</option>
+        </select>
+        <div class="input-group input-group-sm" style="width:300px">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" name="q" th:value="${q}" class="form-control"
+                   placeholder="Codice, descrizione o matricola…">
+        </div>
+        <button type="submit" class="btn btn-primary btn-sm">Filtra</button>
+        <a th:href="@{/cespiti}" class="btn btn-outline-secondary btn-sm"
+           th:if="${q != '' or cat != '' or stato != ''}"><i class="bi bi-x"></i></a>
+    </form>
+
+    <!-- header ordinabili LOCALI: propagano anche cat e stato -->
+    <div class="card shadow-sm border-0" th:with="arrow=${dir == 'asc' ? ' ↑' : ' ↓'}">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-sm mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th><a class="text-decoration-none text-dark"
+                                th:href="@{/cespiti(sort='code',dir=${sort == 'code' and dir == 'asc' ? 'desc' : 'asc'},q=${q},cat=${cat},stato=${stato},size=${size})}"
+                                th:text="'Codice' + ${sort == 'code' ? arrow : ''}">Codice</a></th>
+                            <th><a class="text-decoration-none text-dark"
+                                th:href="@{/cespiti(sort='description',dir=${sort == 'description' and dir == 'asc' ? 'desc' : 'asc'},q=${q},cat=${cat},stato=${stato},size=${size})}"
+                                th:text="'Descrizione' + ${sort == 'description' ? arrow : ''}">Descrizione</a></th>
+                            <th><a class="text-decoration-none text-dark"
+                                th:href="@{/cespiti(sort='categoryCode',dir=${sort == 'categoryCode' and dir == 'asc' ? 'desc' : 'asc'},q=${q},cat=${cat},stato=${stato},size=${size})}"
+                                th:text="'Categoria' + ${sort == 'categoryCode' ? arrow : ''}">Categoria</a></th>
+                            <th><a class="text-decoration-none text-dark"
+                                th:href="@{/cespiti(sort='inServiceDate',dir=${sort == 'inServiceDate' and dir == 'asc' ? 'desc' : 'asc'},q=${q},cat=${cat},stato=${stato},size=${size})}"
+                                th:text="'In uso dal' + ${sort == 'inServiceDate' ? arrow : ''}">In uso dal</a></th>
+                            <th class="text-end"><a class="text-decoration-none text-dark"
+                                th:href="@{/cespiti(sort='historicalValue',dir=${sort == 'historicalValue' and dir == 'asc' ? 'desc' : 'asc'},q=${q},cat=${cat},stato=${stato},size=${size})}"
+                                th:text="'Val. storico' + ${sort == 'historicalValue' ? arrow : ''}">Val. storico</a></th>
+                            <th class="text-end"><a class="text-decoration-none text-dark"
+                                th:href="@{/cespiti(sort='totalDepreciated',dir=${sort == 'totalDepreciated' and dir == 'asc' ? 'desc' : 'asc'},q=${q},cat=${cat},stato=${stato},size=${size})}"
+                                th:text="'Ammortizzato' + ${sort == 'totalDepreciated' ? arrow : ''}">Ammortizzato</a></th>
+                            <th class="text-end"><a class="text-decoration-none text-dark"
+                                th:href="@{/cespiti(sort='residualValue',dir=${sort == 'residualValue' and dir == 'asc' ? 'desc' : 'asc'},q=${q},cat=${cat},stato=${stato},size=${size})}"
+                                th:text="'Residuo' + ${sort == 'residualValue' ? arrow : ''}">Residuo</a></th>
+                            <th>Stato</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="c : ${cespiti.content}">
+                            <td>
+                                <a th:href="@{/cespiti/{id}(id=${c.id})}"
+                                   class="font-monospace small text-decoration-none"
+                                   th:text="${c.code != null ? c.code.trim() : ''}">CES001</a>
+                            </td>
+                            <td>
+                                <a th:href="@{/cespiti/{id}(id=${c.id})}"
+                                   class="text-decoration-none text-dark"
+                                   th:text="${c.description ?: '—'}">Descrizione</a>
+                            </td>
+                            <td class="small">
+                                <span class="font-monospace" th:text="${c.categoryCode != null ? c.categoryCode.trim() : '—'}"></span>
+                                <span class="text-muted"
+                                      th:text="${catDesc.get(c.categoryCode != null ? c.categoryCode.trim() : '')} ?: ''"></span>
+                            </td>
+                            <td class="small"><span th:replace="~{fragments/list-tools :: itDate(${c.inServiceDate})}"></span></td>
+                            <td class="text-end font-monospace small"
+                                th:text="${c.historicalValue != null ? #numbers.formatDecimal(c.historicalValue, 1, 'POINT', 2, 'COMMA') : '—'}">0,00</td>
+                            <td class="text-end font-monospace small"
+                                th:text="${c.totalDepreciated != null ? #numbers.formatDecimal(c.totalDepreciated, 1, 'POINT', 2, 'COMMA') : '—'}">0,00</td>
+                            <td class="text-end font-monospace small"
+                                th:classappend="${c.residualValue != null and c.residualValue.signum() == 0} ? 'text-muted' : ''"
+                                th:text="${c.residualValue != null ? #numbers.formatDecimal(c.residualValue, 1, 'POINT', 2, 'COMMA') : '—'}">0,00</td>
+                            <td>
+                                <span class="badge bg-warning-subtle text-warning-emphasis" th:if="${c.isDisposed()}"
+                                      th:title="'Ceduto/dismesso il ' + ${c.disposalDate}">Ceduto</span>
+                                <span class="badge bg-success-subtle text-success-emphasis" th:unless="${c.isDisposed()}">Attivo</span>
+                            </td>
+                        </tr>
+                        <tr th:if="${cespiti.empty}">
+                            <td colspan="8" class="text-center text-muted py-5">
+                                <i class="bi bi-inbox" style="font-size:2rem"></i>
+                                <p class="mt-2 mb-0">Nessun cespite trovato.</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- pager locale: propaga q+cat+stato+size+sort+dir -->
+    <div class="d-flex align-items-center gap-2 mt-3" th:if="${cespiti.totalElements > 0}">
+        <a class="btn btn-sm btn-outline-secondary" th:classappend="${cespiti.first} ? 'disabled' : ''"
+           th:href="@{/cespiti(page=${cespiti.number - 1},q=${q},cat=${cat},stato=${stato},size=${size},sort=${sort},dir=${dir})}">
+            <i class="bi bi-chevron-left"></i>
+        </a>
+        <span class="small text-muted">Pagina <span th:text="${cespiti.number + 1}">1</span> di
+            <span th:text="${cespiti.totalPages}">1</span>
+            · <span th:text="${cespiti.totalElements}">0</span> cespiti</span>
+        <a class="btn btn-sm btn-outline-secondary" th:classappend="${cespiti.last} ? 'disabled' : ''"
+           th:href="@{/cespiti(page=${cespiti.number + 1},q=${q},cat=${cat},stato=${stato},size=${size},sort=${sort},dir=${dir})}">
+            <i class="bi bi-chevron-right"></i>
+        </a>
+    </div>
+
+</section></body>
+</html>

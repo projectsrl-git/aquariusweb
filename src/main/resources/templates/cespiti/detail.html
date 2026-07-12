@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Cespite – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-building-gear',
+        title=${cespite.description != null ? cespite.description.trim() : 'Cespite'},
+        subtitle='Cespite ' + ${cespite.code != null ? cespite.code.trim() : ''} + ' — quote di ammortamento e movimenti collegati',
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <div class="d-flex gap-2 mb-3 align-items-center flex-wrap">
+        <a th:href="@{/cespiti}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i>Torna al registro
+        </a>
+        <span class="badge bg-warning-subtle text-warning-emphasis" th:if="${cespite.isDisposed()}">Ceduto</span>
+        <span class="badge bg-success-subtle text-success-emphasis" th:unless="${cespite.isDisposed()}">Attivo</span>
+        <span class="text-muted small ms-auto">Consultazione — generazione quote e trasferimenti restano sul gestionale</span>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-3">
+        <div class="card-header bg-white">
+            <h6 class="detail-card-title"><i class="bi bi-card-text me-1"></i>Anagrafica</h6>
+        </div>
+        <div class="card-body">
+            <dl class="row mb-0 small">
+                <dt class="col-md-2 text-muted">Codice / matricola</dt>
+                <dd class="col-md-4">
+                    <span class="font-monospace" th:text="${cespite.code != null ? cespite.code.trim() : '—'}"></span>
+                    <span class="text-muted" th:if="${cespite.serialNumber != null and !cespite.serialNumber.trim().isEmpty()}"
+                          th:text="' · ' + ${cespite.serialNumber.trim()}"></span>
+                </dd>
+                <dt class="col-md-2 text-muted">Categoria</dt>
+                <dd class="col-md-4 font-monospace" th:text="${cespite.categoryCode != null ? cespite.categoryCode.trim() : '—'}">—</dd>
+                <dt class="col-md-2 text-muted">In uso dal</dt>
+                <dd class="col-md-4">
+                    <span th:replace="~{fragments/list-tools :: itDate(${cespite.inServiceDate})}"></span>
+                    <span class="badge bg-light text-dark border ms-1" th:if="${cespite.usedFlag == 'S'}"
+                          title="Bene acquistato usato">Usato</span>
+                </dd>
+                <dt class="col-md-2 text-muted">% ammortamento base</dt>
+                <dd class="col-md-4 font-monospace" th:text="${cespite.basePct != null ? #numbers.formatDecimal(cespite.basePct, 1, 'POINT', 2, 'COMMA') + ' %' : '—'}">—</dd>
+                <dt class="col-md-2 text-muted">Conto cespite / fondo</dt>
+                <dd class="col-md-4 font-monospace"
+                    th:text="${(cespite.assetAccount != null and !cespite.assetAccount.trim().isEmpty() ? cespite.assetAccount.trim() : '—') + ' / '
+                              + (cespite.fundAccount != null and !cespite.fundAccount.trim().isEmpty() ? cespite.fundAccount.trim() : '—')}">—</dd>
+                <dt class="col-md-2 text-muted">Quote ammortizzate</dt>
+                <dd class="col-md-4 font-monospace" th:text="${cespite.quotasCount != null ? #numbers.formatDecimal(cespite.quotasCount, 1, 0) : '—'}">—</dd>
+                <dt class="col-md-2 text-muted">Valore storico</dt>
+                <dd class="col-md-4 font-monospace" th:text="${cespite.historicalValue != null ? #numbers.formatDecimal(cespite.historicalValue, 1, 'POINT', 2, 'COMMA') : '—'}">—</dd>
+                <dt class="col-md-2 text-muted">Ammortizzato / residuo</dt>
+                <dd class="col-md-4 font-monospace"
+                    th:text="${(cespite.totalDepreciated != null ? #numbers.formatDecimal(cespite.totalDepreciated, 1, 'POINT', 2, 'COMMA') : '—') + ' / '
+                              + (cespite.residualValue != null ? #numbers.formatDecimal(cespite.residualValue, 1, 'POINT', 2, 'COMMA') : '—')}">—</dd>
+                <dt class="col-md-2 text-muted" th:if="${cespite.isDisposed()}">Cessione</dt>
+                <dd class="col-md-10" th:if="${cespite.isDisposed()}">
+                    il <span th:replace="~{fragments/list-tools :: itDate(${cespite.disposalDate})}"></span>
+                    — valore <span class="font-monospace" th:text="${cespite.disposalValue != null ? #numbers.formatDecimal(cespite.disposalValue, 1, 'POINT', 2, 'COMMA') : '—'}"></span>
+                    <span th:if="${cespite.capitalGainLoss != null and cespite.capitalGainLoss.signum() != 0}">
+                        · <span th:text="${cespite.capitalGainLoss.signum() > 0 ? 'plusvalenza' : 'minusvalenza'}"></span>
+                        <span class="font-monospace" th:text="${#numbers.formatDecimal(cespite.capitalGainLoss, 1, 'POINT', 2, 'COMMA')}"></span>
+                    </span>
+                </dd>
+                <dt class="col-md-2 text-muted" th:if="${cespite.notes != null and !cespite.notes.trim().isEmpty()}">Note</dt>
+                <dd class="col-md-10" style="white-space:pre-line"
+                    th:if="${cespite.notes != null and !cespite.notes.trim().isEmpty()}"
+                    th:text="${cespite.notes}">—</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-3">
+        <div class="card-header bg-white d-flex align-items-center">
+            <h6 class="detail-card-title mb-0"><i class="bi bi-calendar3 me-1"></i>Quote di ammortamento per anno</h6>
+            <span class="badge bg-light text-dark border ms-2" th:text="${#lists.size(quote)} + ' anni'">0</span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-sm mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Anno</th>
+                            <th class="text-end">% ord.</th><th class="text-end">Quota ordinaria</th>
+                            <th class="text-end">Quota anticipata</th><th class="text-end">Quota accelerata</th>
+                            <th class="text-end">Totale ammortizzato</th><th class="text-end">Residuo</th>
+                            <th>Coge</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="qa : ${quote}">
+                            <td class="font-monospace small" th:text="${qa.year}">2026</td>
+                            <td class="text-end font-monospace small"
+                                th:text="${qa.ordinaryPct != null ? #numbers.formatDecimal(qa.ordinaryPct, 1, 'POINT', 2, 'COMMA') : '—'}">—</td>
+                            <td class="text-end font-monospace small"
+                                th:text="${qa.ordinaryAmount != null ? #numbers.formatDecimal(qa.ordinaryAmount, 1, 'POINT', 2, 'COMMA') : '—'}">—</td>
+                            <td class="text-end font-monospace small"
+                                th:text="${qa.anticipatedAmount != null and qa.anticipatedAmount.signum() != 0 ? #numbers.formatDecimal(qa.anticipatedAmount, 1, 'POINT', 2, 'COMMA') : '—'}">—</td>
+                            <td class="text-end font-monospace small"
+                                th:text="${qa.acceleratedAmount != null and qa.acceleratedAmount.signum() != 0 ? #numbers.formatDecimal(qa.acceleratedAmount, 1, 'POINT', 2, 'COMMA') : '—'}">—</td>
+                            <td class="text-end font-monospace small"
+                                th:text="${qa.totalDepreciated != null ? #numbers.formatDecimal(qa.totalDepreciated, 1, 'POINT', 2, 'COMMA') : '—'}">—</td>
+                            <td class="text-end font-monospace small"
+                                th:text="${qa.residualValue != null ? #numbers.formatDecimal(qa.residualValue, 1, 'POINT', 2, 'COMMA') : '—'}">—</td>
+                            <td>
+                                <span class="badge bg-success-subtle text-success-emphasis" th:if="${qa.transferredToGl}"
+                                      title="Quota trasferita in contabilità generale">Trasferita</span>
+                                <span class="badge bg-secondary-subtle text-secondary-emphasis" th:unless="${qa.transferredToGl}">Da trasferire</span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(quote)}">
+                            <td colspan="8" class="text-center text-muted py-4">Nessuna quota generata per questo cespite.</td>
+                        </tr>
+                    </tbody>
+                    <tfoot class="table-light" th:if="${!#lists.isEmpty(quote)}">
+                        <tr class="fw-semibold">
+                            <td colspan="5">Totale quote</td>
+                            <td class="text-end font-monospace small"
+                                th:text="${#numbers.formatDecimal(totQuote, 1, 'POINT', 2, 'COMMA')}">0,00</td>
+                            <td colspan="2"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white d-flex align-items-center">
+            <h6 class="detail-card-title mb-0"><i class="bi bi-journal-text me-1"></i>Movimenti contabili collegati</h6>
+            <span class="badge bg-light text-dark border ms-2" th:text="${#lists.size(movimenti)}">0</span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-sm mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-end">#</th><th>Documento</th><th>Data doc.</th>
+                            <th>Operazione</th><th>Conto</th>
+                            <th class="text-end">Valore</th><th>Registrazione</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="m : ${movimenti}">
+                            <td class="text-end font-monospace small" th:text="${m.sequence != null ? #numbers.formatDecimal(m.sequence, 1, 0) : ''}">1</td>
+                            <td class="font-monospace small"
+                                th:text="${(m.documentType != null and !m.documentType.trim().isEmpty() ? m.documentType.trim() + ' ' : '') + (m.documentNumber != null ? m.documentNumber.trim() : '')}">F 123</td>
+                            <td class="small"><span th:replace="~{fragments/list-tools :: itDate(${m.documentDate})}"></span></td>
+                            <td class="small">
+                                <span class="badge bg-secondary-subtle text-secondary-emphasis"
+                                      th:if="${m.operationType != null and !m.operationType.trim().isEmpty()}"
+                                      th:text="${m.operationType.trim()}">TOP</span>
+                                <span class="text-muted" th:text="${m.operationDescription ?: ''}"></span>
+                            </td>
+                            <td class="font-monospace small" th:text="${m.account != null and !m.account.trim().isEmpty() ? m.account.trim() : '—'}">—</td>
+                            <td class="text-end font-monospace small"
+                                th:text="${m.amount != null ? #numbers.formatDecimal(m.amount, 1, 'POINT', 2, 'COMMA') : '—'}">0,00</td>
+                            <td class="small">
+                                <a th:if="${m.registrationNumber != null and !m.registrationNumber.trim().isEmpty()}"
+                                   th:href="@{/contabilita/primanota/{nreg}(nreg=${m.registrationNumber.trim()})}"
+                                   class="text-decoration-none font-monospace"
+                                   th:title="'Apri registrazione ' + ${m.registrationNumber.trim()} + (m.year != null ? ' (' + m.year + ')' : '')">
+                                    <span th:text="${m.registrationNumber.trim()}"></span> <i class="bi bi-box-arrow-up-right"></i>
+                                </a>
+                                <span th:unless="${m.registrationNumber != null and !m.registrationNumber.trim().isEmpty()}">—</span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(movimenti)}">
+                            <td colspan="7" class="text-center text-muted py-4">Nessun movimento collegato (i dettagli si popolano con l'aggiornamento da movimenti contabili).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <p class="small text-muted mt-2 mb-0">
+        Il link alla registrazione usa AMD_NREGIS (numero registrazione): se la registrazione appartiene a un
+        esercizio diverso da quello in sessione, il dettaglio potrebbe non trovarla.
+    </p>
+
+</section></body>
+</html>
