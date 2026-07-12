@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Copertura migrazione – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-clipboard-data',
+        title='Copertura della migrazione',
+        subtitle='Ogni voce del menu legacy classificata: migrata, parziale, mancante o non applicabile (scritture/stampe/utility). Priorità e razionali in migration/COVERAGE_REPORT.md',
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <!-- matrice per area -->
+    <div class="card shadow-sm border-0 mb-3">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-sm mb-0">
+                    <thead class="table-light">
+                        <tr><th>Area</th>
+                            <th class="text-end">Migrato</th><th class="text-end">Parziale</th>
+                            <th class="text-end">Mancante</th><th class="text-end">Non applic.</th>
+                            <th class="text-end">Totale</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="m : ${matrix}">
+                            <td>
+                                <a class="text-decoration-none" th:href="@{/utilita/copertura(area=${m.key})}"
+                                   th:text="${m.key}">area</a>
+                            </td>
+                            <td class="text-end"><span class="badge bg-success-subtle text-success-emphasis"
+                                th:text="${m.value.get('MIGRATO') ?: 0}">0</span></td>
+                            <td class="text-end"><span class="badge bg-info-subtle text-info-emphasis"
+                                th:text="${m.value.get('PARZIALE') ?: 0}">0</span></td>
+                            <td class="text-end"><span class="badge bg-danger-subtle text-danger-emphasis"
+                                th:text="${m.value.get('MANCANTE') ?: 0}">0</span></td>
+                            <td class="text-end"><span class="badge bg-secondary-subtle text-secondary-emphasis"
+                                th:text="${m.value.get('NON_APPLICABILE') ?: 0}">0</span></td>
+                            <td class="text-end small fw-semibold"
+                                th:text="${(m.value.get('MIGRATO') ?: 0) + (m.value.get('PARZIALE') ?: 0) + (m.value.get('MANCANTE') ?: 0) + (m.value.get('NON_APPLICABILE') ?: 0)}">0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <form method="get" th:action="@{/utilita/copertura}" class="d-flex gap-2 flex-wrap align-items-center mb-3">
+        <select name="area" class="form-select form-select-sm" style="width:auto" onchange="this.form.submit()">
+            <option value="" th:selected="${area == ''}">Tutte le aree</option>
+            <option th:each="a : ${aree}" th:value="${a}" th:text="${a}" th:selected="${a == area}">area</option>
+        </select>
+        <select name="stato" class="form-select form-select-sm" style="width:auto" onchange="this.form.submit()">
+            <option value="" th:selected="${stato == ''}">Ogni stato</option>
+            <option value="MIGRATO" th:selected="${stato == 'MIGRATO'}">Migrato</option>
+            <option value="PARZIALE" th:selected="${stato == 'PARZIALE'}">Parziale</option>
+            <option value="MANCANTE" th:selected="${stato == 'MANCANTE'}">Mancante</option>
+            <option value="NON_APPLICABILE" th:selected="${stato == 'NON_APPLICABILE'}">Non applicabile</option>
+        </select>
+        <div class="input-group input-group-sm" style="width:320px">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" name="q" th:value="${q}" class="form-control" placeholder="Voce, percorso, rotta o nota…">
+        </div>
+        <button type="submit" class="btn btn-primary btn-sm">Filtra</button>
+        <a th:href="@{/utilita/copertura}" class="btn btn-outline-secondary btn-sm"
+           th:if="${q != '' or area != '' or stato != ''}"><i class="bi bi-x"></i></a>
+        <span class="small text-muted ms-auto">
+            <span th:text="${mostrati}">0</span> / <span th:text="${totale}">0</span> voci
+        </span>
+    </form>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-sm mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr><th style="width:26%">Percorso</th><th style="width:22%">Voce</th>
+                            <th style="width:10%">Copertura</th><th style="width:18%">Evidenza</th>
+                            <th style="width:8%">Reason</th><th>Note</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="e : ${entries}">
+                            <td class="small text-muted" th:text="${e.percorso}">contabilit &gt; Bilanci</td>
+                            <td class="small" th:text="${e.voce}">Voce</td>
+                            <td>
+                                <span class="badge"
+                                      th:classappend="${e.copertura == 'MIGRATO'} ? 'bg-success-subtle text-success-emphasis'
+                                                    : (${e.copertura == 'PARZIALE'} ? 'bg-info-subtle text-info-emphasis'
+                                                    : (${e.copertura == 'MANCANTE'} ? 'bg-danger-subtle text-danger-emphasis'
+                                                    : 'bg-secondary-subtle text-secondary-emphasis'))"
+                                      th:text="${e.copertura}">MIGRATO</span>
+                            </td>
+                            <td class="font-monospace small" th:text="${e.evidenza != '' ? e.evidenza : '—'}">/rotta</td>
+                            <td class="small" th:text="${e.reason != '' ? e.reason : '—'}">—</td>
+                            <td class="small text-muted" th:text="${e.note}">—</td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(entries)}">
+                            <td colspan="6" class="text-center text-muted py-5">
+                                <i class="bi bi-inbox" style="font-size:2rem"></i>
+                                <p class="mt-2 mb-0">Nessuna voce corrisponde ai filtri.</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</section></body>
+</html>
