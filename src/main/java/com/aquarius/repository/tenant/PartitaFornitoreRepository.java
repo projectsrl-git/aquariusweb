@@ -35,4 +35,14 @@ public interface PartitaFornitoreRepository extends JpaRepository<PartitaFornito
     List<PartitaFornitore> findByParty(@Param("soc") String soc,
                            @Param("anno") String anno,
                            @Param("code") String code);
+
+    /** Partite APERTE (totale <> pagato) dell'anno, per lo scadenziario/aging. */
+    @Query("""
+        SELECT p FROM PartitaFornitore p
+        WHERE p.societyCode = :soc AND p.fiscalYear = :anno
+          AND COALESCE(p.totalAmount, 0) <> COALESCE(p.paidAmount, 0)
+        ORDER BY p.partyName ASC, p.dueDate ASC
+        """)
+    List<PartitaFornitore> findAperte(@Param("soc") String soc,
+                                      @Param("anno") String anno);
 }

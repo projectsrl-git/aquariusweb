@@ -21,6 +21,7 @@ public class BilancioGroup {
     private final int level;                 // 1 = mastro, 2 = gruppo
     private BigDecimal totDare  = BigDecimal.ZERO;
     private BigDecimal totAvere = BigDecimal.ZERO;
+    private BigDecimal saldoN1  = BigDecimal.ZERO;   // saldo anno precedente (confronto)
 
     private final List<BilancioGroup> subGroups = new ArrayList<>();  // per mastro: i gruppi
     private final List<BilancioLine>  lines     = new ArrayList<>();  // per gruppo: i sottoconti (visualizzati)
@@ -37,7 +38,10 @@ public class BilancioGroup {
         if (avere != null) totAvere = totAvere.add(avere);
     }
 
+    public void addSaldoN1(BigDecimal v) { if (v != null) saldoN1 = saldoN1.add(v); }
+
     public BigDecimal getSaldo() { return totDare.subtract(totAvere); }
+    public BigDecimal getVariazione() { return getSaldo().subtract(saldoN1); }
 
     public void addSubGroup(BilancioGroup g) { subGroups.add(g); }
     public void addLine(BilancioLine l)      { lines.add(l); }

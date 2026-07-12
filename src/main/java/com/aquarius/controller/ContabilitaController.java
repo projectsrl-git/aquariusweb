@@ -269,6 +269,7 @@ public class ContabilitaController {
                            @RequestParam(value = "soloSottogruppi", defaultValue = "false") boolean soloSottogruppi,
                            @RequestParam(value = "meseDal", defaultValue = "1") int meseDal,
                            @RequestParam(value = "meseAl", defaultValue = "12") int meseAl,
+                           @RequestParam(value = "confrontoN1", defaultValue = "false") boolean confrontoN1,
                            Model model,
                            @AuthenticationPrincipal AquariusPrincipal principal) {
         String soc = fiscalContext.getSocietyCode();
@@ -293,6 +294,7 @@ public class ContabilitaController {
         model.addAttribute("soloSottogruppi", soloSottogruppi);
         model.addAttribute("meseDal", meseDal);
         model.addAttribute("meseAl", meseAl);
+        model.addAttribute("confrontoN1", confrontoN1);
         model.addAttribute("anno", anno);
         model.addAttribute("breadcrumbs",
             breadcrumbService.forUrl("/contabilita/bilancio", principal.getUsername()));
@@ -338,6 +340,29 @@ public class ContabilitaController {
         // - "Stampa solo i clienti/fornitori" (R1): tiene solo i conti C/F
         if ("solo".equals(cfMode)) {
             all = all.stream().filter(BilancioLine::isCustomerOrSupplier).collect(Collectors.toList());
+        }
+
+        // Confronto anno precedente (N-1): saldo per conto dell'anno-1, stesso periodo.
+        if (confrontoN1) {
+            String annoPrec = null;
+            try { annoPrec = String.valueOf(Integer.parseInt(anno.trim()) - 1); }
+            catch (NumberFormatException ignore) { }
+            if (annoPrec != null) {
+                List<com.aquarius.repository.tenant.MovContabileRepository.BilancioRow> rowsN1 = tuttoAnno
+                    ? movRepository.findBilancio(soc, annoPrec)
+                    : movRepository.findBilancioPeriodo(soc, annoPrec,
+                          String.format("%02d", meseDal), String.format("%02d", meseAl));
+                Map<String, BigDecimal> saldiN1 = new java.util.HashMap<>();
+                for (var r : rowsN1) {
+                    String c = r.getAccount() != null ? r.getAccount().trim() : "";
+                    BigDecimal d = r.getTotDare()  != null ? r.getTotDare()  : BigDecimal.ZERO;
+                    BigDecimal a = r.getTotAvere() != null ? r.getTotAvere() : BigDecimal.ZERO;
+                    saldiN1.merge(c, d.subtract(a), BigDecimal::add);
+                }
+                for (BilancioLine l : all) {
+                    l.setSaldoN1(saldiN1.getOrDefault(l.getAccount(), BigDecimal.ZERO));
+                }
+            }
         }
 
         // NB: NON filtro qui i C/F. I totali di sezione e la quadratura devono
@@ -494,6 +519,8 @@ public class ContabilitaController {
             // progressivi: sempre (C/F inclusi)
             mastro.addTotals(l.getTotDare(), l.getTotAvere());
             gruppo.addTotals(l.getTotDare(), l.getTotAvere());
+            mastro.addSaldoN1(l.getSaldoN1());
+            gruppo.addSaldoN1(l.getSaldoN1());
             // display foglia: rispetta il toggle C/F
             if (showCF || !l.isCustomerOrSupplier()) {
                 gruppo.addLine(l);

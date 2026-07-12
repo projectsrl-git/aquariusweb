@@ -176,9 +176,12 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
   - 0.16.0 — audit di copertura della migrazione:
     menu_coverage_audit.csv (1051 voci classificate) + COVERAGE_REPORT.md
     con priorita per Opus (+ viewer /utilita/copertura).
-  - **0.17.0 (corrente)** — registro cespiti in consultazione:
+  - 0.17.0 — registro cespiti in consultazione:
     anagrafica, quote per anno, movimenti collegati, categorie con
     riepilogo (priorita n.2 dell'audit).
+  - 0.17.0 — bilancio di verifica: confronto anno precedente (Saldo N-1 + Variazione).
+  - **0.18.0 (corrente)** — scadenziario clienti/fornitori con aging
+    (partite aperte, fasce a scadere/0-30/31-60/61-90/oltre 90).
 
 ## 4c. Migration tracker (.scx logic ↔ web)
 

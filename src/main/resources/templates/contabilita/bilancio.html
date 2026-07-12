@@ -84,6 +84,11 @@
                         <input class="form-check-input" type="checkbox" id="c_soloSottogruppi" th:checked="${soloSottogruppi}" onchange="document.getElementById('h_soloSottogruppi').value=this.checked; applyR2();">
                         <label class="form-check-label" for="c_soloSottogruppi">Stampa solo i sottogruppi</label>
                     </div>
+                    <div class="form-check">
+                        <input type="hidden" name="confrontoN1" id="h_confrontoN1" th:value="${confrontoN1}">
+                        <input class="form-check-input" type="checkbox" id="c_confrontoN1" th:checked="${confrontoN1}" onchange="document.getElementById('h_confrontoN1').value=this.checked">
+                        <label class="form-check-label" for="c_confrontoN1">Confronta con anno precedente</label>
+                    </div>
                 </div>
             </div>
             <div class="text-muted small mt-2">
@@ -276,6 +281,8 @@
                     <th class="text-end" style="width:150px">Prog. Dare</th>
                     <th class="text-end" style="width:150px">Prog. Avere</th>
                     <th class="text-end" style="width:150px">Saldo</th>
+                    <th class="text-end" style="width:150px" th:if="${confrontoN1}">Saldo anno prec.</th>
+                    <th class="text-end" style="width:140px" th:if="${confrontoN1}">Variazione</th>
                 </tr></thead>
                 <tbody>
                     <th:block th:each="m : ${mastri}">
@@ -284,6 +291,8 @@
                             <td class="text-end font-monospace" th:text="${#numbers.formatDecimal(m.totDare,1,'POINT',2,'COMMA')}">0,00</td>
                             <td class="text-end font-monospace" th:text="${#numbers.formatDecimal(m.totAvere,1,'POINT',2,'COMMA')}">0,00</td>
                             <td class="text-end font-monospace" th:classappend="${m.saldo.signum() < 0 ? 'text-danger' : ''}" th:text="${#numbers.formatDecimal(m.saldo,1,'POINT',2,'COMMA')}">0,00</td>
+                            <td class="text-end font-monospace" th:if="${confrontoN1}" th:text="${#numbers.formatDecimal(m.saldoN1,1,'POINT',2,'COMMA')}">0,00</td>
+                            <td class="text-end font-monospace" th:if="${confrontoN1}" th:classappend="${m.variazione.signum() < 0 ? 'text-danger' : 'text-success'}" th:text="${#numbers.formatDecimal(m.variazione,1,'POINT',2,'COMMA')}">0,00</td>
                         </tr>
                         <th:block th:each="g : ${m.subGroups}">
                             <tr class="gruppo-row fw-semibold">
@@ -291,6 +300,8 @@
                                 <td class="text-end font-monospace" th:text="${#numbers.formatDecimal(g.totDare,1,'POINT',2,'COMMA')}">0,00</td>
                                 <td class="text-end font-monospace" th:text="${#numbers.formatDecimal(g.totAvere,1,'POINT',2,'COMMA')}">0,00</td>
                                 <td class="text-end font-monospace" th:classappend="${g.saldo.signum() < 0 ? 'text-danger' : ''}" th:text="${#numbers.formatDecimal(g.saldo,1,'POINT',2,'COMMA')}">0,00</td>
+                                <td class="text-end font-monospace" th:if="${confrontoN1}" th:text="${#numbers.formatDecimal(g.saldoN1,1,'POINT',2,'COMMA')}">0,00</td>
+                                <td class="text-end font-monospace" th:if="${confrontoN1}" th:classappend="${g.variazione.signum() < 0 ? 'text-danger' : 'text-success'}" th:text="${#numbers.formatDecimal(g.variazione,1,'POINT',2,'COMMA')}">0,00</td>
                             </tr>
                             <tr th:each="l : ${g.lines}" th:if="${!soloSottogruppi}">
                                 <td class="ps-5 small">
@@ -302,13 +313,15 @@
                                 <td class="text-end font-monospace small" th:text="${#numbers.formatDecimal(l.totDare,1,'POINT',2,'COMMA')}">0,00</td>
                                 <td class="text-end font-monospace small" th:text="${#numbers.formatDecimal(l.totAvere,1,'POINT',2,'COMMA')}">0,00</td>
                                 <td class="text-end font-monospace small" th:classappend="${l.saldo.signum() < 0 ? 'text-danger' : ''}" th:text="${#numbers.formatDecimal(l.saldo,1,'POINT',2,'COMMA')}">0,00</td>
+                                <td class="text-end font-monospace small" th:if="${confrontoN1}" th:text="${l.saldoN1 != null ? #numbers.formatDecimal(l.saldoN1,1,'POINT',2,'COMMA') : ''}">0,00</td>
+                                <td class="text-end font-monospace small" th:if="${confrontoN1}" th:classappend="${l.variazione != null and l.variazione.signum() < 0 ? 'text-danger' : 'text-success'}" th:text="${l.variazione != null ? #numbers.formatDecimal(l.variazione,1,'POINT',2,'COMMA') : ''}">0,00</td>
                             </tr>
                             <tr th:if="${g.hasHiddenCF and !soloSottogruppi}">
-                                <td colspan="4" class="ps-5 small text-muted fst-italic">Conti clienti/fornitori nascosti — importi nel totale del gruppo</td>
+                                <td th:attr="colspan=${confrontoN1 ? 6 : 4}" class="ps-5 small text-muted fst-italic">Conti clienti/fornitori nascosti — importi nel totale del gruppo</td>
                             </tr>
                         </th:block>
                     </th:block>
-                    <tr th:if="${mastri == null or mastri.isEmpty()}"><td colspan="4" class="text-center text-muted py-4 small">Nessun conto.</td></tr>
+                    <tr th:if="${mastri == null or mastri.isEmpty()}"><td th:attr="colspan=${confrontoN1 ? 6 : 4}" class="text-center text-muted py-4 small">Nessun conto.</td></tr>
                 </tbody>
             </table>
         </div>

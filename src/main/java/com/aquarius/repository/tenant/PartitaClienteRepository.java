@@ -35,4 +35,14 @@ public interface PartitaClienteRepository extends JpaRepository<PartitaCliente, 
     List<PartitaCliente> findByParty(@Param("soc") String soc,
                            @Param("anno") String anno,
                            @Param("code") String code);
+
+    /** Partite APERTE (totale <> pagato) dell'anno, per lo scadenziario/aging. */
+    @Query("""
+        SELECT p FROM PartitaCliente p
+        WHERE p.societyCode = :soc AND p.fiscalYear = :anno
+          AND COALESCE(p.totalAmount, 0) <> COALESCE(p.paidAmount, 0)
+        ORDER BY p.partyName ASC, p.dueDate ASC
+        """)
+    List<PartitaCliente> findAperte(@Param("soc") String soc,
+                                    @Param("anno") String anno);
 }

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Scadenziario – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-calendar-check',
+        title=${tipo == 'fornitori' ? 'Scadenziario fornitori' : 'Scadenziario clienti'},
+        subtitle='Partite aperte con aging — esercizio ' + ${anno},
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <div class="btn-group btn-group-sm mb-3" role="group">
+        <a class="btn" th:classappend="${tipo != 'fornitori' ? 'btn-primary' : 'btn-outline-primary'}"
+           th:href="@{/contabilita/scadenziario(tipo='clienti')}"><i class="bi bi-people me-1"></i>Clienti</a>
+        <a class="btn" th:classappend="${tipo == 'fornitori' ? 'btn-primary' : 'btn-outline-primary'}"
+           th:href="@{/contabilita/scadenziario(tipo='fornitori')}"><i class="bi bi-truck me-1"></i>Fornitori</a>
+    </div>
+
+    <!-- Sintesi -->
+    <div class="row g-3 mb-3">
+        <div class="col-md-4"><div class="card shadow-sm border h-100">
+            <div class="card-body text-center">
+                <div class="text-muted small text-uppercase">A scadere</div>
+                <div class="fs-4 fw-bold font-monospace text-success" th:text="${#numbers.formatDecimal(totAScadere,1,'POINT',2,'COMMA')}">0,00</div>
+            </div></div></div>
+        <div class="col-md-4"><div class="card shadow-sm border h-100">
+            <div class="card-body text-center">
+                <div class="text-muted small text-uppercase">Scaduto</div>
+                <div class="fs-4 fw-bold font-monospace text-danger" th:text="${#numbers.formatDecimal(totScaduto,1,'POINT',2,'COMMA')}">0,00</div>
+            </div></div></div>
+        <div class="col-md-4"><div class="card shadow-sm border border-2 h-100">
+            <div class="card-body text-center">
+                <div class="text-muted small text-uppercase">Totale aperto</div>
+                <div class="fs-4 fw-bold font-monospace" th:text="${#numbers.formatDecimal(totGenerale,1,'POINT',2,'COMMA')}">0,00</div>
+            </div></div></div>
+    </div>
+
+    <div class="card shadow-sm border">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-sm table-hover mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Anagrafica</th>
+                            <th class="text-end">A scadere</th>
+                            <th class="text-end">Scad. 0–30</th>
+                            <th class="text-end">Scad. 31–60</th>
+                            <th class="text-end">Scad. 61–90</th>
+                            <th class="text-end">Scad. &gt;90</th>
+                            <th class="text-end fw-bold">Totale</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="r : ${righe}">
+                            <td class="small">
+                                <span class="font-monospace text-muted me-1" th:text="${r.partyCode}">CODE</span>
+                                <span th:text="${r.partyName}">Ragione sociale</span>
+                            </td>
+                            <td class="text-end font-monospace small" th:text="${r.aScadere.signum() != 0 ? #numbers.formatDecimal(r.aScadere,1,'POINT',2,'COMMA') : ''}"></td>
+                            <td class="text-end font-monospace small" style="background:#fffbe6" th:text="${r.sc0_30.signum() != 0 ? #numbers.formatDecimal(r.sc0_30,1,'POINT',2,'COMMA') : ''}"></td>
+                            <td class="text-end font-monospace small" style="background:#fff2e0" th:text="${r.sc31_60.signum() != 0 ? #numbers.formatDecimal(r.sc31_60,1,'POINT',2,'COMMA') : ''}"></td>
+                            <td class="text-end font-monospace small" style="background:#ffe6d9" th:text="${r.sc61_90.signum() != 0 ? #numbers.formatDecimal(r.sc61_90,1,'POINT',2,'COMMA') : ''}"></td>
+                            <td class="text-end font-monospace small text-danger fw-semibold" style="background:#ffdede" th:text="${r.scOltre90.signum() != 0 ? #numbers.formatDecimal(r.scOltre90,1,'POINT',2,'COMMA') : ''}"></td>
+                            <td class="text-end font-monospace small fw-bold" th:text="${#numbers.formatDecimal(r.totale,1,'POINT',2,'COMMA')}">0,00</td>
+                        </tr>
+                        <tr th:if="${righe == null or righe.isEmpty()}">
+                            <td colspan="7" class="text-center text-muted py-5">Nessuna partita aperta.</td>
+                        </tr>
+                    </tbody>
+                    <tfoot class="table-light fw-bold" th:if="${righe != null and !righe.isEmpty()}">
+                        <tr>
+                            <td class="text-uppercase small">Totali</td>
+                            <td class="text-end font-monospace" th:text="${#numbers.formatDecimal(totAScadere,1,'POINT',2,'COMMA')}">0,00</td>
+                            <td class="text-end font-monospace" th:text="${#numbers.formatDecimal(tot0_30,1,'POINT',2,'COMMA')}">0,00</td>
+                            <td class="text-end font-monospace" th:text="${#numbers.formatDecimal(tot31_60,1,'POINT',2,'COMMA')}">0,00</td>
+                            <td class="text-end font-monospace" th:text="${#numbers.formatDecimal(tot61_90,1,'POINT',2,'COMMA')}">0,00</td>
+                            <td class="text-end font-monospace text-danger" th:text="${#numbers.formatDecimal(totOltre90,1,'POINT',2,'COMMA')}">0,00</td>
+                            <td class="text-end font-monospace" th:text="${#numbers.formatDecimal(totGenerale,1,'POINT',2,'COMMA')}">0,00</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-text mt-2">
+        Aperto = totale − pagato (PART_CLI/PART_FOR); aging su data scadenza a oggi. Sola lettura.
+    </div>
+
+</section></body>
+</html>

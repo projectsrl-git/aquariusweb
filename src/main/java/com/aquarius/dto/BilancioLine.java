@@ -24,6 +24,12 @@ public class BilancioLine {
     private final String section;        // "P" | "E" | null (non classificato)
     private final String accountType;    // "C" | "F" | altro/null
 
+    /** Saldo dell'anno precedente (confronto N-1); null se non richiesto. */
+    private BigDecimal saldoN1;
+    public void setSaldoN1(BigDecimal v) { this.saldoN1 = v; }
+    /** Variazione rispetto all'anno precedente (null se N-1 non richiesto). */
+    public BigDecimal getVariazione() { return saldoN1 == null ? null : saldo.subtract(saldoN1); }
+
     public BilancioLine(String account, String description,
                         BigDecimal totDare, BigDecimal totAvere,
                         String section, String accountType) {

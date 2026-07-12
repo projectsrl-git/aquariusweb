@@ -1,12 +1,15 @@
-Add cespiti categories view with per-category summary
+Bilancio N-1 comparison + clienti/fornitori aging scadenziario
 
-Part 2 of 2 - apply AFTER the register patch. /cespiti/categorie:
-category list (u_amm_ca) enriched with a per-category aggregate
-computed live from u_amm_at via JPQL GROUP BY: asset count, total
-historical value, total depreciated, total residual. Plain sums of the
-anagrafica columns - no netting, no fiscal math - and the subtitle says
-so. Each row links to the register filtered by that category; the
-register gains the "Categorie" button.
+Two accounting consultations delivered together.
 
-Verification (sandbox only): checks as in part 1; chain verified on
-fresh clone of HEAD 3b54f20.
+1) Bilancio di verifica - previous-year comparison (N-1): "Confronta con anno
+   precedente" option adds "Saldo anno prec." and "Variazione" columns at
+   mastro/gruppo/account level, computed for the previous year (same month range).
+
+2) Scadenziario clienti/fornitori: read-only open-items (residual = total - paid,
+   PART_CLI/PART_FOR) aggregated per party with aging by days overdue
+   (a scadere, 0-30, 31-60, 61-90, >90) + totals. New findAperte() queries,
+   ScadenziarioController at /contabilita/scadenziario?tipo=clienti|fornitori,
+   ScadenzaRiga DTO, template, and a synthetic "Scadenziario" menu voice.
+
+Versions 0.17.0 (N-1) + 0.18.0 (scadenziario). Sandbox checks only.
