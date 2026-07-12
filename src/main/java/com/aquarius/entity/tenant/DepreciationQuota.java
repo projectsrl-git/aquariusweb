@@ -77,6 +77,20 @@ public class DepreciationQuota {
     @Column(name = "QUO_VALRES", insertable = false, updatable = false)
     private BigDecimal residualValue;
 
+    /**
+     * Variazione fiscale = quota anticipata dell'esercizio
+     * (MENU_quo_am_gen: _X_QUO_VARFIS = _X_QUO_VALANT).
+     */
+    @Column(name = "QUO_VARFIS", insertable = false, updatable = false)
+    private BigDecimal fiscalVariation;
+
+    /**
+     * Imposte differite = VARFIS x aliquota IRES
+     * (parametro MENU_para_ires).
+     */
+    @Column(name = "QUO_IMPDIF", insertable = false, updatable = false)
+    private BigDecimal deferredTaxes;
+
     /** Quota trasferita in contabilita' generale. */
     @Column(name = "QUO_FLGCGE", insertable = false, updatable = false)
     private Boolean transferredToGl;

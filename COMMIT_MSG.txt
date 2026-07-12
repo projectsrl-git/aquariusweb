@@ -1,15 +1,40 @@
-Bilancio N-1 comparison + clienti/fornitori aging scadenziario
+Verify quota semantics from PRGs; add fund and fiscal columns
 
-Two accounting consultations delivered together.
+Short session on top of the cespiti module. The session-9 mandate asked
+for the asset detail with quota history - already delivered in session
+8 and applied on HEAD - so this delivers the residual value: the quota
+FIELD SEMANTICS verified in the calculation sources, plus the columns
+the mandate asked for that the detail was missing. PATCH bump
+0.18.0 -> 0.18.1. Applies on HEAD 7af5de1. MenuService untouched
+(mandate: Opus scadenziario patch coordination).
 
-1) Bilancio di verifica - previous-year comparison (N-1): "Confronta con anno
-   precedente" option adds "Saldo anno prec." and "Variazione" columns at
-   mastro/gruppo/account level, computed for the previous year (same month range).
+SEMANTICS (appended to cespiti/README.md with file:line evidence,
+from ALLINEA_CESPITI_QUOTE_AMM.PRG + MENU_quo_am_gen/simu.SCX):
+- QUO_VALORD/ANT/ACC = quota DELL'ESERCIZIO per channel;
+  QUO_FONORD/ANT/ACC = fondo PROGRESSIVO a fine esercizio
+  (gen: _X_QUO_FONORD = _X_QUO_VALORD + QUO_FONORD; first year =
+  VALORD);
+- QUO_TOTAMM = total of the YEAR's quotas, NOT the progressive
+  (allinea r.80: TOTAMM = VALORD+VALANT+VALACC) -> the detail column
+  was ambiguously labelled "Totale ammortizzato": relabelled "Quote
+  esercizio" with explanatory tooltip;
+- the alignment PRG checks anagrafica progressives (AMM_VALORD/ANT/ACC,
+  VALRES) against the LAST quota row (order annrif DESC) and realigns
+  quota+fund deltas on that row (r.52-81);
+- QUO_VARFIS = variazione fiscale = the ANTICIPATED quota of the year
+  (gen: _X_QUO_VARFIS = _X_QUO_VALANT - anticipato is a fiscal-only,
+  off-balance variation);
+- QUO_IMPDIF = imposte differite = VARFIS x IRES rate
+  (_X_QUO_IMPDIF = VARFIS * _W_PERC_IRES / 100, parameter from
+  MENU_para_ires).
 
-2) Scadenziario clienti/fornitori: read-only open-items (residual = total - paid,
-   PART_CLI/PART_FOR) aggregated per party with aging by days overdue
-   (a scadere, 0-30, 31-60, 61-90, >90) + totals. New findAperte() queries,
-   ScadenziarioController at /contabilita/scadenziario?tipo=clienti|fornitori,
-   ScadenzaRiga DTO, template, and a synthetic "Scadenziario" menu voice.
+UI (cespiti/detail.html): quota table gains "Fondo ord. progr."
+(QUO_FONORD) and "Var. fisc. / Imp. diff." (muted when zero); footer
+relabelled "Totale quote esercizio". Entity DepreciationQuota gains
+fiscalVariation/deferredTaxes mappings. Tracker: +1 row for
+ALLINEA_CESPITI_QUOTE_AMM.PRG (WRITE_SIDE, semantics documented).
 
-Versions 0.17.0 (N-1) + 0.18.0 (scadenziario). Sandbox checks only.
+Verification (sandbox only): brace/paren, duplicate @Column, div/table
+balance, header column count, CSV 12 cols; verified with git apply
+--check + apply on fresh clone of HEAD 7af5de1. Maven build and SQL
+Server 2012 execution to be confirmed at first deploy.

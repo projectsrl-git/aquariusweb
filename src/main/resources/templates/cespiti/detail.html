@@ -84,7 +84,10 @@
                             <th>Anno</th>
                             <th class="text-end">% ord.</th><th class="text-end">Quota ordinaria</th>
                             <th class="text-end">Quota anticipata</th><th class="text-end">Quota accelerata</th>
-                            <th class="text-end">Totale ammortizzato</th><th class="text-end">Residuo</th>
+                            <th class="text-end" title="QUO_TOTAMM = quote dell'esercizio (ord+ant+acc), non il progressivo">Quote esercizio</th>
+                            <th class="text-end" title="QUO_FONORD: fondo ordinario progressivo a fine esercizio">Fondo ord. progr.</th>
+                            <th class="text-end" title="QUO_VARFIS = quota anticipata (variazione fiscale); QUO_IMPDIF = VARFIS × aliquota IRES">Var. fisc. / Imp. diff.</th>
+                            <th class="text-end">Residuo</th>
                             <th>Coge</th>
                         </tr>
                     </thead>
@@ -102,6 +105,12 @@
                             <td class="text-end font-monospace small"
                                 th:text="${qa.totalDepreciated != null ? #numbers.formatDecimal(qa.totalDepreciated, 1, 'POINT', 2, 'COMMA') : '—'}">—</td>
                             <td class="text-end font-monospace small"
+                                th:text="${qa.ordinaryFund != null ? #numbers.formatDecimal(qa.ordinaryFund, 1, 'POINT', 2, 'COMMA') : '—'}">—</td>
+                            <td class="text-end font-monospace small"
+                                th:classappend="${(qa.fiscalVariation == null or qa.fiscalVariation.signum() == 0) and (qa.deferredTaxes == null or qa.deferredTaxes.signum() == 0)} ? 'text-muted' : ''"
+                                th:text="${(qa.fiscalVariation != null ? #numbers.formatDecimal(qa.fiscalVariation, 1, 'POINT', 2, 'COMMA') : '—') + ' / '
+                                          + (qa.deferredTaxes != null ? #numbers.formatDecimal(qa.deferredTaxes, 1, 'POINT', 2, 'COMMA') : '—')}">—</td>
+                            <td class="text-end font-monospace small"
                                 th:text="${qa.residualValue != null ? #numbers.formatDecimal(qa.residualValue, 1, 'POINT', 2, 'COMMA') : '—'}">—</td>
                             <td>
                                 <span class="badge bg-success-subtle text-success-emphasis" th:if="${qa.transferredToGl}"
@@ -110,15 +119,15 @@
                             </td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(quote)}">
-                            <td colspan="8" class="text-center text-muted py-4">Nessuna quota generata per questo cespite.</td>
+                            <td colspan="10" class="text-center text-muted py-4">Nessuna quota generata per questo cespite.</td>
                         </tr>
                     </tbody>
                     <tfoot class="table-light" th:if="${!#lists.isEmpty(quote)}">
                         <tr class="fw-semibold">
-                            <td colspan="5">Totale quote</td>
+                            <td colspan="5">Totale quote esercizio</td>
                             <td class="text-end font-monospace small"
                                 th:text="${#numbers.formatDecimal(totQuote, 1, 'POINT', 2, 'COMMA')}">0,00</td>
-                            <td colspan="2"></td>
+                            <td colspan="4"></td>
                         </tr>
                     </tfoot>
                 </table>

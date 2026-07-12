@@ -49,3 +49,34 @@ a Opus: generazione/cancellazione quote (`MENU_QUO_AM_GEN/CANC`),
 simulazione (`MENU_QUO_AM_SIMU`), trasferimenti in coge, parametro IRES,
 legame prima nota-cespite, `POPOLA_CESPITI_CATEGORIE_DA_CONTI_E_MOV_CONT`
 e `ALLINEA_CESPITI_QUOTE_AMM` (procedure di supporto).
+
+## Quote per anno — semantica verificata (sessione 9)
+
+Evidenze da `ALLINEA_CESPITI_QUOTE_AMM.PRG` e `MENU_quo_am_gen.SCX`
+(generatore quote; identica logica in `MENU_quo_am_simu.SCX`):
+
+- **`QUO_VALORD/VALANT/VALACC` = quota DELL'ESERCIZIO** per canale;
+  **`QUO_FONORD/FONANT/FONACC` = fondo PROGRESSIVO** a fine esercizio:
+  `MENU_quo_am_gen`: `_X_QUO_FONORD = _X_QUO_VALORD + QUO_FONORD`
+  (quota dell'anno + fondo dell'anno precedente; primo anno:
+  `= _X_QUO_VALORD`).
+- **`QUO_TOTAMM` = totale delle quote DELL'ESERCIZIO** (non il
+  progressivo): `ALLINEA_CESPITI_QUOTE_AMM.PRG:80`
+  `REPLACE QUO_TOTAMM WITH QUO_VALORD + QUO_VALANT + QUO_VALACC`.
+  Il progressivo è la somma dei fondi.
+- L'allineamento anagrafica↔quote confronta i progressivi anagrafici
+  con l'ULTIMA riga quote (`order by quo_annrif DESC`, r.31):
+  `_DELTA_FONORD = M.AMM_VALORD - QUO_FONORD` (r.52) → sull'ultima
+  riga, `QUO_FONORD` deve coincidere con `AMM_VALORD` dell'anagrafica
+  (idem ANT/ACC); `QUO_VALRES` riallineato a `AMM_VALRES` (r.81).
+- **`QUO_VARFIS` = variazione fiscale = quota ANTICIPATA
+  dell'esercizio** (`MENU_quo_am_gen`: `_X_QUO_VARFIS = _X_QUO_VALANT`):
+  l'ammortamento anticipato è una variazione extracontabile.
+- **`QUO_IMPDIF` = imposte differite = VARFIS × aliquota IRES**
+  (`_X_QUO_IMPDIF = (_X_QUO_VARFIS * _W_PERC_IRES) / 100`, parametro
+  da `MENU_para_ires`).
+
+Ricaduta UI (dettaglio cespite): colonna "Fondo ord. progressivo"
+(=FONORD) aggiunta; la colonna QUO_TOTAMM è etichettata "Quote
+esercizio" (era ambiguamente "Totale ammortizzato"); Var. fiscale e
+Imp. differite esposte così come sono.
