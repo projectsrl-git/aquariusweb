@@ -162,9 +162,11 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
     direttiva, lettura BILNEW; nessun ricalcolo lato web).
   - 0.11.0 — bilancio CEE: motore di calcolo autonomo
     (scrive BILNEW volatile; algoritmo ceecont.PRG). Da riconciliare col gestionale.
-  - **0.12.0 (corrente)** — registri IVA (bollati) vendite/acquisti/
+  - 0.12.0 — registri IVA (bollati) vendite/acquisti/
     corrispettivi in consultazione, con filtro periodo e totali per
     aliquota.
+  - **0.13.0 (corrente)** — bilancio di verifica: form opzioni + Elabora,
+    due voci di menu, contrapposte ad albero, regole coerenza R1/R2.
 
 ## 4c. Migration tracker (.scx logic ↔ web)
 
@@ -381,3 +383,15 @@ Chat sessions deliver **git patches, not archives** — one zip per change with
 `.claude/YYYY-MM-DD-<slug>.md` and updates this file. Full rules:
 **`.claude/README.md`**. Repo language: **English** (chat can be Italian; UI
 strings are Italian business language — that is product copy, not repo prose).
+
+
+## PRINCIPI TRASVERSALI UI (validi per ogni form/elaborazione, Opus e Fable5)
+- **Interdipendenze opzioni (finti checkbox = radiobutton mancati)**: in Aquarius
+  molte opzioni legacy si disabilitano a vicenda o hanno effetti impliciti. Prima
+  di riprodurle, ANALIZZARE il codice del form e replicare le regole:
+  es. opzioni mutuamente esclusive → radio group; opzione che ne rende un'altra
+  implicita → disabilitarla via JS. (Rif. R1/R2/R3 del form menu_stbilanc.)
+- **Overlay di caricamento**: è GLOBALE (layout.html, #pageLoader) e scatta su
+  ogni navigazione interna e ogni submit di form → ogni pulsante "Elabora" lo
+  attiva da sé. Non serve reimplementarlo per pagina; basta che l'azione sia un
+  link interno o un submit.

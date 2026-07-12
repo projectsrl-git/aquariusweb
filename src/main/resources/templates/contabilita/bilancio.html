@@ -1,61 +1,93 @@
 <!DOCTYPE html>
 <html lang="it" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout :: layout(~{::title}, ~{::section})}">
-<head><title>Bilancio – Aquarius</title></head>
+<head><title>Bilancio di verifica – Aquarius</title></head>
 <body><section>
 
     <div th:replace="~{fragments/page-header :: pageHeader(
         icon='bi-bar-chart-steps',
-        title='Bilancio contabile',
-        subtitle='Bilancio di verifica a mastri e gruppi — esercizio ' + ${anno},
+        title=${vista == 'contrapposte' ? 'Bilancio di verifica — sezioni contrapposte' : 'Bilancio di verifica'},
+        subtitle='Esercizio ' + ${anno},
         crumbs=${breadcrumbs}
     )}"></div>
 
-    <!-- ─── Opzioni: switch vista + toggle C/F ─────────────────────────── -->
-    <div class="d-flex align-items-center gap-3 mb-3 flex-wrap">
-        <div class="btn-group btn-group-sm" role="group" aria-label="Vista bilancio">
-            <a class="btn" th:classappend="${vista == 'mastri' ? 'btn-primary' : 'btn-outline-primary'}"
-               th:href="@{/contabilita/bilancio(vista='mastri', cf=${showCF})}">
-                <i class="bi bi-list-nested me-1"></i>Mastri e gruppi</a>
-            <a class="btn" th:classappend="${vista == 'contrapposte' ? 'btn-primary' : 'btn-outline-primary'}"
-               th:href="@{/contabilita/bilancio(vista='contrapposte', cf=${showCF})}">
-                <i class="bi bi-layout-split me-1"></i>Sezioni contrapposte</a>
-        </div>
-        <form method="get" th:action="@{/contabilita/bilancio}" class="d-flex align-items-center gap-2 mb-0">
-            <input type="hidden" name="vista" th:value="${vista}">
-            <input type="hidden" name="cf" id="cfHidden" th:value="${showCF}">
-            <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" role="switch" id="cfToggle"
-                       th:checked="${showCF}"
-                       onchange="document.getElementById('cfHidden').value = this.checked; this.form.submit();">
-                <label class="form-check-label small" for="cfToggle">Mostra conti clienti / fornitori</label>
+    <!-- ═══════════ FORM OPZIONI (Elabora, come lo "Stampa" legacy) ═══════════ -->
+    <form method="get" th:action="@{/contabilita/bilancio}" id="bilForm" class="card shadow-sm border mb-4">
+        <input type="hidden" name="vista" th:value="${vista}">
+        <input type="hidden" name="elabora" value="true">
+        <div class="card-header bg-light py-2 fw-semibold"><i class="bi bi-sliders me-1"></i>Opzioni di elaborazione</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <!-- R1: coppia C/F come scelta singola (radio) -->
+                    <div class="fw-semibold small text-muted text-uppercase mb-1">Conti clienti / fornitori</div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="cfMode" value="normale" id="cfNormale"
+                               th:checked="${cfMode == 'normale'}">
+                        <label class="form-check-label" for="cfNormale">Mostra tutti (con dettaglio C/F)</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="cfMode" value="solo" id="cfSolo"
+                               th:checked="${cfMode == 'solo'}">
+                        <label class="form-check-label" for="cfSolo">Stampa solo i clienti/fornitori</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="cfMode" value="nodettaglio" id="cfNoDett"
+                               th:checked="${cfMode == 'nodettaglio'}">
+                        <label class="form-check-label" for="cfNoDett">Non stampa il dettaglio dei clienti/fornitori</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="fw-semibold small text-muted text-uppercase mb-1">Altre opzioni</div>
+                    <!-- checkbox booleani: hidden + JS così anche il deselezionato invia il valore -->
+                    <div class="form-check">
+                        <input type="hidden" name="nonZero" id="h_nonZero" th:value="${nonZero}">
+                        <input class="form-check-input" type="checkbox" id="c_nonZero" th:checked="${nonZero}"
+                               onchange="document.getElementById('h_nonZero').value=this.checked">
+                        <label class="form-check-label" for="c_nonZero">Non stampa i conti con saldo a zero</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="hidden" name="contiOrdine" id="h_contiOrdine" th:value="${contiOrdine}">
+                        <input class="form-check-input" type="checkbox" id="c_contiOrdine" th:checked="${contiOrdine}"
+                               onchange="document.getElementById('h_contiOrdine').value=this.checked">
+                        <label class="form-check-label" for="c_contiOrdine">Stampa i conti d'ordine</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="hidden" name="soloSottogruppi" id="h_soloSottogruppi" th:value="${soloSottogruppi}">
+                        <input class="form-check-input" type="checkbox" id="c_soloSottogruppi" th:checked="${soloSottogruppi}"
+                               onchange="document.getElementById('h_soloSottogruppi').value=this.checked; applyR2();">
+                        <label class="form-check-label" for="c_soloSottogruppi">Stampa solo i sottogruppi</label>
+                    </div>
+                </div>
             </div>
-        </form>
-        <a class="btn btn-sm btn-outline-success ms-auto" data-no-loader th:href="@{/contabilita/bilancio/export}">
-            <i class="bi bi-file-earmark-excel me-1"></i>Esporta Excel</a>
-    </div>
+            <div class="text-muted small mt-2">
+                <i class="bi bi-info-circle me-1"></i>Opzioni di periodo (mese dal/al), saldi d'apertura e previsionali in arrivo.
+            </div>
+        </div>
+        <div class="card-footer bg-white d-flex gap-2">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-gear-fill me-1"></i>Elabora</button>
+            <a th:if="${elabora}" class="btn btn-outline-success" data-no-loader
+               th:href="@{/contabilita/bilancio/export}"><i class="bi bi-file-earmark-excel me-1"></i>Esporta Excel</a>
+        </div>
+    </form>
 
-    <!-- ─── Quadro di sintesi ──────────────────────────────────────────── -->
+    <!-- ═══════════ RISULTATO (solo dopo Elabora) ═══════════ -->
+    <div th:if="${elabora}">
+
     <div class="row g-3 mb-3">
         <div class="col-lg-6">
             <div class="card shadow-sm border border-2 h-100">
                 <div class="card-header bg-white py-2 fw-semibold"><i class="bi bi-bank me-1"></i>Stato Patrimoniale</div>
                 <div class="card-body d-flex justify-content-around text-center">
-                    <div>
-                        <div class="text-muted small text-uppercase">Attività</div>
-                        <div class="fs-5 fw-bold font-monospace" th:text="${#numbers.formatDecimal(totAttivo,1,'POINT',2,'COMMA')}">0,00</div>
-                    </div>
+                    <div><div class="text-muted small text-uppercase">Attività</div>
+                        <div class="fs-5 fw-bold font-monospace" th:text="${#numbers.formatDecimal(totAttivo,1,'POINT',2,'COMMA')}">0,00</div></div>
                     <div class="border-start"></div>
-                    <div>
-                        <div class="text-muted small text-uppercase">Passività</div>
-                        <div class="fs-5 fw-bold font-monospace" th:text="${#numbers.formatDecimal(totPassivo,1,'POINT',2,'COMMA')}">0,00</div>
-                    </div>
+                    <div><div class="text-muted small text-uppercase">Passività</div>
+                        <div class="fs-5 fw-bold font-monospace" th:text="${#numbers.formatDecimal(totPassivo,1,'POINT',2,'COMMA')}">0,00</div></div>
                     <div class="border-start"></div>
-                    <div>
-                        <div class="text-muted small text-uppercase">Differenza</div>
+                    <div><div class="text-muted small text-uppercase">Differenza</div>
                         <div class="fs-5 fw-bold font-monospace" th:classappend="${risultatoUtile ? 'text-success' : 'text-danger'}"
-                             th:text="${#numbers.formatDecimal(quadraturaSP,1,'POINT',2,'COMMA')}">0,00</div>
-                    </div>
+                             th:text="${#numbers.formatDecimal(quadraturaSP,1,'POINT',2,'COMMA')}">0,00</div></div>
                 </div>
             </div>
         </div>
@@ -63,29 +95,21 @@
             <div class="card shadow-sm border border-2 h-100">
                 <div class="card-header bg-white py-2 fw-semibold"><i class="bi bi-graph-up-arrow me-1"></i>Conto Economico</div>
                 <div class="card-body d-flex justify-content-around text-center align-items-center">
-                    <div>
-                        <div class="text-muted small text-uppercase">Costi</div>
-                        <div class="fs-5 fw-bold font-monospace" th:text="${#numbers.formatDecimal(totCosti,1,'POINT',2,'COMMA')}">0,00</div>
-                    </div>
+                    <div><div class="text-muted small text-uppercase">Costi</div>
+                        <div class="fs-5 fw-bold font-monospace" th:text="${#numbers.formatDecimal(totCosti,1,'POINT',2,'COMMA')}">0,00</div></div>
                     <div class="border-start"></div>
-                    <div>
-                        <div class="text-muted small text-uppercase">Ricavi</div>
-                        <div class="fs-5 fw-bold font-monospace" th:text="${#numbers.formatDecimal(totRicavi,1,'POINT',2,'COMMA')}">0,00</div>
-                    </div>
+                    <div><div class="text-muted small text-uppercase">Ricavi</div>
+                        <div class="fs-5 fw-bold font-monospace" th:text="${#numbers.formatDecimal(totRicavi,1,'POINT',2,'COMMA')}">0,00</div></div>
                     <div class="border-start"></div>
-                    <div>
-                        <div class="text-muted small text-uppercase" th:text="${risultatoUtile ? 'Utile d''esercizio' : 'Perdita d''esercizio'}">Risultato</div>
+                    <div><div class="text-muted small text-uppercase" th:text="${risultatoUtile ? 'Utile d''esercizio' : 'Perdita d''esercizio'}">Risultato</div>
                         <div class="fs-5 fw-bold font-monospace" th:classappend="${risultatoUtile ? 'text-success' : 'text-danger'}"
-                             th:text="${#numbers.formatDecimal(risultato,1,'POINT',2,'COMMA')}">0,00</div>
-                    </div>
+                             th:text="${#numbers.formatDecimal(risultato,1,'POINT',2,'COMMA')}">0,00</div></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ─── Quadratura di bilancio (riquadro prominente) ───────────────── -->
-    <div class="card shadow-sm border-2 mb-4"
-         th:classappend="${quadraturaOk ? 'border-success' : 'border-danger'}">
+    <div class="card shadow-sm border-2 mb-4" th:classappend="${quadraturaOk ? 'border-success' : 'border-danger'}">
         <div class="card-header py-2 fw-semibold"
              th:classappend="${quadraturaOk ? 'bg-success-subtle text-success-emphasis' : 'bg-danger-subtle text-danger-emphasis'}">
             <i class="bi me-1" th:classappend="${quadraturaOk ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill'}"></i>
@@ -94,111 +118,63 @@
             <span class="fs-5 fw-bold ms-2" th:unless="${quadraturaOk}">— Attenzione: non quadra</span>
         </div>
         <div class="card-body d-flex justify-content-around text-center align-items-center">
-            <div>
-                <div class="text-muted small text-uppercase">Attività − Passività</div>
-                <div class="fs-4 fw-bold font-monospace" th:text="${#numbers.formatDecimal(quadraturaSP,1,'POINT',2,'COMMA')}">0,00</div>
-            </div>
+            <div><div class="text-muted small text-uppercase">Attività − Passività</div>
+                <div class="fs-4 fw-bold font-monospace" th:text="${#numbers.formatDecimal(quadraturaSP,1,'POINT',2,'COMMA')}">0,00</div></div>
             <div class="fs-3 text-muted">=</div>
-            <div>
-                <div class="text-muted small text-uppercase" th:text="${risultatoUtile ? 'Utile d''esercizio' : 'Perdita d''esercizio'}">Risultato</div>
+            <div><div class="text-muted small text-uppercase" th:text="${risultatoUtile ? 'Utile d''esercizio' : 'Perdita d''esercizio'}">Risultato</div>
                 <div class="fs-4 fw-bold font-monospace" th:classappend="${risultatoUtile ? 'text-success' : 'text-danger'}"
-                     th:text="${#numbers.formatDecimal(risultato,1,'POINT',2,'COMMA')}">0,00</div>
-            </div>
+                     th:text="${#numbers.formatDecimal(risultato,1,'POINT',2,'COMMA')}">0,00</div></div>
             <div class="border-start align-self-stretch"></div>
-            <div>
-                <div class="text-muted small text-uppercase">Quadratura</div>
+            <div><div class="text-muted small text-uppercase">Quadratura</div>
                 <div class="fs-4 fw-bold font-monospace" th:classappend="${quadraturaOk ? 'text-success' : 'text-danger'}"
-                     th:text="${quadraturaOk ? '0,00' : #numbers.formatDecimal(sbilancio,1,'POINT',2,'COMMA')}">0,00</div>
-            </div>
+                     th:text="${quadraturaOk ? '0,00' : #numbers.formatDecimal(sbilancio,1,'POINT',2,'COMMA')}">0,00</div></div>
         </div>
     </div>
 
-    <!-- ═══════════ VISTA A MASTRI / GRUPPI ═══════════ -->
+    <!-- Vista a MASTRI/GRUPPI: TAB + sub-TAB -->
     <div th:if="${vista == 'mastri'}">
-    <!-- ─── TAB: Stato Patrimoniale | Conto Economico ──────────────────── -->
-    <ul class="nav nav-tabs mb-3" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="tab-sp-btn" data-bs-toggle="tab" data-bs-target="#tab-sp"
-                    type="button" role="tab"><i class="bi bi-bank me-1"></i>Stato Patrimoniale</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="tab-ce-btn" data-bs-toggle="tab" data-bs-target="#tab-ce"
-                    type="button" role="tab"><i class="bi bi-graph-up-arrow me-1"></i>Conto Economico</button>
-        </li>
-    </ul>
-    <div class="tab-content">
-        <!-- Stato Patrimoniale → sub-tab Attività / Passività -->
-        <div class="tab-pane fade show active" id="tab-sp" role="tabpanel">
-            <ul class="nav nav-pills mb-3" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#sub-attivita" type="button" role="tab">Attività</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#sub-passivita" type="button" role="tab">Passività</button>
-                </li>
-            </ul>
-            <div class="tab-content">
-                <div class="tab-pane fade show active" id="sub-attivita" role="tabpanel">
-                    <div th:replace="~{contabilita/bilancio :: sezioneTree('Attività', ${attivoTree}, ${totAttivo})}"></div>
-                </div>
-                <div class="tab-pane fade" id="sub-passivita" role="tabpanel">
-                    <div th:replace="~{contabilita/bilancio :: sezioneTree('Passività', ${passivoTree}, ${totPassivo})}"></div>
+        <ul class="nav nav-tabs mb-3" role="tablist">
+            <li class="nav-item" role="presentation"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-sp" type="button" role="tab"><i class="bi bi-bank me-1"></i>Stato Patrimoniale</button></li>
+            <li class="nav-item" role="presentation"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-ce" type="button" role="tab"><i class="bi bi-graph-up-arrow me-1"></i>Conto Economico</button></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="tab-sp" role="tabpanel">
+                <ul class="nav nav-pills mb-3" role="tablist">
+                    <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#s-att" type="button" role="tab">Attività</button></li>
+                    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#s-pas" type="button" role="tab">Passività</button></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="s-att" role="tabpanel"><div th:replace="~{contabilita/bilancio :: sezioneTree('Attività', ${attivoTree}, ${totAttivo})}"></div></div>
+                    <div class="tab-pane fade" id="s-pas" role="tabpanel"><div th:replace="~{contabilita/bilancio :: sezioneTree('Passività', ${passivoTree}, ${totPassivo})}"></div></div>
                 </div>
             </div>
-        </div>
-        <!-- Conto Economico → sub-tab Costi / Ricavi -->
-        <div class="tab-pane fade" id="tab-ce" role="tabpanel">
-            <ul class="nav nav-pills mb-3" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#sub-costi" type="button" role="tab">Costi</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#sub-ricavi" type="button" role="tab">Ricavi</button>
-                </li>
-            </ul>
-            <div class="tab-content">
-                <div class="tab-pane fade show active" id="sub-costi" role="tabpanel">
-                    <div th:replace="~{contabilita/bilancio :: sezioneTree('Costi', ${costiTree}, ${totCosti})}"></div>
-                </div>
-                <div class="tab-pane fade" id="sub-ricavi" role="tabpanel">
-                    <div th:replace="~{contabilita/bilancio :: sezioneTree('Ricavi', ${ricaviTree}, ${totRicavi})}"></div>
-                </div>
-            </div>
-            <div class="card shadow-sm border-0 mb-4 mt-3"
-                 th:classappend="${risultatoUtile ? 'border-start border-success border-4' : 'border-start border-danger border-4'}">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <span class="fw-semibold" th:text="${risultatoUtile ? 'Utile d''esercizio (Ricavi − Costi)' : 'Perdita d''esercizio (Costi − Ricavi)'}">Risultato</span>
-                    <span class="fs-5 fw-bold font-monospace" th:classappend="${risultatoUtile ? 'text-success' : 'text-danger'}"
-                          th:text="${#numbers.formatDecimal(risultato,1,'POINT',2,'COMMA')}">0,00</span>
+            <div class="tab-pane fade" id="tab-ce" role="tabpanel">
+                <ul class="nav nav-pills mb-3" role="tablist">
+                    <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#s-cos" type="button" role="tab">Costi</button></li>
+                    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#s-ric" type="button" role="tab">Ricavi</button></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="s-cos" role="tabpanel"><div th:replace="~{contabilita/bilancio :: sezioneTree('Costi', ${costiTree}, ${totCosti})}"></div></div>
+                    <div class="tab-pane fade" id="s-ric" role="tabpanel"><div th:replace="~{contabilita/bilancio :: sezioneTree('Ricavi', ${ricaviTree}, ${totRicavi})}"></div></div>
                 </div>
             </div>
         </div>
     </div>
-    </div><!-- /vista mastri -->
 
-    <!-- ═══════════ VISTA A SEZIONI CONTRAPPOSTE ═══════════ -->
+    <!-- Vista a SEZIONI CONTRAPPOSTE: albero compatto a due colonne -->
     <div th:if="${vista == 'contrapposte'}">
         <h6 class="text-uppercase text-muted fw-semibold mb-2"><i class="bi bi-bank me-1"></i>Stato Patrimoniale</h6>
         <div class="row g-3 mb-4 align-items-stretch">
-            <div class="col-lg-6"><div th:replace="~{contabilita/bilancio :: sezioneFlat('Attività', ${attivo}, ${totAttivo})}"></div></div>
-            <div class="col-lg-6"><div th:replace="~{contabilita/bilancio :: sezioneFlat('Passività', ${passivo}, ${totPassivo})}"></div></div>
+            <div class="col-lg-6"><div th:replace="~{contabilita/bilancio :: sezioneTreeCompact('Attività', ${attivoTree}, ${totAttivo})}"></div></div>
+            <div class="col-lg-6"><div th:replace="~{contabilita/bilancio :: sezioneTreeCompact('Passività', ${passivoTree}, ${totPassivo})}"></div></div>
         </div>
         <h6 class="text-uppercase text-muted fw-semibold mb-2"><i class="bi bi-graph-up-arrow me-1"></i>Conto Economico</h6>
         <div class="row g-3 mb-3 align-items-stretch">
-            <div class="col-lg-6"><div th:replace="~{contabilita/bilancio :: sezioneFlat('Costi', ${costi}, ${totCosti})}"></div></div>
-            <div class="col-lg-6"><div th:replace="~{contabilita/bilancio :: sezioneFlat('Ricavi', ${ricavi}, ${totRicavi})}"></div></div>
-        </div>
-        <div class="card shadow-sm border-0 mb-4"
-             th:classappend="${risultatoUtile ? 'border-start border-success border-4' : 'border-start border-danger border-4'}">
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <span class="fw-semibold" th:text="${risultatoUtile ? 'Utile d''esercizio (Ricavi − Costi)' : 'Perdita d''esercizio (Costi − Ricavi)'}">Risultato</span>
-                <span class="fs-5 fw-bold font-monospace" th:classappend="${risultatoUtile ? 'text-success' : 'text-danger'}"
-                      th:text="${#numbers.formatDecimal(risultato,1,'POINT',2,'COMMA')}">0,00</span>
-            </div>
+            <div class="col-lg-6"><div th:replace="~{contabilita/bilancio :: sezioneTreeCompact('Costi', ${costiTree}, ${totCosti})}"></div></div>
+            <div class="col-lg-6"><div th:replace="~{contabilita/bilancio :: sezioneTreeCompact('Ricavi', ${ricaviTree}, ${totRicavi})}"></div></div>
         </div>
     </div>
 
-    <!-- ─── Conti non classificati (senza CON_POSBIL) — segnalati, non nascosti ─ -->
     <div th:if="${nonClassificati != null and !nonClassificati.isEmpty()}"
          class="card shadow-sm border-0 mb-4 border-start border-warning border-4">
         <div class="card-header bg-white py-2 fw-semibold text-warning-emphasis">
@@ -207,66 +183,66 @@
         <div th:replace="~{contabilita/bilancio :: righeConti(${nonClassificati})}"></div>
     </div>
 
+    </div><!-- /elabora -->
+
+    <script th:inline="none">
+        // R2: "solo sottogruppi" rende implicito "no dettaglio C/F" → disabilita quel radio
+        function applyR2() {
+            var solo = document.getElementById('c_soloSottogruppi').checked;
+            var noDett = document.getElementById('cfNoDett');
+            noDett.disabled = solo;
+            if (solo && noDett.checked) { document.getElementById('cfNormale').checked = true; }
+        }
+        applyR2();
+    </script>
+
 </section>
 
 
-<!-- ═══════════ FRAGMENT: sezioneTree (mastro → gruppo → sottoconto) ═══════════ -->
+<!-- ═══════════ FRAGMENT: sezioneTree (full, Prog. Dare/Avere/Saldo) ═══════════ -->
 <div th:fragment="sezioneTree(titolo, mastri, totale)" class="card shadow-sm border-0 mb-3">
     <div class="card-header bg-light py-2 fw-semibold" th:text="${titolo}">Sezione</div>
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-sm mb-0 align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th>Conto / Descrizione</th>
-                        <th class="text-end" style="width:150px">Prog. Dare</th>
-                        <th class="text-end" style="width:150px">Prog. Avere</th>
-                        <th class="text-end" style="width:150px">Saldo</th>
-                    </tr>
-                </thead>
+                <thead class="table-light"><tr>
+                    <th>Conto / Descrizione</th>
+                    <th class="text-end" style="width:150px">Prog. Dare</th>
+                    <th class="text-end" style="width:150px">Prog. Avere</th>
+                    <th class="text-end" style="width:150px">Saldo</th>
+                </tr></thead>
                 <tbody>
                     <th:block th:each="m : ${mastri}">
-                        <!-- MASTRO -->
                         <tr class="table-secondary fw-bold">
                             <td><span class="font-monospace me-2" th:text="${m.code}">01</span><span th:text="${m.description}">Mastro</span></td>
                             <td class="text-end font-monospace" th:text="${#numbers.formatDecimal(m.totDare,1,'POINT',2,'COMMA')}">0,00</td>
                             <td class="text-end font-monospace" th:text="${#numbers.formatDecimal(m.totAvere,1,'POINT',2,'COMMA')}">0,00</td>
-                            <td class="text-end font-monospace" th:classappend="${m.saldo.signum() < 0 ? 'text-danger' : ''}"
-                                th:text="${#numbers.formatDecimal(m.saldo,1,'POINT',2,'COMMA')}">0,00</td>
+                            <td class="text-end font-monospace" th:classappend="${m.saldo.signum() < 0 ? 'text-danger' : ''}" th:text="${#numbers.formatDecimal(m.saldo,1,'POINT',2,'COMMA')}">0,00</td>
                         </tr>
                         <th:block th:each="g : ${m.subGroups}">
-                            <!-- GRUPPO -->
                             <tr class="fw-semibold" style="background:#f5f8fb">
                                 <td class="ps-4"><span class="font-monospace me-2" th:text="${g.code}">0101</span><span th:text="${g.description}">Gruppo</span></td>
                                 <td class="text-end font-monospace" th:text="${#numbers.formatDecimal(g.totDare,1,'POINT',2,'COMMA')}">0,00</td>
                                 <td class="text-end font-monospace" th:text="${#numbers.formatDecimal(g.totAvere,1,'POINT',2,'COMMA')}">0,00</td>
-                                <td class="text-end font-monospace" th:classappend="${g.saldo.signum() < 0 ? 'text-danger' : ''}"
-                                    th:text="${#numbers.formatDecimal(g.saldo,1,'POINT',2,'COMMA')}">0,00</td>
+                                <td class="text-end font-monospace" th:classappend="${g.saldo.signum() < 0 ? 'text-danger' : ''}" th:text="${#numbers.formatDecimal(g.saldo,1,'POINT',2,'COMMA')}">0,00</td>
                             </tr>
-                            <!-- SOTTOCONTI -->
-                            <tr th:each="l : ${g.lines}">
+                            <tr th:each="l : ${g.lines}" th:if="${!soloSottogruppi}">
                                 <td class="ps-5 small">
-                                    <a th:href="@{/contabilita/storico(conto=${l.account})}"
-                                       class="font-monospace text-decoration-none" th:text="${l.account}">01010001</a>
+                                    <a th:href="@{/contabilita/storico(conto=${l.account})}" class="font-monospace text-decoration-none" th:text="${l.account}">01010001</a>
                                     <span th:text="${l.description ?: '—'}">Conto</span>
                                     <span th:if="${l.accountType == 'C'}" class="badge bg-info-subtle text-info-emphasis ms-1">Cliente</span>
                                     <span th:if="${l.accountType == 'F'}" class="badge bg-warning-subtle text-warning-emphasis ms-1">Fornitore</span>
                                 </td>
                                 <td class="text-end font-monospace small" th:text="${#numbers.formatDecimal(l.totDare,1,'POINT',2,'COMMA')}">0,00</td>
                                 <td class="text-end font-monospace small" th:text="${#numbers.formatDecimal(l.totAvere,1,'POINT',2,'COMMA')}">0,00</td>
-                                <td class="text-end font-monospace small" th:classappend="${l.saldo.signum() < 0 ? 'text-danger' : ''}"
-                                    th:text="${#numbers.formatDecimal(l.saldo,1,'POINT',2,'COMMA')}">0,00</td>
+                                <td class="text-end font-monospace small" th:classappend="${l.saldo.signum() < 0 ? 'text-danger' : ''}" th:text="${#numbers.formatDecimal(l.saldo,1,'POINT',2,'COMMA')}">0,00</td>
                             </tr>
-                            <tr th:if="${g.hasHiddenCF}">
-                                <td colspan="4" class="ps-5 small text-muted fst-italic">
-                                    Conti clienti/fornitori nascosti — importi inclusi nel totale del gruppo
-                                </td>
+                            <tr th:if="${g.hasHiddenCF and !soloSottogruppi}">
+                                <td colspan="4" class="ps-5 small text-muted fst-italic">Conti clienti/fornitori nascosti — importi nel totale del gruppo</td>
                             </tr>
                         </th:block>
                     </th:block>
-                    <tr th:if="${mastri == null or mastri.isEmpty()}">
-                        <td colspan="4" class="text-center text-muted py-4 small">Nessun conto movimentato.</td>
-                    </tr>
+                    <tr th:if="${mastri == null or mastri.isEmpty()}"><td colspan="4" class="text-center text-muted py-4 small">Nessun conto.</td></tr>
                 </tbody>
             </table>
         </div>
@@ -277,32 +253,35 @@
     </div>
 </div>
 
-<!-- ═══════════ FRAGMENT: sezioneFlat (lista piatta, saldo, per vista contrapposta) ═══════════ -->
-<div th:fragment="sezioneFlat(titolo, righe, totale)" class="card shadow-sm border-0 h-100">
-    <div class="card-header bg-light py-2 d-flex justify-content-between align-items-center">
-        <span class="fw-semibold" th:text="${titolo}">Sezione</span>
-        <span class="badge bg-secondary" th:text="${righe != null ? righe.size() : 0}">0</span>
-    </div>
+<!-- ═══════════ FRAGMENT: sezioneTreeCompact (contrapposte, solo Saldo) ═══════════ -->
+<div th:fragment="sezioneTreeCompact(titolo, mastri, totale)" class="card shadow-sm border-0 h-100">
+    <div class="card-header bg-light py-2 fw-semibold" th:text="${titolo}">Sezione</div>
     <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-hover table-sm mb-0">
+            <table class="table table-sm mb-0 align-middle">
                 <tbody>
-                    <tr th:each="l : ${righe}" th:if="${showCF or !l.customerOrSupplier}">
-                        <td style="width:120px">
-                            <a th:href="@{/contabilita/storico(conto=${l.account})}"
-                               class="font-monospace small text-decoration-none" th:text="${l.account}">01.05.001</a>
-                        </td>
-                        <td class="small">
-                            <span th:text="${l.description ?: '—'}">Conto</span>
-                            <span th:if="${l.accountType == 'C'}" class="badge bg-info-subtle text-info-emphasis ms-1">Cliente</span>
-                            <span th:if="${l.accountType == 'F'}" class="badge bg-warning-subtle text-warning-emphasis ms-1">Fornitore</span>
-                        </td>
-                        <td class="text-end font-monospace small fw-semibold"
-                            th:text="${#numbers.formatDecimal(l.displayAmount,1,'POINT',2,'COMMA')}">0,00</td>
-                    </tr>
-                    <tr th:if="${righe == null or righe.isEmpty()}">
-                        <td colspan="3" class="text-center text-muted py-4 small">Nessun conto.</td>
-                    </tr>
+                    <th:block th:each="m : ${mastri}">
+                        <tr class="table-secondary fw-bold">
+                            <td><span class="font-monospace me-2" th:text="${m.code}">01</span><span th:text="${m.description}">Mastro</span></td>
+                            <td class="text-end font-monospace" th:classappend="${m.saldo.signum() < 0 ? 'text-danger' : ''}" th:text="${#numbers.formatDecimal(m.saldo,1,'POINT',2,'COMMA')}">0,00</td>
+                        </tr>
+                        <th:block th:each="g : ${m.subGroups}">
+                            <tr class="fw-semibold" style="background:#f5f8fb">
+                                <td class="ps-4"><span class="font-monospace me-2" th:text="${g.code}">0101</span><span th:text="${g.description}">Gruppo</span></td>
+                                <td class="text-end font-monospace" th:classappend="${g.saldo.signum() < 0 ? 'text-danger' : ''}" th:text="${#numbers.formatDecimal(g.saldo,1,'POINT',2,'COMMA')}">0,00</td>
+                            </tr>
+                            <tr th:each="l : ${g.lines}" th:if="${!soloSottogruppi}">
+                                <td class="ps-5 small">
+                                    <a th:href="@{/contabilita/storico(conto=${l.account})}" class="font-monospace text-decoration-none" th:text="${l.account}">01010001</a>
+                                    <span th:text="${l.description ?: '—'}">Conto</span>
+                                    <span th:if="${l.accountType == 'C'}" class="badge bg-info-subtle text-info-emphasis ms-1">Cli</span>
+                                    <span th:if="${l.accountType == 'F'}" class="badge bg-warning-subtle text-warning-emphasis ms-1">For</span>
+                                </td>
+                                <td class="text-end font-monospace small" th:classappend="${l.saldo.signum() < 0 ? 'text-danger' : ''}" th:text="${#numbers.formatDecimal(l.saldo,1,'POINT',2,'COMMA')}">0,00</td>
+                            </tr>
+                        </th:block>
+                    </th:block>
+                    <tr th:if="${mastri == null or mastri.isEmpty()}"><td colspan="2" class="text-center text-muted py-4 small">Nessun conto.</td></tr>
                 </tbody>
             </table>
         </div>
@@ -313,20 +292,16 @@
     </div>
 </div>
 
-<!-- ═══════════════ FRAGMENT: righeConti (tabella semplice) ═══════════════ -->
+<!-- ═══════════ FRAGMENT: righeConti ═══════════ -->
 <div th:fragment="righeConti(righe)" class="card-body p-0">
     <div class="table-responsive">
         <table class="table table-hover table-sm mb-0">
-            <thead class="table-light">
-                <tr><th style="width:120px">Conto</th><th>Descrizione</th><th class="text-end" style="width:150px">Saldo</th></tr>
-            </thead>
+            <thead class="table-light"><tr><th style="width:120px">Conto</th><th>Descrizione</th><th class="text-end" style="width:150px">Saldo</th></tr></thead>
             <tbody>
                 <tr th:each="l : ${righe}">
-                    <td><a th:href="@{/contabilita/storico(conto=${l.account})}"
-                           class="font-monospace small text-decoration-none" th:text="${l.account}">01.05.001</a></td>
+                    <td><a th:href="@{/contabilita/storico(conto=${l.account})}" class="font-monospace small text-decoration-none" th:text="${l.account}">01.05.001</a></td>
                     <td class="small" th:text="${l.description ?: '—'}">Conto</td>
-                    <td class="text-end font-monospace small" th:classappend="${l.saldo.signum() < 0 ? 'text-danger' : ''}"
-                        th:text="${#numbers.formatDecimal(l.saldo,1,'POINT',2,'COMMA')}">0,00</td>
+                    <td class="text-end font-monospace small" th:classappend="${l.saldo.signum() < 0 ? 'text-danger' : ''}" th:text="${#numbers.formatDecimal(l.saldo,1,'POINT',2,'COMMA')}">0,00</td>
                 </tr>
             </tbody>
         </table>

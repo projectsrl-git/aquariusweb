@@ -260,12 +260,38 @@ public class ContabilitaController {
     // ─────────────────────────────────────────────── BILANCIO ──────────
     @GetMapping("/bilancio")
     @Transactional(transactionManager = "tenantTransactionManager", readOnly = true)
-    public String bilancio(@RequestParam(value = "cf", defaultValue = "true") boolean showCF,
-                           @RequestParam(value = "vista", defaultValue = "mastri") String vista,
+    public String bilancio(@RequestParam(value = "vista", defaultValue = "mastri") String vista,
+                           @RequestParam(value = "elabora", defaultValue = "false") boolean elabora,
+                           // R1: coppia C/F come scelta singola — normale | solo | nodettaglio
+                           @RequestParam(value = "cfMode", defaultValue = "normale") String cfMode,
+                           @RequestParam(value = "contiOrdine", defaultValue = "true") boolean contiOrdine,
+                           @RequestParam(value = "nonZero", defaultValue = "true") boolean nonZero,
+                           @RequestParam(value = "soloSottogruppi", defaultValue = "false") boolean soloSottogruppi,
                            Model model,
                            @AuthenticationPrincipal AquariusPrincipal principal) {
         String soc = fiscalContext.getSocietyCode();
         String anno = fiscalContext.getFiscalYear();
+
+        // Normalizzazione opzioni + coerenza (R1/R2)
+        String vistaN = "contrapposte".equals(vista) ? "contrapposte" : "mastri";
+        if (!"solo".equals(cfMode) && !"nodettaglio".equals(cfMode)) cfMode = "normale";
+        // R1: showCF (mostra le foglie C/F) è falso solo con "nodettaglio".
+        boolean showCF = !"nodettaglio".equals(cfMode);
+
+        model.addAttribute("vista", vistaN);
+        model.addAttribute("elabora", elabora);
+        model.addAttribute("cfMode", cfMode);
+        model.addAttribute("contiOrdine", contiOrdine);
+        model.addAttribute("nonZero", nonZero);
+        model.addAttribute("soloSottogruppi", soloSottogruppi);
+        model.addAttribute("anno", anno);
+        model.addAttribute("breadcrumbs",
+            breadcrumbService.forUrl("/contabilita/bilancio", principal.getUsername()));
+
+        // Passo 1: senza "Elabora" mostra solo il form opzioni (come lo "Stampa" legacy).
+        if (!elabora) {
+            return "contabilita/bilancio";
+        }
 
         // Anagrafica conti: codice → Account (per sezione bilancio + tipo conto)
         Map<String, Account> accByCode = accountByCode();
@@ -281,8 +307,23 @@ public class ContabilitaController {
                 String tipo = a != null ? trimUpper(a.getAccountType()) : null;
                 return new BilancioLine(code, desc, r.getTotDare(), r.getTotAvere(), section, tipo);
             })
-            .filter(l -> l.getSaldo().signum() != 0)   // solo conti movimentati
             .collect(Collectors.toList());
+
+        // Opzioni di visualizzazione (bilancio di verifica):
+        // - "Non stampa i conti con saldo a zero"
+        if (nonZero) {
+            all = all.stream().filter(l -> l.getSaldo().signum() != 0).collect(Collectors.toList());
+        }
+        // - "Stampa i conti d'ordine": se disattivo, escludi il mastro 04 (conti d'ordine)
+        if (!contiOrdine) {
+            all = all.stream()
+                .filter(l -> l.getAccount() == null || !l.getAccount().startsWith("04"))
+                .collect(Collectors.toList());
+        }
+        // - "Stampa solo i clienti/fornitori" (R1): tiene solo i conti C/F
+        if ("solo".equals(cfMode)) {
+            all = all.stream().filter(BilancioLine::isCustomerOrSupplier).collect(Collectors.toList());
+        }
 
         // NB: NON filtro qui i C/F. I totali di sezione e la quadratura devono
         // includere sempre clienti/fornitori; il toggle showCF agisce solo sulla
@@ -340,13 +381,9 @@ public class ContabilitaController {
         model.addAttribute("totPassivoConRisultato",
             risultato.signum() >= 0 ? totPassivo.add(risultato) : totPassivo);
         model.addAttribute("showCF", showCF);
-        model.addAttribute("vista", "contrapposte".equals(vista) ? "contrapposte" : "mastri");
         model.addAttribute("quadraturaSP", quadraturaSP.abs());
         model.addAttribute("sbilancio", sbilancio.abs());
         model.addAttribute("quadraturaOk", quadraturaOk);
-        model.addAttribute("anno", anno);
-        model.addAttribute("breadcrumbs",
-            breadcrumbService.forUrl("/contabilita/bilancio", principal.getUsername()));
         return "contabilita/bilancio";
     }
 
