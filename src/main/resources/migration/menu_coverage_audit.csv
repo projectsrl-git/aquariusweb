@@ -1,0 +1,1052 @@
+area,percorso_menu,voce,form_o_prg,copertura,evidenza_web,reason_code,note,metodo_classificazione
+clienti,clienti > Agenti,Aggiornamento,menu_age000,MIGRATO,/agenti,,Consultazione web agganciata via FORM_TO_URL,FORM_TO_URL
+clienti,clienti > Agenti,Annullo anagrafica agenti con selezione,menu_ageannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Agenti,Elenco anagrafico clienti per agente,menu_ageelen,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Anagrafica,Aggiornamento,menu_cli000,MIGRATO,/clienti,,Consultazione web agganciata via FORM_TO_URL,FORM_TO_URL
+clienti,clienti > Anagrafica,Annullo con selezione,menu_cliannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Anagrafica,Cambio codice agente in anagrafica,clicage,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Anagrafica,Cambio codice listino in anagrafica,menu_clitlisti,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Anagrafica,Duplicazione anagrafica clienti,menu_clidup,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Anagrafica,Elenco dati anagrafici commerciali,menu_clicomme,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Anagrafica,Elenco dati anagrafici contabili,,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Anagrafica,Elenco note anagrafiche clienti,menu_clinote,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Anagrafica > Gestione contatti prospect,Aggiornamento contatti prospect,menu_cnt000,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Anagrafica > Gestione contatti prospect,Calcolo prezzi base,menu_cntpr,MANCANTE,,,,default
+clienti,clienti > Anagrafica > Gestione contatti prospect,Conferma potenziale cliente in effettivo,menu_clieff,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Anagrafica > Gestione contatti prospect,Esportazione contatti da agenti a sede,menu_cnt_export,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Anagrafica > Gestione contatti prospect,Gestione log di trasmissione/ricezione contatti,menu_log_trasmcnt,MANCANTE,,,,default
+clienti,clienti > Anagrafica > Gestione contatti prospect,Importazione contatti da agenti a sede,menu_cnt_import,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Anagrafica > Gestione contatti prospect,Parametri per la gestione contatti prospect,paracontatti,MANCANTE,,,,default
+clienti,clienti > Anagrafica > Gestione contatti prospect > Statistiche sui contatti prospect,Elenco clienti che bisogna contattare,menu_statcnt_praz,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Anagrafica > Gestione contatti prospect > Statistiche sui contatti prospect,Elenco clienti che non vengono contattati dal,menu_stcntdt,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Anagrafica > Gestione contatti prospect > Statistiche sui contatti prospect,Statistiche contatti,menu_statcnt,MANCANTE,,,,default
+clienti,clienti > Anagrafica > Gestione fidelizzazione clienti,Gestione clienti fidelizzati,menu_clifidel,MANCANTE,,,,default
+clienti,clienti > Anagrafica > Gestione fidelizzazione clienti,Gestione tessere sconto fedeltà,menu_tes000,MANCANTE,,,,default
+clienti,clienti > Anagrafica > Gestione fidelizzazione clienti,Stampa modulo fidelizzazione clienti,fidstam,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Banche,Aggiornamento,menu_ban000,MIGRATO,/banche,,Consultazione web agganciata via FORM_TO_URL,FORM_TO_URL
+clienti,clienti > Banche,Annullo con selezione,menu_banannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Business unit,Aggiornamento,menu_pdv000,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Business unit,Chiusura di cassa - sede,menu_pdvclose,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Business unit,Chiusura di cassa definitiva - business unit,menu_pdvclose2,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Business unit,Chiusura di cassa provvisoria - business unit,menu_pdvclose2,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Business unit,Situazione in tempo reale degli incassi,menu_saldipdv2,MANCANTE,,,,default
+clienti,clienti > Business unit,Stampa degli incassi,menu_tagcolin,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Business unit,Stampa vendite giornaliere per fascia oraria,menu_vengora,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Business unit > Gestione collaboratori,Gestione anagrafica,per000,MANCANTE,,,,default
+clienti,clienti > Business unit > Gestione collaboratori,Gestione contratti,pdvcontr,MANCANTE,,,,default
+clienti,clienti > Business unit > Gestione collaboratori > Gestione calendario,Cancellazione,menu_caleli,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Business unit > Gestione collaboratori > Gestione calendario,Generazione automatica,menu_calgen,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Business unit > Gestione collaboratori > Gestione calendario,Gestione,menu_cal000,MANCANTE,,,,default
+clienti,clienti > Business unit > Gestione collaboratori > Gestione compensi,Conferma compensi provvisori in definitivi,menu_confcomp,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Business unit > Gestione collaboratori > Gestione compensi,Gestione compensi mensili (provvisiori),menu_gestcomp,MANCANTE,,,,default
+clienti,clienti > Business unit > Gestione collaboratori > Gestione compensi,Produzione compensi mensili (provvisori),menu_prodcomp,MANCANTE,,,,default
+clienti,clienti > Business unit > Gestione collaboratori > Gestione compensi,Stampa compensi mensili (definitivi),menu_stamcomp,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Business unit > Gestione collaboratori > Gestione compensi,Stampa compensi mensili (provvisori),menu_stamcomp,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Business unit > Gestione collaboratori > Gestione delle coperture,Gestione coperture al servizio di vendita,menu_coppdv,MANCANTE,,,,default
+clienti,clienti > Business unit > Gestione collaboratori > Gestione delle coperture,Stampa coperture al servizio di vendita,menu_stamass,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Business unit > Gestione collaboratori > Gestione entrate/uscite di ogni collaboratore,Inserimento movimenti,menu_movicoll,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Business unit > Gestione collaboratori > Gestione entrate/uscite di ogni collaboratore,Stampa movimenti,menu_stammovi,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Business unit > Gestione collaboratori > Stampe varie,Disposizione bancaria di pagamento,menu_stamdisb,MANCANTE,,,,default
+clienti,clienti > Business unit > Gestione collaboratori > Stampe varie,Estratto conto azienda,menu_stamesaz,MANCANTE,,,,default
+clienti,clienti > Business unit > Gestione collaboratori > Stampe varie,Estratto conto collaboratore,menu_stamesco,MANCANTE,,,,default
+clienti,clienti > Business unit > Gestione collaboratori > Stampe varie,Gestione estratto conto aziendale,menu_geseca,MANCANTE,,,,default
+clienti,clienti > Business unit > Gestione collaboratori > Stampe varie,Lettera di avviso pagamento,menu_stamavvp,MANCANTE,,,,default
+clienti,clienti > Business unit > Gestione collaboratori > Stampe varie,Ritenute d'acconto,menu_stamrita,MANCANTE,,,,default
+clienti,clienti > Business unit > Gestione collaboratori > Trasferimento dati con contabilità generale,Assegni pagati,menu_trasasse,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Business unit > Gestione collaboratori > Trasferimento dati con contabilità generale,Gestione flag per ritrasmissione assegni,menu_flagasse,NON_APPLICABILE,,WRITE_SIDE,Utility/manutenzione: gestionale,pattern-refine
+clienti,clienti > Business unit > Gestione collaboratori > Trasferimento dati con contabilità generale,Gestione flag per ritrasmissione rit. acconto,menu_flagriac,NON_APPLICABILE,,WRITE_SIDE,Utility/manutenzione: gestionale,pattern-refine
+clienti,clienti > Business unit > Gestione collaboratori > Trasferimento dati con contabilità generale,Movimenti di entrata/uscita,,MANCANTE,,,,default
+clienti,clienti > Business unit > Gestione collaboratori > Trasferimento dati con contabilità generale,Ritenute d'acconto,menu_trasriac,MANCANTE,,,,default
+clienti,clienti > Business unit > Monitoraggio business unit,Monitoraggio casse,menu_monicasse,MANCANTE,,,,default
+clienti,clienti > Business unit > Monitoraggio business unit,Monitoraggio visitatori del punto di vendita,menu_monivisit,MANCANTE,,,,default
+clienti,clienti > Cambi,Aggiornamento,menu_val000,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Cambi,Controllo/attribuzione automatica cambi fatture,menu_vvaver,MANCANTE,,,,default
+clienti,clienti > Cambi,Creazione archivio valute euro,menu_vvavalu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Cambi,Preleva cambi dal sito banca d'italia,cambi_giornalieri,MANCANTE,,,,default
+clienti,clienti > Comuni,Gestione comuni,menu_comuni,MANCANTE,,,,default
+clienti,clienti > Comuni,Gestione province,menu_province,MANCANTE,,,,default
+clienti,clienti > Comuni,Gestione regioni,menu_regioni,MANCANTE,,,,default
+clienti,clienti > Documenti di trasporto > Bolle di reso a fornitori,Aggiornamento,menu_bolfor,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Documenti di trasporto > Bolle di reso a fornitori,Annullo con selezione,menu_resannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Documenti di trasporto > Bolle di reso a fornitori,Annullo per periodo,menu_reseli,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Documenti di trasporto > Bolle di reso a fornitori,Situazione bolle di reso a fornitore,menu_reselend,MANCANTE,,,,default
+clienti,clienti > Documenti di trasporto > Bolle di reso da clienti,Aggiornamento,menu_rdc000,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Documenti di trasporto > Bolle di reso da clienti,Annullo con selezione,menu_rdcannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Documenti di trasporto > Consegna a clienti,Aggiornamento,menu_bol000,MIGRATO,/ddt,,Consultazione web agganciata via FORM_TO_URL,FORM_TO_URL
+clienti,clienti > Documenti di trasporto > Consegna a clienti,Aggiornamento altri dati documenti di trasporto,menu_bolaggdati,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Documenti di trasporto > Consegna a clienti,Annullo con selezione,menu_bolannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Documenti di trasporto > Consegna a clienti,Annullo per periodo,menu_boleli,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Documenti di trasporto > Consegna a clienti > Elenchi,Elenco clienti che non hanno ritirato merce dal al,menu_bolriti,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Documenti di trasporto > Consegna a clienti > Elenchi,Elenco d.d.t.,menu_boltest,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Documenti di trasporto > Consegna a clienti > Elenchi,Elenco d.d.t. con dettagli,menu_bolstele,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Documenti di trasporto > Consegna a clienti > Elenchi,Elenco ddt che non sono state fatturate,menu_eleboldafat,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Documenti di trasporto > Consegna a clienti > Procedure di supporto,Gestione certificati di conformità,menu_cer000,MANCANTE,,,,default
+clienti,clienti > Documenti di trasporto > Consegna a clienti > Procedure di supporto,Stampa giornaliera del consegnato (fiscale),menu_bofconse,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Documenti di trasporto > Consegna a clienti > Procedure di supporto,Stampa sul modulo per periodo,menu_bolper,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Documenti di trasporto > Consegna a fornitori,Aggiornamento,menu_bolfor,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Documenti di trasporto > Consegna a fornitori,Annullo con selezione,menu_bofannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Documenti di trasporto > Documenti di reso da business unit,Aggiornamento,menu_bfo000,MIGRATO,/ddt-fornitore,,Consultazione web agganciata via FORM_TO_URL,FORM_TO_URL
+clienti,clienti > Documenti di trasporto > Documenti di reso da business unit,Annullo con selezione,menu_bfoannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Documenti di trasporto > Documenti di reso da business unit,Annullo per periodo,menu_bfoeli,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Documenti di trasporto > Documenti di reso da business unit,Elenco documenti di reso dei pdv,menu_bfoelen,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Documenti di trasporto > Gestione packing list,Annullo con selezione,menu_pckannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Documenti di trasporto > Gestione packing list,Annullo per periodo,menu_pckeli,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Documenti di trasporto > Gestione packing list,Creazione documenti di trasporto,menu_pcktoddt,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Documenti di trasporto > Gestione packing list,Creazione packing list per il prelievo,menu_lispreli,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Documenti di trasporto > Gestione packing list,Elenco packing list,menu_pcktest,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Documenti di trasporto > Gestione packing list,Generazione file per agenzia delle entrate,menu_genfilefisco,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Documenti di trasporto > Gestione packing list,Prelievo da packing list,menu_evapck,MANCANTE,,,,default
+clienti,clienti > Documenti di trasporto > Gestione packing list,Ristampa packing list,menu_rispack1,MANCANTE,,,,default
+clienti,clienti > Documenti di trasporto > Gestione piani di trasporto,Annullo piani di trasporto,pbg_packing_da_ord_annu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Documenti di trasporto > Gestione piani di trasporto,Annullo verifica consegne e ritiri,pbg_consegne_ddt_annu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Documenti di trasporto > Gestione piani di trasporto,Creazione ddt da piani di trasporto,pbg_pck_da_ord_toddt,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Documenti di trasporto > Gestione piani di trasporto,Gestione piani di trasporto,pbg_packing_da_ordini,MANCANTE,,,,default
+clienti,clienti > Documenti di trasporto > Gestione piani di trasporto,Statistica piani di trasporto,pbg_pck_da_ord_stat,MANCANTE,,,,default
+clienti,clienti > Documenti di trasporto > Gestione piani di trasporto,Verifica consegne/ritiri per conferma fatturazione,pbg_consegne_ddt,MANCANTE,,,,default
+clienti,clienti > Documenti di trasporto > Pre-bolle di reso a fornitori (per pdv),Aggiornamento,menu_prb000,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Documenti di trasporto > Pre-bolle di reso a fornitori (per pdv),Annullo con selezione,menu_prbannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Documenti di trasporto > Pre-bolle di reso a fornitori (per pdv),Annullo per periodo,menu_prbeli,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Documenti di trasporto > Pre-bolle di reso a fornitori (per pdv),Conferma prebolle di reso,menu_prbconf,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Documenti di trasporto > Pre-bolle di reso a fornitori (per pdv),Creazione bolle di reso,submenu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Documenti di trasporto > Pre-bolle di reso a fornitori (per pdv),Elenco prebolle di reso,menu_prbelens,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Documenti di trasporto > Pre-bolle di reso a fornitori (per pdv),Gestione flag creazione pre-bolle di reso,menu_prbflgs,NON_APPLICABILE,,WRITE_SIDE,Utility/manutenzione: gestionale,pattern-refine
+clienti,clienti > Fatture clienti,Aggiornamento,menu_fat000,MIGRATO,/fatture,,Consultazione web agganciata via FORM_TO_URL,FORM_TO_URL
+clienti,clienti > Fatture clienti,Annullo con selezione,menu_fatannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Fatture clienti,Annullo per periodo,menu_fateli,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Fatture clienti,Duplicazione fatture,menu_duplfatfap,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Fatture clienti,Gestione budget di vendita,menu_bud_am000,MANCANTE,,,,default
+clienti,clienti > Fatture clienti,Gestione incasso fatture clienti,menu_fatture_incassate,MANCANTE,,,,default
+clienti,clienti > Fatture clienti,Riepilogo contributo ambientale conai,menu_riconai,MANCANTE,,,,default
+clienti,clienti > Fatture clienti,Sblocco documenti di trasporto già fatturati,menu_bolsbloc,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Fatture clienti,Stampa elenco contributo polieco per periodo,menu_prtpolieco,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Fatture clienti > Creazione fatture da documenti di trasporto,Generazione fatture da ddt,menu_ord_bol_tofat,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Fatture clienti > Creazione fatture messa disposizione bombole (MDB),Annullo contrattI bombole MDB,menu_contrmdb_annu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Fatture clienti > Creazione fatture messa disposizione bombole (MDB),Calcolo mensile MDB,,MANCANTE,,,,default
+clienti,clienti > Fatture clienti > Creazione fatture messa disposizione bombole (MDB),Creazione fatture di consumo/noleggio MDB,pbg_ord_bol_tofat,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Fatture clienti > Creazione fatture messa disposizione bombole (MDB),Gestione contratti bombole (MDB),menu_contrmdb,MANCANTE,,,,default
+clienti,clienti > Fatture clienti > Creazione note di credito,Creazione nota accredito da documento di reso,menu_retoncr_multi,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Fatture clienti > Creazione note di credito,Creazione nota accredito da più d.d.t. per reso,menu_retoncr_multi,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Fatture clienti > Elenchi fatture,Elenco clienti senza tipo di fatturazione,menu_clinotip,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Fatture clienti > Elenchi fatture,Elenco fatture ancora da contabilizzare,menu_elefatdacon,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Fatture clienti > Elenchi fatture,Elenco fatture con dettagli,menu_fatstage,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Fatture clienti > Elenchi fatture,Elenco fatture con valore venduto,menu_fatsta00,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Fatture clienti > Elenchi fatture,Elenco fatture per agente con provvigioni,menu_provagen,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Fatture clienti > Elenchi fatture,Elenco fatture per cliente,menu_fattrac,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Fatture clienti > Elenchi fatture,Elenco fatture per magazzino,menu_fatmaga,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Fatture clienti > Elenchi fatture,Elenco fatture per periodo,menu_fattras,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Fatture clienti > Elenchi fatture,Elenco fatture per vettore,menu_vettfatt,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Fatture clienti > Elenchi fatture,Stampa verifica congruenza fatture/DDT,menu_ddttofat_chk,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Fatture clienti > Procedure di supporto,Gestione c/anticipi fatture estere,menu_conantnew,MANCANTE,,,,default
+clienti,clienti > Fatture clienti > Procedure di supporto,Protocollo automatico delle fatture emesse,menu_fatprot,MANCANTE,,,,default
+clienti,clienti > Fatture clienti > Procedure di supporto,Protocollo manuale fatture,menu_fatprman,MANCANTE,,,,default
+clienti,clienti > Fatture proforma,Aggiornamento,menu_fap000,MIGRATO,/proforma,,Consultazione web agganciata via FORM_TO_URL,FORM_TO_URL
+clienti,clienti > Fatture proforma,Annullo con selezione,menu_fapannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Fatture proforma,Annullo per periodo,menu_fapeli,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Fatture proforma,Duplicazione fatture proforma,menu_duplfatfap,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Fatture proforma,Elenco fatture proforma con dettagli,menu_fapstage,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Fatture proforma,Elenco fatture proforma per periodo,menu_faptras,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Fatture proforma,Protocollo automatico delle fatture emesse,menu_fapprot,MANCANTE,,,,default
+clienti,clienti > Fatture proforma > Crea documenti,Crea fattura da fattura proforma con selezione,menu_faptofat,MANCANTE,,,,default
+clienti,clienti > Fatture proforma > Crea documenti,Generazione fattura proforma da ordine cliente,menu_ordtofap,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Fatture proforma > Crea documenti,Generazione fatture proforma da ddt,menu_ddttofap,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Fatture proforma > Crea documenti,Sblocca ordine per ricreare la fattura proforma,menu_ordflgfap,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Fatture proforma > Crea documenti,Sblocco/blocco fatture proforma fatturate,menu_fapflgs,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Interventi/riparazioni,Creazione interventi da preventivi,menu_offtoint,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Interventi/riparazioni,Gestione impianti,menu_impianti,MANCANTE,,,,default
+clienti,clienti > Interventi/riparazioni,Manutenzioni programmate impianti,menu_manutenzione_impianti,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Interventi/riparazioni,Pianificazione interventi,planner_interventi,MANCANTE,,,,default
+clienti,clienti > Interventi/riparazioni > Gestione interventi/riparazioni,Aggiornamento,menu_inr000,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Interventi/riparazioni > Gestione interventi/riparazioni,Annullo interventi tecnici,menu_inrannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Interventi/riparazioni > Gestione interventi/riparazioni,Chiusura/apertura interventi tecnici,menu_sbloccint,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Interventi/riparazioni > Gestione interventi/riparazioni,Creazione fatture da interventi,menu_int_to_fat,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Interventi/riparazioni > Gestione interventi/riparazioni,Elenco interventi riparazioni,menu_inrelen,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Interventi/riparazioni > Gestione listini impianti,Duplica listini impianti,menu_lisimpdup,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Interventi/riparazioni > Gestione listini impianti,Gestione listini impianti,,MANCANTE,,,,default
+clienti,clienti > Interventi/riparazioni > Gestione richieste intervento,Elenco richieste interventi,menu_elenco_richieste_int,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Interventi/riparazioni > Gestione richieste intervento,Elimina richieste intervento,menu_ricintannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Interventi/riparazioni > Gestione richieste intervento,Richiesta intervento,menu_richieste_interventi,MANCANTE,,,,default
+clienti,clienti > Listini > Abilita listini,Aggiornamento,menu_lig000,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Abilita listini,Convalida,menu_ligsitu,MANCANTE,,,,default
+clienti,clienti > Listini > Gestione listini > Gestione listini di vendita aziendale/articolo,Aggiornamento,menu_lis000av,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listini di vendita aziendale/articolo,Annullo listini  di vendita azienda/articoli,menu_lisannav,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listini di vendita aziendale/articolo,Cambio codice listino in anagrafica clienti,menu_clitlisti,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listini di vendita aziendale/articolo,Duplica listini di vendita azienda/articoli,menu_lisdupav,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listini di vendita aziendale/articolo,Modifica massiva validità listino azienda/articolo,menu_lismodav,MANCANTE,,,,default
+clienti,clienti > Listini > Gestione listini > Gestione listini di vendita aziendale/articolo,Stampa listini di vendita azienda/articoli,menu_lisstaav,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listini di vendita per zona,Aggiornamento listini vendita per zona,menu_lis000zona,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listini di vendita per zona,Annullo listini  di vendita per zona,,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listini di vendita per zona,Duplica listini di vendita per zona,,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listini di vendita per zona,Stampa listini di vendita per zona,menu_lisstazona,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listini per cliente tipo prod. spessore,Aggiornamento,menu_liscts,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listini per cliente tipo prod. spessore,Annullo listini cliente tipo prod. spessore,menu_lisanncts,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listini per cliente tipo prod. spessore,Duplicazione listini cliente/t.prod/spessore,menu_dupl_list_cts,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listini per cliente tipo prod. spessore,Stampa listini per cliente tipo prodotto spessore,menu_liscltipspes,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listini per cliente tipo prod. spessore,Stampa listino prezzi grezzo/nobilitato,menu_lisgrenob,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listini per cliente tipo prod. spessore,Variazione listini cliente tipo prod. spessore,,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listino cliente/articolo,Aggiornamento,menu_lis000,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listino cliente/articolo,Annullo listini clienti/articoli,menu_lisann,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listino cliente/articolo,Creazione listini di vendita cliente/articolo,menu_crealis,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listino cliente/articolo,Duplica listini  (c/a) per i clienti selezionati,menu_listinica,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listino cliente/articolo,Duplica listini clienti/articoli,menu_lisdup,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listino cliente/articolo,Modifica massiva validità listino cliente/articolo,menu_lismod,MANCANTE,,,,default
+clienti,clienti > Listini > Gestione listini > Gestione listino cliente/articolo,Stampa listini clienti/articoli,menu_lissta,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listino cliente/articolo > Ulteriori funzioni duplica listini clente/articolo,Duplicazione listini cliente/articolo  std.,menu_artduli,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listino cliente/articolo > Ulteriori funzioni duplica listini clente/articolo,Duplicazione listini cliente/articolo con cod.art.,menu_gen_list_cliart,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listino cliente/articolo > Ulteriori funzioni duplica listini clente/articolo,Procedura per la duplicazione dei listini cliente,menu_dupl_list_cliart,MANCANTE,,,,default
+clienti,clienti > Listini > Gestione listini > Gestione listino cliente/articolo > Ulteriori funzioni duplica listini clente/articolo,Stampa lettera di variazione prezzo,menu_dupl_list_cliart_sta,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listino cliente/articolo/altezza/lungh.,Aggiornamento,menu_liscliartalt,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listino cliente/articolo/altezza/lungh.,Annullo listini cliente/articolo/altezza/lungh.,menu_liscliartalt_ann,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listino cliente/articolo/altezza/lungh.,Consultazione listino clie/artic/altezza/lungh.,menu_liscliartalt_log,MANCANTE,,,,default
+clienti,clienti > Listini > Gestione listini > Gestione listino cliente/articolo/altezza/lungh.,Duplicazione listini cliente/articolo/alt./lungh.,menu_liscliartalt_dup,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listino cliente/articolo/altezza/lungh.,Stampa listino clie/artic/altezza/lungh.,menu_liscliartalt_sta,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listino cliente/articolo/altezza/lungh.,Variazione listini cliente/articolo/altezza/lungh.,menu_liscliartalt_var,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listino cliente/linea/articolo,Aggiornamento,menu_lisli000,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listino cliente/linea/articolo,Annullo listini cliente/linea/articolo,menu_liscaclli,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listino cliente/linea/articolo,Duplicazione listini cliente/linea/articolo,menu_artliduli,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listino cliente/linea/articolo,Stampa listino cliente/linea/articolo,menu_lisliart,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listino cliente/linea/articolo,Variazione listini cliente/linea/articolo,menu_lisvaclli,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listino zona/agente,Aggiornamento,menu_lisven,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listino zona/agente,Annullo listini vendita zona/agente,menu_liscazo,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listino zona/agente,Duplicazione listini zona/agente,menu_lisduzo,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listino zona/agente,Stampa listini vendita zona/agente,menu_listven,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Listini > Gestione listini > Gestione listino zona/agente,Variazione listini vendita zona/settore,menu_lisvazo,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Località di consegna,Aggiornamento,menu_loc000,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Località di consegna,Annullo con selezione,menu_locannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Ordini clienti,Aggiornamento,menu_ord000,MIGRATO,/ordini,,Consultazione web agganciata via FORM_TO_URL,FORM_TO_URL
+clienti,clienti > Ordini clienti,Annullo con selezione,menu_ordannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Ordini clienti,Annullo per periodo,menu_ordeli,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Ordini clienti,Controllo disponibilità di magazzino per vendite,menu_contr_mag_adv,MANCANTE,,,,default
+clienti,clienti > Ordini clienti,Controllo prezzi/sconti minimi,menu_ordprzmin,MANCANTE,,,,default
+clienti,clienti > Ordini clienti,Controllo situazione rischio clienti,menu_riscli,MANCANTE,,,,default
+clienti,clienti > Ordini clienti,Duplicazione con destinazione diversa,menu_ordupds,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Ordini clienti,Duplicazione ordine cliente,menu_duplordorf,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Ordini clienti,Gestione blocco/sblocco riga ordine,menu_disimpord,NON_APPLICABILE,,WRITE_SIDE,Utility/manutenzione: gestionale,pattern-refine
+clienti,clienti > Ordini clienti,Gestione blocco/sblocco testata ordine,menu_orddisimpordtes,NON_APPLICABILE,,WRITE_SIDE,Utility/manutenzione: gestionale,pattern-refine
+clienti,clienti > Ordini clienti,Gestione flag creazione documenti,menu_ordflgs,NON_APPLICABILE,,WRITE_SIDE,Utility/manutenzione: gestionale,pattern-refine
+clienti,clienti > Ordini clienti > Creazione documenti di trasporto,Evasione parziale : 1 ordine --> 1 d.d.t.,menu_ordtobol,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Ordini clienti > Creazione documenti di trasporto,Evasione parziale : n ordini --> 1 d.d.t.,menu_ordtobol,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Ordini clienti > Creazione documenti di trasporto,Evasione totale :      1 ordine --> 1 d.d.t.,menu_ordtobol,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Ordini clienti > Creazione documenti di trasporto,Evasione totale :     n ordini --> 1 d.d.t.,menu_ordtobol,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Ordini clienti > Creazione fattura,Creazione fatture da ordini clienti,menu_ord_bol_tofat,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Ordini clienti > Creazione fattura proforma,Crea una fattura proforma da un ordine,menu_otofp000,MANCANTE,,,,default
+clienti,clienti > Ordini clienti > Creazione fattura proforma,Evasione parziale da ordine a fattura proforma,menu_ortofap,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Ordini clienti > Portafoglio ordini clienti,Portafoglio ordini clienti,,MANCANTE,,,,default
+clienti,clienti > Ordini clienti > Portafoglio ordini clienti,Riprogrammazione consegne ordini clienti,menu_riprog_ord,NON_APPLICABILE,,WRITE_SIDE,Utility/manutenzione: gestionale,pattern-refine
+clienti,clienti > Ordini clienti > Portafoglio ordini clienti,Situazione ordinato attivo con scadenze incassi,menu_ordinato_attivo,MANCANTE,,,,default
+clienti,clienti > Ordini clienti > Portafoglio ordini clienti,Situazione ordini clienti (vista per data inser.),menu_venord00,MANCANTE,,,,default
+clienti,clienti > Ordini clienti > Portafoglio ordini clienti,Situazione ordini clienti (vista per data scad.),menu_venord00,MANCANTE,,,,default
+clienti,clienti > Ordini clienti > Portafoglio ordini clienti,Situazione portafoglio ordini clienti settimanale,menu_portaf_ord_stat,MANCANTE,,,,default
+clienti,clienti > Ordini clienti > Portafoglio ordini clienti,Situazione vendite clienti,menu_portaf_ord_stat,MANCANTE,,,,default
+clienti,clienti > Ordini clienti > Portafoglio ordini clienti,Statistica ordini per settimana di consegna,menu_ordsettcons,MANCANTE,,,,default
+clienti,clienti > Ordini clienti > Portafoglio ordini clienti,Statistiche ordini clienti,menu_statord,MANCANTE,,,,default
+clienti,clienti > Portafoglio effetti,Gestione integrata delle ricevute bancarie,menu_ribanew,MANCANTE,,,,default
+clienti,clienti > Portafoglio effetti > Gestione dischetti,Creazione dischetto per banca,menu_riddkt,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Portafoglio effetti > Gestione dischetti,Elenco ricevute trasferite su dischetto,menu_riddiske,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Portafoglio effetti > Gestione dischetti,Parametri di ogni banca per creazione dischetto,menu_rid000,MANCANTE,,,,default
+clienti,clienti > Portafoglio effetti > Gestione dischetti,Stampa del contenuto del dischetto cons.alla banca,menu_riddiskf,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Portafoglio effetti > Ricevute bancarie automatiche,Aggiornamento manuale,menu_riba000,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Portafoglio effetti > Ricevute bancarie automatiche,Assegnazione banche,menu_assban,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Portafoglio effetti > Ricevute bancarie automatiche,Creazione archivio riba,menu_creariba,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Portafoglio effetti > Ricevute bancarie automatiche,Creazione progressivo riba,menu_ricprog,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Portafoglio effetti > Ricevute bancarie automatiche,Ripristino fatture per rielaborazione riba,menu_ricsflag,MANCANTE,,,,default
+clienti,clienti > Portafoglio effetti > Ricevute bancarie automatiche > Elenchi ricevute bancarie,Per banca di presentazione + data di scadenza,menu_stbansca,MANCANTE,,,,default
+clienti,clienti > Portafoglio effetti > Ricevute bancarie automatiche > Elenchi ricevute bancarie,Per data di scadenza,menu_stadscad,MANCANTE,,,,default
+clienti,clienti > Portafoglio effetti > Ricevute bancarie automatiche > Elenchi ricevute bancarie > Documenti per la banca,Elenco dettagliato delle riba x fattura/data scad,menu_ricdetfa,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Portafoglio effetti > Ricevute bancarie automatiche > Elenchi ricevute bancarie > Documenti per la banca,Elenco per banca di presentazione,menu_stabpres,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Portafoglio effetti > Ricevute bancarie automatiche > Elenchi ricevute bancarie > Documenti per la banca,Ristampa distinta per numero,menu_rstabpre,MANCANTE,,,,default
+clienti,clienti > Portafoglio effetti > Ricevute bancarie automatiche > Elenchi ricevute bancarie > Documenti per la banca,Stampa ricevute su modulo,menu_prinriba,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Portafoglio effetti > Ricevute bancarie automatiche > Elenchi ricevute bancarie > Documenti per la banca,Stampa ricevute su modulo per banca e scadenza,menu_ribascad,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Portafoglio effetti > Ricevute bancarie manuali,Aggiornamento,menu_ribm000,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Portafoglio effetti > Ricevute bancarie manuali,Annullo ricevute bancarie manuali,menu_rimannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Portafoglio effetti > Ricevute bancarie manuali,Elenco per cliente + data scadenza,menu_stcliscm,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Preventivi clienti,Aggiornamento,menu_off000,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Preventivi clienti,Annullo con selezione,menu_offannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Preventivi clienti,Annullo per periodo,menu_offeli,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Preventivi clienti,Chiusura / apertura preventivi,menu_offevas,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Preventivi clienti,Creazione interventi tecnici,menu_offtoint,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Preventivi clienti,Duplicazione preventivi,menu_duploff,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Preventivi clienti,Gestione flag creazione documenti,menu_offflgs,NON_APPLICABILE,,WRITE_SIDE,Utility/manutenzione: gestionale,pattern-refine
+clienti,clienti > Preventivi clienti,Situazione preventivi clienti,menu_venoff00,MANCANTE,,,,default
+clienti,clienti > Preventivi clienti,Situazione preventivi con scadenze incassi,menu_preventivato_attivo,MANCANTE,,,,default
+clienti,clienti > Preventivi clienti > Creazione documenti di trasporto,Crea un documento di trasporto da un preventivo,menu_offb000,MANCANTE,,,,default
+clienti,clienti > Preventivi clienti > Creazione documenti di trasporto,Creazione doc. di trasporto da dettagli preventivo,menu_offbdet,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Preventivi clienti > Creazione fattura,Creazione fattura da dettagli preventivo,menu_offfdet,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Preventivi clienti > Creazione fattura,Creazione fattura da un preventivo,menu_offf000,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Preventivi clienti > Creazione fatture proforma,Crea fattura proforma da un preventivo,menu_offfp00,MANCANTE,,,,default
+clienti,clienti > Preventivi clienti > Creazione fatture proforma,Creazione fattura proforma da dettagli preventivo,menu_offfpdet,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Preventivi clienti > Creazione ordini clienti,Conversione diretta preventivo in ordine,menu_offo000,MANCANTE,,,,default
+clienti,clienti > Preventivi clienti > Creazione ordini clienti,Conversione guidata preventivo/i in ordine,menu_offtoord,MANCANTE,,,,default
+clienti,clienti > Provvigioni,Cambio codice agente in fatture clienti,fatchage,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Provvigioni,Controllo idoneità provvigioni sui documenti,menu_ctrlprovvi,MANCANTE,,,,default
+clienti,clienti > Provvigioni,Tabella delle provvigioni per agente/linea/sconto,menu_prvaglisc,MANCANTE,,,,default
+clienti,clienti > Provvigioni > Gestione fatture provvigioni agenti,Gestione fatture capo area,menu_proins,MANCANTE,,,,default
+clienti,clienti > Provvigioni > Gestione fatture provvigioni agenti,Inserimento fatture,menu_fag000,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Provvigioni > Liquidazione provvigioni agente,Attribuzione provvigioni per agente/linea prodotto,menu_listage2,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Provvigioni > Liquidazione provvigioni agente > Gestione agenti per capo area,Aggiornamento,menu_car000,MIGRATO,/capi-area,,Consultazione web agganciata via FORM_TO_URL,FORM_TO_URL
+clienti,clienti > Provvigioni > Liquidazione provvigioni agente > Gestione agenti per capo area,Stampa agenti del capo area,menu_carsta,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Provvigioni > Liquidazione provvigioni agente > Gestione provvigioni su dettagli fatture,Aggiornamento archivio provvigionale,menu_prvd000,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Provvigioni > Liquidazione provvigioni agente > Gestione provvigioni su dettagli fatture,Creazione archivio provvigionale,menu_prvdcrea,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Provvigioni > Liquidazione provvigioni agente > Gestione provvigioni su dettagli fatture,Modifica percentuali provvigioni,menu_prvdperc,MANCANTE,,,,default
+clienti,clienti > Provvigioni > Liquidazione provvigioni agente > Gestione provvigioni su dettagli fatture,Rettifica provvigioni nei dettagli fatture,menu_prvdfat,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Provvigioni > Liquidazione provvigioni agente > Gestione provvigioni su dettagli fatture,Stampa provvigioni capo area,menu_prvdstac,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Provvigioni > Liquidazione provvigioni agente > Gestione provvigioni su dettagli fatture,Stampa provvigioni con dettaglio articoli,menu_prvdsta,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Provvigioni > Liquidazione provvigioni agente > Gestione provvigioni su dettagli fatture,Stampa provvigioni con raggruppamento per numero,menu_prvdsta1,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Provvigioni > Liquidazione provvigioni agente > Gestione provvigioni su testate fatture,Aggiornamento archivio provvigionale,menu_prv000,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Provvigioni > Liquidazione provvigioni agente > Gestione provvigioni su testate fatture,Creazione archivio provvigionale,menu_prvcrea,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Provvigioni > Liquidazione provvigioni agente > Gestione provvigioni su testate fatture,Liquida provvigioni maturate ed incassate,menu_prvperc,MANCANTE,,,,default
+clienti,clienti > Provvigioni > Liquidazione provvigioni agente > Gestione provvigioni su testate fatture,Liquidazione provvigionale per importi,menu_prvimpot,MANCANTE,,,,default
+clienti,clienti > Provvigioni > Liquidazione provvigioni agente > Gestione provvigioni su testate fatture,Rettifica provvigioni nei dettagli fatture,menu_prvdfat,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Provvigioni > Liquidazione provvigioni agente > Gestione provvigioni su testate fatture,Stampa provvigioni,menu_prvsta,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Provvigioni > Liquidazione provvigioni agente > Gestione provvigioni su testate fatture > Gestione provvigioni per agente/cliente,Aggiornamento provvigioni agente/cliente,menu_prvcli,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Provvigioni > Liquidazione provvigioni agente > Gestione provvigioni su testate fatture > Gestione provvigioni per agente/cliente,Stampa provvigioni agente/cliente,menu_prvclist,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Ristampa documenti,Ristampa documenti,menu_ristampa_doc,MIGRATO,/documenti,,Consultazione web agganciata via FORM_TO_URL,FORM_TO_URL
+clienti,clienti > Ristampa documenti,Tracciabilità documenti,menu_tracdoc,MANCANTE,,,"Catena ordine-DDT-fattura: le chiavi di tracciabilita sono gia mappate (sessione 1, U_BOL_DD); vista dedicata da costruire",default
+clienti,clienti > Ristampa documenti,Tracciabilità documenti passivi,menu_tracdoc_forn,MANCANTE,,,"Catena ordine-DDT-fattura: le chiavi di tracciabilita sono gia mappate (sessione 1, U_BOL_DD); vista dedicata da costruire",default
+clienti,clienti > Schede di sicurezza/SDS,Annullo schede sicurezza/SDS con selezione,menu_sdsannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Schede di sicurezza/SDS,Attribuzione scheda di conformità ai prodotti,menu_sdsatt,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Schede di sicurezza/SDS,Gestione delle schede di conformità/SDS,menu_sds000,MANCANTE,,,,default
+clienti,clienti > Schede di sicurezza/SDS,Tracciabilità degli invii schede di sicurezza/SDS,menu_sdstra,MANCANTE,,,"Catena ordine-DDT-fattura: le chiavi di tracciabilita sono gia mappate (sessione 1, U_BOL_DD); vista dedicata da costruire",default
+clienti,clienti > Sconti > Gestione sconti per can. vendita / gruppo merc.,Annullo,menu_scocveann,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Sconti > Gestione sconti per can. vendita / gruppo merc.,Gestione completa,menu_scocve000,MANCANTE,,,,default
+clienti,clienti > Sconti > Gestione sconti per can. vendita / gruppo merc.,Stampa,menu_scocvesta,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Sconti > Gestione sconti per cliente categoria merceologica,Aggiornamento sconti,menu_scocme,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Sconti > Gestione sconti per cliente categoria merceologica,Annullo sconti categoria merceologica,menu_scoannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+clienti,clienti > Sconti > Gestione sconti per cliente categoria merceologica,Stampa sconti per categoria merceologica,menu_stacme,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Sconti > Gestione sconti per cliente categoria merceologica,Stampa sconti per cliente/categoria merceologica,menu_stscocm,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+clienti,clienti > Sconti > Gestione sconti tipo cliente categoria articoli,Crea legame tipo clinte categoria articoli,menu_scocliart,MANCANTE,,,,default
+clienti,clienti > Sconti > Gestione sconti tipo cliente categoria articoli,Gestione tipologie sconti,menu_sconti,MANCANTE,,,,default
+consulenza,consulenza > Gestione risorse > Gestione anagrafiche risorse,Aggiornamento anagrafica risorse umane,menu_risumana000,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+consulenza,consulenza > Gestione risorse > Gestione anagrafiche risorse,Annullo risorse con selezione,menu_risumanaannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+consulenza,consulenza > Gestione risorse > Gestione commesse,Annullo commesse con selezione,menu_commessa_annu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+consulenza,consulenza > Gestione risorse > Gestione commesse,Creazione distinte RID,menu_distinte_rid,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+consulenza,consulenza > Gestione risorse > Gestione commesse,Duplicazione commessa,menu_commessa_dupl,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+consulenza,consulenza > Gestione risorse > Gestione commesse,Generazione commessa da budget sintetico,menu_budgetsint_to_commessa,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+consulenza,consulenza > Gestione risorse > Gestione commesse,Generazione commesse da trattative commerciali,menu_trattativa_to_commessa,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+consulenza,consulenza > Gestione risorse > Gestione commesse,Gestione commesse risorse/servizi/prodotti,menu_commessa000,MANCANTE,,NEEDS_DOMAIN,Area verticale consulenza: verificare se in uso a Impresind,pattern-refine
+consulenza,consulenza > Gestione risorse > Gestione commesse,Gestione del budget sintetico,menu_budgetsint000,MANCANTE,,NEEDS_DOMAIN,Area verticale consulenza: verificare se in uso a Impresind,pattern-refine
+consulenza,consulenza > Gestione risorse > Gestione commesse,Ricerca e conferma chiusura attività commesse,menu_chiusura_attivita,MANCANTE,,NEEDS_DOMAIN,Area verticale consulenza: verificare se in uso a Impresind,pattern-refine
+consulenza,consulenza > Gestione risorse > Gestione commesse,Ricerca e conferma comunicazioni commesse,menu_comunicazioni,MANCANTE,,NEEDS_DOMAIN,Area verticale consulenza: verificare se in uso a Impresind,pattern-refine
+consulenza,consulenza > Gestione risorse > Gestione commesse,Scheda riassuntiva commessa,,MANCANTE,,NEEDS_DOMAIN,Area verticale consulenza: verificare se in uso a Impresind,pattern-refine
+consulenza,consulenza > Gestione risorse > Gestione commesse,Stampa commesse,menu_commessasta,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+consulenza,consulenza > Gestione risorse > Gestione commesse,Stampa commesse - dati contabili,,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+consulenza,consulenza > Gestione risorse > Gestione commesse,Utilità di chiusura/apertura commesse,menu_commessa_close,NON_APPLICABILE,,WRITE_SIDE,Utility/manutenzione: gestionale,pattern-refine
+consulenza,consulenza > Gestione risorse > Gestione fatturabile,Associa fatture a commessa,menu_commessa_fattura_leg,MANCANTE,,NEEDS_DOMAIN,Area verticale consulenza: verificare se in uso a Impresind,pattern-refine
+consulenza,consulenza > Gestione risorse > Gestione fatturabile,Blocco/sblocco flag fatturato nel fatturabile,menu_fatturabile_flgfatturato,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+consulenza,consulenza > Gestione risorse > Gestione fatturabile,Generazione archivio del fatturabile da commesse,menu_fatturabile,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+consulenza,consulenza > Gestione risorse > Gestione fatturabile,Generazione fatture da archivio del fatturabile,menu_fatturabile_to_fat,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+consulenza,consulenza > Gestione risorse > Gestione provvigioni,Stampa provvigioni da timesheet risorse,menu_timesht_provv_sta,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+consulenza,consulenza > Gestione risorse > Gestione rimborsi spese,Inserimento rimborsi spese,menu_rimbspe,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+consulenza,consulenza > Gestione risorse > Gestione rimborsi spese,Stampa rimborsi spese,menu_rimbspesta,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+consulenza,consulenza > Gestione risorse > Gestione statistiche,Statistica fatturabile articoli su file excel,menu_fatturabile_stat,MANCANTE,,NEEDS_DOMAIN,Area verticale consulenza: verificare se in uso a Impresind,pattern-refine
+consulenza,consulenza > Gestione risorse > Gestione statistiche,Statistica fatturabile aule su file excel,menu_fatturabile_stat,MANCANTE,,NEEDS_DOMAIN,Area verticale consulenza: verificare se in uso a Impresind,pattern-refine
+consulenza,consulenza > Gestione risorse > Gestione statistiche,Statistica fatturabile partecipanti su file excel,menu_fatturabile_stat,MANCANTE,,NEEDS_DOMAIN,Area verticale consulenza: verificare se in uso a Impresind,pattern-refine
+consulenza,consulenza > Gestione risorse > Gestione statistiche,Statistica fatturabile risorse umane su file excel,menu_fatturabile_stat,MANCANTE,,NEEDS_DOMAIN,Area verticale consulenza: verificare se in uso a Impresind,pattern-refine
+consulenza,consulenza > Gestione risorse > Gestione statistiche,Statistica fatturabile servizi su file excel,menu_fatturabile_stat,MANCANTE,,NEEDS_DOMAIN,Area verticale consulenza: verificare se in uso a Impresind,pattern-refine
+consulenza,consulenza > Gestione risorse > Gestione statistiche,Statistica fatturabile tutti i tipi su file excel,menu_fatturabile_stat,MANCANTE,,NEEDS_DOMAIN,Area verticale consulenza: verificare se in uso a Impresind,pattern-refine
+consulenza,consulenza > Gestione risorse > Gestione timesheet,Annullo timesheet con selezione,menu_timeshtannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+consulenza,consulenza > Gestione risorse > Gestione timesheet,Gestione timesheet risorse,menu_timesht,MANCANTE,,NEEDS_DOMAIN,Area verticale consulenza: verificare se in uso a Impresind,pattern-refine
+consulenza,consulenza > Gestione risorse > Gestione timesheet,Stampa del lavorato da timesheet,menu_timeshtsta,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+consulenza,consulenza > Gestione risorse > Import/export dati,Import/export dati per risorse,menu_risorse_copy,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+consulenza,consulenza > Gestione risorse > Import/export dati,Trasferimento parametri tra databases,menu_para_copy,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+consulenza,consulenza > Studi professionali,Contatti telefonici,,MANCANTE,,NEEDS_DOMAIN,Area verticale consulenza: verificare se in uso a Impresind,pattern-refine
+consulenza,consulenza > Studi professionali > Attività non concordate,Aggiornamento,menu_attivitanc,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+consulenza,consulenza > Studi professionali > Attività non concordate,Annullo attività non concordate,menu_attivitanc_annu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+consulenza,consulenza > Studi professionali > Attività non concordate,Creazione multipla attività non concordate,menu_attivitanc_multi,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+consulenza,consulenza > Studi professionali > Attività non concordate,Rileva le attività non concordate,menu_attivita,MANCANTE,,NEEDS_DOMAIN,Area verticale consulenza: verificare se in uso a Impresind,pattern-refine
+consulenza,consulenza > Studi professionali > Gestione contratti,Aggiornamento contratti studio,menu_contrstudi000,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+consulenza,consulenza > Studi professionali > Gestione contratti,Annullo contratti con selezione,menu_contrstudi_annu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+consulenza,consulenza > Studi professionali > Gestione contratti,Duplica contratti clienti studio,menu_contrstudi_dupl,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+consulenza,consulenza > Studi professionali > Gestione contratti,Duplicazione massiva contratti clienti per anno,menu_contrstudi_dupl_multi,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+consulenza,consulenza > Studi professionali > Gestione contratti,Modifica prezzi per singola attività,menu_contrstudi_prz,MANCANTE,,NEEDS_DOMAIN,Area verticale consulenza: verificare se in uso a Impresind,pattern-refine
+consulenza,consulenza > Studi professionali > Gestione contratti,Stampa contratti studio,menu_contrstudi_sta,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+consulenza,consulenza > Studi professionali > Gestione del fatturabile,Codifiche interfaccia anagrafiche clienti,menu_codificacli,MANCANTE,,NEEDS_DOMAIN,Area verticale consulenza: verificare se in uso a Impresind,pattern-refine
+consulenza,consulenza > Studi professionali > Gestione del fatturabile,Creazione e aggiornamento fatturabile mensile,menu_fatturabile_studi,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+consulenza,consulenza > Studi professionali > Gestione del fatturabile,Creazione note informative/fatture proforma,menu_fatturabile_studi_to_fap,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+consulenza,consulenza > Studi professionali > Gestione del fatturabile,Elaborazione cedolini,menu_elab_cedolini,MANCANTE,,NEEDS_DOMAIN,Area verticale consulenza: verificare se in uso a Impresind,pattern-refine
+consulenza,consulenza > Studi professionali > Gestione del fatturabile,Gestione costi risorse umane,menu_costistudi000,MANCANTE,,NEEDS_DOMAIN,Area verticale consulenza: verificare se in uso a Impresind,pattern-refine
+consulenza,consulenza > Studi professionali > Gestione del fatturabile,Sblocco fatturabile già fatturato,menu_fatturabst_sbloc,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+consulenza,consulenza > Studi professionali > Gestione del fatturabile,Stampa fatturabile mensile,menu_fatturabst_sta,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+consulenza,consulenza > Studi professionali > Gestione fatture clienti studio,Aggiornamento fatture clienti,menu_fat000,MIGRATO,/fatture,,Consultazione web agganciata via FORM_TO_URL,FORM_TO_URL
+consulenza,consulenza > Studi professionali > Gestione fatture clienti studio,Annullo con selezione,menu_fatannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+consulenza,consulenza > Studi professionali > Gestione fatture clienti studio,Elenco delle fatture per periodo,menu_fattras,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+consulenza,consulenza > Studi professionali > Gestione fatture clienti studio,Elenco fatture con r.a./enpacl,menu_fatraenpacl,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+consulenza,consulenza > Studi professionali > Gestione fatture clienti studio,Elenco fatture per cliente,menu_fattrac,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+consulenza,consulenza > Studi professionali > Gestione fatture proforma/note informative,Abbinamento incassi da excel banca,menu_import_incassi,MANCANTE,,NEEDS_DOMAIN,Area verticale consulenza: verificare se in uso a Impresind,pattern-refine
+consulenza,consulenza > Studi professionali > Gestione fatture proforma/note informative,Aggiornamento fatture proforma/note informative,menu_fap000,MIGRATO,/proforma,,Consultazione web agganciata via FORM_TO_URL,FORM_TO_URL
+consulenza,consulenza > Studi professionali > Gestione fatture proforma/note informative,Annullo fatture proforma con selezione,menu_fapannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+consulenza,consulenza > Studi professionali > Gestione fatture proforma/note informative,Creazione delle fatture clienti dopo l'incasso,menu_faptofat,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+consulenza,consulenza > Studi professionali > Gestione fatture proforma/note informative,Elenco fatture proforma per periodo,menu_faptras,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+consulenza,consulenza > Studi professionali > Gestione fatture proforma/note informative,Sblocco/blocco fatture proforma già fatturate,menu_fapflgs,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+consulenza,consulenza > Studi professionali > Gestione fatture proforma/note informative,Verifica incassi fatture proforma/note informative,menu_fatturep_incassate,MANCANTE,,NEEDS_DOMAIN,Area verticale consulenza: verificare se in uso a Impresind,pattern-refine
+consulenza,consulenza > Studi professionali > Procedure operative studio,Analisi/statistiche attività procedure,menu_flow_sta,MANCANTE,,NEEDS_DOMAIN,Area verticale consulenza: verificare se in uso a Impresind,pattern-refine
+consulenza,consulenza > Studi professionali > Procedure operative studio,Gestione procedure operative,flw_gestione,MANCANTE,,NEEDS_DOMAIN,Area verticale consulenza: verificare se in uso a Impresind,pattern-refine
+consulenza,consulenza > Studi professionali > Procedure operative studio,Laboratorio procedure operative,flw_disegna,MANCANTE,,NEEDS_DOMAIN,Area verticale consulenza: verificare se in uso a Impresind,pattern-refine
+contabilit,contabilit > Acquisti/cessioni intracomunitarie > Cessioni intracomunitarie sugli acquisti,Aggiornamento,menu_cea000,NON_APPLICABILE,,WRITE_SIDE,Editing anagrafico sul gestionale,screenshot+web
+contabilit,contabilit > Acquisti/cessioni intracomunitarie > Cessioni intracomunitarie sugli acquisti,Annullo acquisti con selezione,menu_ceaannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Acquisti/cessioni intracomunitarie > Cessioni intracomunitarie sugli acquisti,Creazione archivio,menu_ceifcrea,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Acquisti/cessioni intracomunitarie > Cessioni intracomunitarie sulle vendite,Aggiornamento,menu_cei000,NON_APPLICABILE,,WRITE_SIDE,Editing anagrafico sul gestionale,screenshot+web
+contabilit,contabilit > Acquisti/cessioni intracomunitarie > Cessioni intracomunitarie sulle vendite,Annullo cessioni intracom. con selezione,menu_ceiannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Acquisti/cessioni intracomunitarie > Cessioni intracomunitarie sulle vendite,Creazione cessioni intracom. da archivio fatture,menu_ceicrea,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Acquisti/cessioni intracomunitarie > Gestione telematica (interchange),Controllo congruità registrazioni intrastat,intrastat_controllo_incongruenze,MANCANTE,,,,default
+contabilit,contabilit > Acquisti/cessioni intracomunitarie > Gestione telematica (interchange),Controllo delle registrazioni contabili intrastat,intrastat_controllo_dati_interchange,MANCANTE,,,,default
+contabilit,contabilit > Acquisti/cessioni intracomunitarie > Gestione telematica (interchange),Creazione file interchange per invio telematico,intrastat_crea_file_interchange,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Anni contabili,Apertura nuovo anno contabile,menu_annicont,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Anni contabili,Blocco registrazioni contabili,menu_bloccapn,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Anni contabili,Cambio anno contabile,daianno,NON_APPLICABILE,,NOT_APPLICABLE,Il web cambia esercizio dal contesto fiscale in sessione,screenshot+web
+contabilit,contabilit > Anni contabili,Chiusura annuale contabilità,menu_chiuann,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Anni contabili > Sfoltimento archivi contabili,Sfoltimento archivi di prima nota,menu_prnsfolt,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Anni contabili > Sfoltimento archivi contabili,Sfoltimento partitari clienti,menu_partsfoc,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Anni contabili > Sfoltimento archivi contabili,Sfoltimento partitari fornitori,menu_partsfof,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Bilanci,Allegati di bilancio,menu_allebil,MANCANTE,,,NEEDS_DOMAIN: quali allegati produce,screenshot+web
+contabilit,contabilit > Bilanci,Analisi dati bilancio,menu_anabil,MANCANTE,,,NEEDS_DOMAIN: contenuto della analisi da chiarire,screenshot+web
+contabilit,contabilit > Bilanci,Bilancio con confronto anno precedente,menu_bilcoan,MANCANTE,,,Il bilancio web non ha il confronto N-1 (il CEE si),screenshot+web
+contabilit,contabilit > Bilanci,Bilancio di verifica,menu_stbilan,MIGRATO,/contabilita/bilancio?vista=mastri,,,screenshot+web
+contabilit,contabilit > Bilanci,Bilancio di verifica a sezioni contrapposte,menu_stbiseco,MIGRATO,/contabilita/bilancio?vista=contrapposte,,,screenshot+web
+contabilit,contabilit > Bilanci,Bilancio di verifica civilistico,menu_stbilanc,MANCANTE,,,NEEDS_DOMAIN: differenza rispetto al bilancio di verifica standard,screenshot+web
+contabilit,contabilit > Bilanci,Bilancio di verifica esercizio contab. non solare,menu_bilnosol,MANCANTE,,,Il bilancio web assume esercizio=anno fiscale,screenshot+web
+contabilit,contabilit > Bilanci,Bilancio di verifica gestionale,menu_stbilang,MANCANTE,,,NEEDS_DOMAIN: differenza rispetto al bilancio di verifica standard,screenshot+web
+contabilit,contabilit > Bilanci,Calcolo del bilancio,menu_bil000,NON_APPLICABILE,,NOT_APPLICABLE,Il web calcola il bilancio live dallo storico: elaborazione batch legacy non necessaria,screenshot+web
+contabilit,contabilit > Bilanci,Caricamento saldi iniziali,menu_prncarsa,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Bilanci,Stampa bilancio per centri di costo,menu_stbiccoseco,MANCANTE,,,Dipende dalla feature cdc (assente),screenshot+web
+contabilit,contabilit > Bilanci > Bilancio iv direttiva cee,Annullo confluenze conti in righe,menu_ceeannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Bilanci > Bilancio iv direttiva cee,Annullo confluenze dettagli in totali,menu_ceeannt,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Bilanci > Bilancio iv direttiva cee,Calcolo bilancio cee,ceecont,MANCANTE,,,,default
+contabilit,contabilit > Bilanci > Bilancio iv direttiva cee,Calcolo del bilancio,menu_bil000,NON_APPLICABILE,,NOT_APPLICABLE,Il web calcola il bilancio live dallo storico: elaborazione batch legacy non necessaria,screenshot+web
+contabilit,contabilit > Bilanci > Bilancio iv direttiva cee,Confluenza dei conti contab. in righe bilancio cee,menu_ceepdc,MANCANTE,,,,default
+contabilit,contabilit > Bilanci > Bilancio iv direttiva cee,Confluenza righe bil. cee nelle righe di totale,menu_ceetot,MANCANTE,,,,default
+contabilit,contabilit > Bilanci > Bilancio iv direttiva cee,Definizione righe bilancio cee,menu_cee000,MANCANTE,,,,default
+contabilit,contabilit > Bilanci > Bilancio iv direttiva cee,Gestione nuovo esercizio,menu_ceeanno,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Bilanci > Bilancio iv direttiva cee,Rettifiche bilancio cee,menu_ceeret,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Bilanci > Bilancio iv direttiva cee,Ricerca / stampa confluenze totali,menu_ceeric,MANCANTE,,,,default
+contabilit,contabilit > Bilanci > Bilancio iv direttiva cee,Salvataggio su floppy,ceesave,MANCANTE,,,,default
+contabilit,contabilit > Bilanci > Bilancio iv direttiva cee,Stampa bilancio cee,menu_stbilcee,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+contabilit,contabilit > Bilanci > Bilancio iv direttiva cee,Verifica se il conto movim. confluisce nella riga,menu_ceecori,MANCANTE,,,,default
+contabilit,contabilit > Bilanci > Bilancio per sole24ore,Attribuzione dei codici di raggruppamento,menu_attrag2,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Bilanci > Bilancio per sole24ore,Raggruppamento bilancio su sole24ore,menu_raggbil2,MANCANTE,,,,default
+contabilit,contabilit > Bilanci > Bilancio riclassificato,Annullo confluenze conti in righe,menu_briannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Bilanci > Bilancio riclassificato,Annullo confluenze dettagli in totali,menu_briannt,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Bilanci > Bilancio riclassificato,Calcolo bilancio riclassificato,bricont,MANCANTE,,,,default
+contabilit,contabilit > Bilanci > Bilancio riclassificato,Calcolo del bilancio,menu_bil000,NON_APPLICABILE,,NOT_APPLICABLE,Il web calcola il bilancio live dallo storico: elaborazione batch legacy non necessaria,screenshot+web
+contabilit,contabilit > Bilanci > Bilancio riclassificato,Confluenza conti in righe bilancio riclassificato,menu_bripdc,MANCANTE,,,,default
+contabilit,contabilit > Bilanci > Bilancio riclassificato,Confluenza righe riclassificate in righe di totale,menu_britot,MANCANTE,,,,default
+contabilit,contabilit > Bilanci > Bilancio riclassificato,Definizione righe bilancio riclassificato,menu_bri000,MANCANTE,,,,default
+contabilit,contabilit > Bilanci > Bilancio riclassificato,Gestione nuovo esercizio,menu_brianno,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Bilanci > Bilancio riclassificato,Rettifiche bilancio riclassificato,menu_briret,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Bilanci > Bilancio riclassificato,Ricerca / stampa confluenze totali,menu_briric,MANCANTE,,,,default
+contabilit,contabilit > Bilanci > Bilancio riclassificato,Stampa bilancio riclassificato,menu_stbilbri,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+contabilit,contabilit > Bilanci > Bilancio riclassificato,Verifica se il conto movim. confluisce nella riga,menu_bricori,MANCANTE,,,,default
+contabilit,contabilit > Bollati,Caricamento bollato iva,menu_caribol,NON_APPLICABILE,,WRITE_SIDE,BOLLATI.PRG: carica da prima nota,screenshot+web
+contabilit,contabilit > Bollati,Gestione plafond iva acquisti,menu_ivaplafond,NON_APPLICABILE,,OUT_OF_SCOPE,Logica fiscale: Opus,screenshot+web
+contabilit,contabilit > Bollati,Recupero iva periodi precedenti,menu_ivarecup,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Bollati > Comunicazioni Iva,Comunicazione dati fatture clienti/fornitori,menu_comunic_iva,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Comunicazioni Iva,Liquidazione trimestrale iva in formato XML (LIPE),menu_iva_trimestrale_lipe,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Controllo sequenza protocolli > Controllo sequenza protocolli clienti,Controllo seq. nr.protocollo clienti in differita,menu_ctrlprotcli_dif,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Controllo sequenza protocolli > Controllo sequenza protocolli clienti,Controllo seq. nr.protocollo clienti in immediato,menu_ctrlprotcli_imm,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Controllo sequenza protocolli > Controllo sequenza protocolli clienti,Controllo seq. nr.protocollo clienti unico,menu_clinum,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Controllo sequenza protocolli > Controllo sequenza protocolli clienti,Controllo seq. prot. fatture iva sospens./split,menu_ctrlprotcli_sos_spy,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Controllo sequenza protocolli > Controllo sequenza protocolli fornitori,Controllo seq. nr.protocollo forn. abituali cee,menu_ctrlprotforn_cee,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Controllo sequenza protocolli > Controllo sequenza protocolli fornitori,Controllo seq. nr.protocollo fornitori nazionali,menu_ctrlprotforn_naz,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Controllo sequenza protocolli > Controllo sequenza protocolli fornitori,Controllo seq. nr.protocollo fornitori unico,menu_fornum,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Controllo sequenza protocolli > Controllo sequenza protocolli fornitori,Controllo seq. protocollo note occasionali,menu_ctrlprotforn_noc,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Gestione iva prorata,Calcolo della % prorata sul volume d'affari,menu_prorata,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Stampa bollati e liquidazione iva,Intestazione bollati,menu_bollati,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Stampa bollati e liquidazione iva,Iva acquisti,menu_ivafosta,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Stampa bollati e liquidazione iva,Iva acquisti Italia reverse charge,menu_ivafopers,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Stampa bollati e liquidazione iva,Iva acquisti autofatture,menu_ivafopers,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Stampa bollati e liquidazione iva,Iva acquisti cee,menu_ivafopers,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Stampa bollati e liquidazione iva,Iva cessioni compensative Italia reverse charge,menu_ivacompers,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Stampa bollati e liquidazione iva,Iva cessioni compensative cee,menu_ivacompers,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Stampa bollati e liquidazione iva,Iva vendite,menu_ivaclsta,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Stampa bollati e liquidazione iva,Iva vendite autofatture,menu_ivacompers,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Stampa bollati e liquidazione iva,Iva vendite split payment,menu_ivaclspy,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Stampa bollati e liquidazione iva,Libro giornale fiscale,menu_lib000,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Stampa bollati e liquidazione iva,Liquidazione iva,menu_liquida,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Stampa bollati iva,Bollato IVA Acquisti,menu_ivafosta,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Stampa bollati iva,Bollato IVA Acquisti Reverse Charge,menu_ivafocee,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Stampa bollati iva,Bollato IVA Vendite,menu_ivaclsta,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Stampa bollati iva,Bollato IVA Vendite Split Payment,menu_ivaclspy,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Stampa bollati iva,Bollato IVA Vendite in Sospensione,menu_ivaclsos,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Stampa bollati iva,Bollato IVA acquisti fornitori Cee,menu_ivafocee,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Stampa bollati iva,Bollato IVA cessioni compensative,menu_ivarecom,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Stampa bollati iva,Dichiarazione iva annuale,menu_comunicazione_iva,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Stampa bollati iva,Elenco fatture in sospensione incassate,menu_ivaclsos_inc,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+contabilit,contabilit > Bollati > Stampa bollati iva,Intestazione bollati,menu_bollati,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Stampa bollati iva,Libro giornale fiscale,menu_lib000,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Stampa bollati iva,Liquidazione iva,menu_liquida,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Stampa bollati iva,Riepilogo registro iva,menu_liquidos,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Stampa bollati iva,Stampa bollato iva clienti fatture differite,menu_ivacasta,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+contabilit,contabilit > Bollati > Stampa bollati iva,Stampa bollato iva compensazioni acquisti cee,menu_ivaclcee,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+contabilit,contabilit > Bollati > Stampa bollati iva,Stampa bollato iva corrispettivi,menu_ivacosta,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+contabilit,contabilit > Bollati > Stampa bollati iva,Stampa bollato note occasionali fornitori,menu_ivafonoc,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+contabilit,contabilit > Bollati > Stampa bollati iva > Elenchi di controllo iva per cassa,Elenco di controllo iva clienti ancora in essere,menu_ivclica,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+contabilit,contabilit > Bollati > Stampa bollati iva > Elenchi di controllo iva per cassa,Elenco di controllo iva fornitori ancora in essere,menu_ivforca,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+contabilit,contabilit > Bollati > Statistiche iva,Dichiarazione periodica,menu_dichiara,MANCANTE,,,,default
+contabilit,contabilit > Bollati > Statistiche iva,Statistica iva,menu_liquimm,MANCANTE,,,,default
+contabilit,contabilit > Budget,Copia saldi del mese in archivio budget,menu_budcopy,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Budget,Inserimento budget iniziale,menu_budini,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Budget,Inserimento budget operativo,menu_budope,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Budget,Pianificazione previsionale,menu_bud000,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Budget,Rettifiche saldi,menu_rettif,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Budget,Stampa budget,menu_stabud,MANCANTE,,,Consultazione budget vs consuntivo: candidata read-only,screenshot+web
+contabilit,contabilit > Business unit,Autorizzazione delle spese,menu_aut000,MANCANTE,,,,default
+contabilit,contabilit > Business unit,Gestione incassi tramite fogli excell,menu_expoinc,MANCANTE,,,,default
+contabilit,contabilit > Business unit,Gestione prima nota cassa,menu_pnc000,MANCANTE,,,,default
+contabilit,contabilit > Business unit,Stampa bollato iva corrispettivi business unit,menu_ivacopdv,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+contabilit,contabilit > Business unit,Stampa fatturato,menu_fatsta,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+contabilit,contabilit > Business unit,Stampa registro di cassa,menu_pdvreg,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+contabilit,contabilit > Centri di costo,Aggiornamento,menu_cco000,NON_APPLICABILE,,WRITE_SIDE,Editing anagrafico sul gestionale,screenshot+web
+contabilit,contabilit > Centri di costo,Annullo centri di costo con selezione,menu_ccoannu,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Centri di costo,Bilancio per centro di costo,menu_stbiccoseco,MANCANTE,,,Prioritario: bilancio filtrato/aggregato per cdc,screenshot+web
+contabilit,contabilit > Centri di costo,Dettagli c.d.c. con raggruppamento conti nel mese,menu_movstco1,MANCANTE,,,,screenshot+web
+contabilit,contabilit > Centri di costo,Elenco centri di costo,menu_ccoelen,MANCANTE,,,Nessuna vista cdc nel web,screenshot+web
+contabilit,contabilit > Centri di costo,Gestione gruppo centro di costo,ccogrric,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Centri di costo,Riepilogo centri di costo,menu_saldocc,MANCANTE,,,Prioritario: riepilogo movimenti per cdc,screenshot+web
+contabilit,contabilit > Cespiti,Aggiornamento dettagli cespiti da mov. contabili,menu_agg_dett_cespiti,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Cespiti,Cancellazione delle quote di ammortamento,menu_quo_am_canc,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Cespiti,Generazione quote di ammortamento,menu_quo_am_gen,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Cespiti,Gestione anagrafica cespiti,menu_ammces,NON_APPLICABILE,,WRITE_SIDE,La CONSULTAZIONE anagrafica cespiti e la candidata read-only,screenshot+web
+contabilit,contabilit > Cespiti,Gestione categorie,menu_ammcat,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Cespiti,Gestione parametro ires,menu_para_ires,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Cespiti,Legame tra la prima nota e il cespite,menu_agg_conti_codces,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Cespiti,Sblocca / blocca quote di ammortamento contabili,menu_quo_am_coge,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Cespiti,Simulazione ammortamento,menu_quo_am_simu,NON_APPLICABILE,,DEFERRED,Logica fiscale: Opus,screenshot+web
+contabilit,contabilit > Cespiti,Stampa bollato del registro cespite,menu_reg_cesp_bol,NON_APPLICABILE,,PRINT_REPORT,Coperta dalla futura consultazione cespiti,screenshot+web
+contabilit,contabilit > Cespiti,Trasferimento in contabilita quote amm. ordinarie,menu_tfcquoteamm,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Cespiti,Visualizzazione e stampa cespiti,menu_stat_cesp,MANCANTE,,,PRIORITARIO: consultazione registro cespiti read-only,screenshot+web
+contabilit,contabilit > Cespiti > Procedure di supporto,Popolamento automatico Categorie e Cespiti,popola_cespiti_categorie_da_conti_e_mov_cont,MANCANTE,,,,default
+contabilit,contabilit > Compensazioni clienti/fornitori,Compensazioni clienti/fornitori,menu_compe00,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Compensi amministratore,Annullo con selezione,menu_raannu,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Compensi amministratore,Annullo per periodo,menu_raaeli,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Compensi amministratore,Elenco per codice versamento irpef,menu_raairpef,NON_APPLICABILE,,PRINT_REPORT,,screenshot+web
+contabilit,contabilit > Compensi amministratore,Estratti conto per amm. su base data di pagamento,menu_raaestp,MANCANTE,,,,screenshot+web
+contabilit,contabilit > Compensi amministratore,Estratti conto per amministratore,menu_raaestc,MANCANTE,,,,screenshot+web
+contabilit,contabilit > Compensi amministratore,Pagamento fatture amministratore,menu_raapag,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Compensi amministratore,Registrazione compenso,menu_raa000,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Compensi amministratore,Statistiche,menu_raasta,MANCANTE,,,Consultazione compensi: candidata,screenshot+web
+contabilit,contabilit > Controllo di gestione,Controllo di gestione,menu_controllo_gestione,MANCANTE,,,Area intera non migrata,screenshot+web
+contabilit,contabilit > Controllo di gestione,Media ponderata per condizione di pagamento,,MANCANTE,,,,screenshot+web
+contabilit,contabilit > Controllo di gestione,Situazione finanziaria,menu_sitfinan,MANCANTE,,,,screenshot+web
+contabilit,contabilit > Controllo di gestione,Statistiche sul controllo di gestione,menu_cdg_stat,MANCANTE,,,,screenshot+web
+contabilit,contabilit > Controllo di gestione,Tableau de board aziendale,menu_tableau,MANCANTE,,,,screenshot+web
+contabilit,contabilit > Controllo di gestione > Aggregazione conti per attività risorse,Aggiornamento,menu_aggregaconti,NON_APPLICABILE,,WRITE_SIDE,Editing anagrafico sul gestionale,screenshot+web
+contabilit,contabilit > Controllo di gestione > Aggregazione conti per attività risorse,Annullo con selezione,menu_aggregannu,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Controllo di gestione > Aggregazione conti per attività risorse,Duplicazione aggregazioni per anno,menu_aggregadupli,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Controllo di gestione > Analisi dei conti,Attribuzione dei codici di raggruppamento,menu_attrag,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Controllo di gestione > Analisi dei conti,Raggruppamento controllo di gestione,menu_raggbil,MANCANTE,,,,default
+contabilit,contabilit > Controllo di gestione > Cash flow finanziario,Cash flow finanziario (sola modifica preventivato),menu_cashflow_finance,MANCANTE,,,,default
+contabilit,contabilit > Controllo di gestione > Cash flow finanziario,Cash flow finanziario (sola modifica ricalcolato),menu_cashflow_finance,MANCANTE,,,,default
+contabilit,contabilit > Controllo di gestione > Cash flow finanziario,Cash flow finanziario (sola visualizzazione),menu_cashflow_finance,MANCANTE,,,,default
+contabilit,contabilit > Controllo di gestione > Cash flow finanziario,Cash flow finanziario (super user),menu_cashflow_finance,MANCANTE,,,,default
+contabilit,contabilit > Controllo di gestione > Recupero crediti / rischio clienti,Creazione schede clienti rete vendita,,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Controllo di gestione > Recupero crediti / rischio clienti,Elenco clienti a rischio consegne,menu_rischioc,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+contabilit,contabilit > Gestione del personale > Gestione anagrafica risorse aziendali,Aggiornamento,menu_risumana000,NON_APPLICABILE,,WRITE_SIDE,Editing anagrafico sul gestionale,screenshot+web
+contabilit,contabilit > Gestione del personale > Gestione lista pagamenti personale,Aggiornamento lista pagamenti,menu_gpp000,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Gestione del personale > Gestione lista pagamenti personale,Annullo con selezione,menu_gppannu,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Gestione del personale > Gestione lista pagamenti personale,Caricamento lista di pagamento,menu_elab_cedolini_tesoreria,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Gestione del personale > Gestione lista pagamenti personale,Elenco movimenti del mese,menu_stpag00,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+contabilit,contabilit > Gestione del personale > Gestione lista pagamenti personale,Modifica lista pagamenti del mese,menu_modpag,MANCANTE,,,,default
+contabilit,contabilit > Partitari,Controllo tra prima nota e partitari,checkpart,MANCANTE,,,Quadratura read-only: buon candidato web,screenshot+web
+contabilit,contabilit > Partitari,Controllo tra storico contabile e partitari,menu_checkscpart,MANCANTE,,,Quadratura read-only: buon candidato web,screenshot+web
+contabilit,contabilit > Partitari > Pagamenti incassi diversi,Mandati di pagamento,menu_mand000,MANCANTE,,,,default
+contabilit,contabilit > Partitari > Pagamenti incassi diversi,Reversali,menu_manc000,MANCANTE,,,,default
+contabilit,contabilit > Partitari > Partitari clienti,Clienti da contattare ......,contatta_cli,MANCANTE,,,,default
+contabilit,contabilit > Partitari > Partitari clienti,Gestione partite clienti,,MANCANTE,,,,default
+contabilit,contabilit > Partitari > Partitari fornitori,Gestione partite fornitori,,MANCANTE,,,,default
+contabilit,contabilit > Piano dei conti,Aggiornamento,menu_pdc000,NON_APPLICABILE,,WRITE_SIDE,Editing anagrafico sul gestionale,screenshot+web
+contabilit,contabilit > Piano dei conti,Annullo piano dei conti con selezione,menu_pdcannu,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Piano dei conti,Elenco piano dei conti,menu_pdcelen,MIGRATO,/conti + /conti/tree,,Lista e albero,screenshot+web
+contabilit,contabilit > Piano dei conti,Elenco piano dei conti con centri di costo,menu_pdcelcco,PARZIALE,/conti,,I centri di costo associati NON sono esposti nella vista web,screenshot+web
+contabilit,contabilit > Prima nota,Aggiornamento prima nota,menu_registrazioni_contabili,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Prima nota,Annullo prima nota,menu_registrazioni_contabili,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Prima nota,Blocco/sblocco reg. contabile previsionale,menu_prnpre,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Prima nota,Duplica prima nota,menu_registrazioni_contabili,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Prima nota,Import multiplo fatture elettroniche XML,menu_primanot_xml_multi,NON_APPLICABILE,,WRITE_SIDE,Import: Opus,screenshot+web
+contabilit,contabilit > Prima nota,Importazione e contabilizzazione parcelle da GIL,menu_import_parcelle_gil,NON_APPLICABILE,,WRITE_SIDE,Integrazione esterna GIL,screenshot+web
+contabilit,contabilit > Prima nota,Inserimento prima nota effettiva,,NON_APPLICABILE,,WRITE_SIDE,Scrittura contabile: Opus,screenshot+web
+contabilit,contabilit > Prima nota,Inserimento prima nota previsionale,,NON_APPLICABILE,,WRITE_SIDE,Scrittura contabile: Opus,screenshot+web
+contabilit,contabilit > Prima nota,Ricerca prima nota,menu_registrazioni_contabili,MIGRATO,/contabilita/primanota,,Consultazione con raggruppamento e dettaglio registrazione,screenshot+web
+contabilit,contabilit > Procedure extracontabili,Situazione extracontabile,menu_excosta,MANCANTE,,,Consultazione: candidata read-only,screenshot+web
+contabilit,contabilit > Procedure extracontabili > Gestione contratti,Aggiornamento,menu_con000,NON_APPLICABILE,,WRITE_SIDE,Editing anagrafico sul gestionale,screenshot+web
+contabilit,contabilit > Procedure extracontabili > Gestione contratti,Annullo con selezione,menu_conannu,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Procedure extracontabili > Gestione dei leasing,Aggiornamento,menu_lea000,NON_APPLICABILE,,WRITE_SIDE,Editing anagrafico sul gestionale,screenshot+web
+contabilit,contabilit > Procedure extracontabili > Gestione dei leasing,Annullo con selezione,menu_leaannu,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Procedure extracontabili > Gestione effetti attivi,Aggiornamento,menu_asc000,NON_APPLICABILE,,WRITE_SIDE,Editing anagrafico sul gestionale,screenshot+web
+contabilit,contabilit > Procedure extracontabili > Gestione effetti attivi,Annullo con selezione,menu_efaannu,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Procedure extracontabili > Gestione effetti passivi,Aggiornamento,menu_ass000,NON_APPLICABILE,,WRITE_SIDE,Editing anagrafico sul gestionale,screenshot+web
+contabilit,contabilit > Procedure extracontabili > Gestione effetti passivi,Annullo con selezione,menu_efpannu,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Procedure extracontabili > Gestione finanziamenti/mutui ipotecari,Aggiornamento,menu_fin000,NON_APPLICABILE,,WRITE_SIDE,Editing anagrafico sul gestionale,screenshot+web
+contabilit,contabilit > Procedure extracontabili > Gestione finanziamenti/mutui ipotecari,Annullo con selezione,menu_finannu,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Ritenute acconto professionisti,Annullo con selezione,menu_riannu,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Ritenute acconto professionisti,Annullo per periodo,menu_riaeli,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Ritenute acconto professionisti,Attribuzione data di versamento,menu_riavers,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Ritenute acconto professionisti,Pagamento fatture,menu_riapag,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Ritenute acconto professionisti,Registrazione fatture con r.a.,menu_ria000,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Ritenute acconto professionisti > Gestione integrata R.A.P.,Stampa archivio R.A.P.,menu_rapstam,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+contabilit,contabilit > Ritenute acconto professionisti > Stampe ritenute acconto,Elenco per codice versamento irpeff,menu_riairpef,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+contabilit,contabilit > Ritenute acconto professionisti > Stampe ritenute acconto,Estratto conto per i professionisti,menu_riaestc,MANCANTE,,,,default
+contabilit,contabilit > Ritenute acconto professionisti > Stampe ritenute acconto,Estratto conto per prof. su base data di pagamento,menu_riaestp,MANCANTE,,,,default
+contabilit,contabilit > Ritenute acconto professionisti > Stampe ritenute acconto,Statistiche,menu_riasta,MANCANTE,,,Consultazione compensi: candidata,screenshot+web
+contabilit,contabilit > Situazioni contabili,Confronto Cash Inflow - Outflow,menu_cash_in_out_compare,MANCANTE,,,,screenshot+web
+contabilit,contabilit > Situazioni contabili,Elenco clienti/fornitori per agenzia entrate,agenzia_en,NON_APPLICABILE,,PRINT_REPORT,,screenshot+web
+contabilit,contabilit > Situazioni contabili,Estratti conto clienti/fornitori,menu_estrcont,PARZIALE,/contabilita/partitari/*,,Il partitario copre la consultazione; la stampa estratto resta legacy,screenshot+web
+contabilit,contabilit > Situazioni contabili,Invio lettere di sollecito ai clienti,menu_solleciti,NON_APPLICABILE,,WRITE_SIDE,Genera documenti/invii,screenshot+web
+contabilit,contabilit > Situazioni contabili,Saldo annuale conto,menu_saldoc,PARZIALE,/contabilita/storico,,Lo storico mostra i movimenti; manca il saldo annuale sintetico per conto,screenshot+web
+contabilit,contabilit > Situazioni contabili,Scadenziario clienti/fornitori,menu_scadenz,MANCANTE,,,"PRIORITARIO: scadenze aperte cli/for, molto usato",screenshot+web
+contabilit,contabilit > Situazioni contabili,Situazione Cash Inflow,menu_cash_inflow,MANCANTE,,,,screenshot+web
+contabilit,contabilit > Situazioni contabili,Situazione Cash Outflow,menu_cash_outflow,MANCANTE,,,,screenshot+web
+contabilit,contabilit > Situazioni contabili,Situazione fatture clienti/fornitori,menu_sitfatcf,MANCANTE,,,,screenshot+web
+contabilit,contabilit > Situazioni contabili,Situazione finanziaria clienti,menu_finanz,MANCANTE,,,,screenshot+web
+contabilit,contabilit > Situazioni contabili,Situazione incassi pagamenti,menu_sitincpa,MANCANTE,,,Prioritario lato amministrazione (Ambra),screenshot+web
+contabilit,contabilit > Situazioni contabili,Stampa prima nota,menu_primano,NON_APPLICABILE,,PRINT_REPORT,Consultazione equivalente: /contabilita/primanota,screenshot+web
+contabilit,contabilit > Situazioni contabili,Storico contabile per conto,menu_movstori,MIGRATO,/contabilita/storico,,,screenshot+web
+contabilit,contabilit > Situazioni contabili,Storico contabile per data competenza,menu_movstori_comp,PARZIALE,/contabilita/storico,,"Lo storico web filtra per data registrazione, non per competenza",screenshot+web
+contabilit,contabilit > Tesoreria,Gestione anagrafica conti correnti,menu_tesana,MANCANTE,,,Consultazione anagrafica c/c fattibile (oltre /banche),screenshot+web
+contabilit,contabilit > Tesoreria,Gestione del corporate banking italiano,menu_cbi,NON_APPLICABILE,,VFP_ONLY,Integrazione CBI locale,screenshot+web
+contabilit,contabilit > Tesoreria,Gestione della tesoreria,tes_cruscotto,MANCANTE,,,NEEDS_DOMAIN: perimetro della tesoreria usato da Impresind,screenshot+web
+contabilit,contabilit > Trasferimenti contabili,Chiusura iva mensile / trimestrale,menu_tfcliq,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Trasferimenti contabili,Contabilizza ratei / risconti previsionali,menu_conabilizza_ratei,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Trasferimenti contabili,Sblocco fatture già trasmesse in contab.generale,menu_fatsbloc,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Trasferimenti contabili,Trasferimento effetti attivi,menu_tfcea,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Trasferimenti contabili,Trasferimento fatture,menu_tfc000,NON_APPLICABILE,,WRITE_SIDE,,screenshot+web
+contabilit,contabilit > Trasferimenti contabili > Amministratori,Trasferimento fatture amministratore,menu_raatfc,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Trasferimenti contabili > Amministratori,Trasferimento pagamenti fatture amministratore,menu_raatfp,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Trasferimenti contabili > Ammortamenti,Trasferimento quote di ammortamento,menu_tfcamm,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Trasferimenti contabili > Compensazione iva acquisti cee / reverse charge,Compensazione iva acquisti cee,menu_prnivace,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Trasferimenti contabili > Compensazione iva acquisti cee / reverse charge,Compensazione iva reverse charge,menu_prnivarc,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Trasferimenti contabili > Compensazione iva acquisti cee / reverse charge,Sblocco compensazioni iva cee/reverse change,menu_prnsblco,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Trasferimenti contabili > Professionisti,Trasferimento fatture con r.a.,menu_riatfc,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Trasferimenti contabili > Professionisti,Trasferimento r.a.,menu_riarct,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Trasferimenti contabili > Trasferimento ricevute / incassi / pagamenti,Trasferimento incassi agenti,menu_tfcinc,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Trasferimenti contabili > Trasferimento ricevute / incassi / pagamenti,Trasferimento incassi punti di vendita,menu_trasinca,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Trasferimenti contabili > Trasferimento ricevute / incassi / pagamenti,Trasferimento ricevute automatiche,menu_tfcriba,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Trasferimenti contabili > Trasferimento ricevute / incassi / pagamenti,Trasferimento ricevute manuali,menu_tfcribm,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Trasferimenti contabili > Trasferimento ricevute / incassi / pagamenti > Trasferimento mandati di pagamento,Trasferimento mandati di pagamento,menu_mandgen,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Trasferimenti contabili > Trasferimento ricevute / incassi / pagamenti > Trasferimento mandati di pagamento,Trasferimento mandati di pagamento generici,menu_tfcpgen,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+contabilit,contabilit > Trasferimenti contabili > Trasferimento ricevute / incassi / pagamenti > Trasferimento mandati di pagamento,Trasferimento reversali,menu_mancgen,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Anagrafica,Aggiornamento,menu_for000,MIGRATO,/fornitori,,Consultazione web agganciata via FORM_TO_URL,FORM_TO_URL
+fornitori,fornitori > Anagrafica,Annullo con selezione,menu_forannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Anagrafica,Cambio codice listino in anagrafica,menu_fortlisti,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Anagrafica,Duplicazione anagrafica fornitori,menu_fordup,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Anagrafica,Elenco dati contabili anagrafiche fornitori,menu_fornicee,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+fornitori,fornitori > Anagrafica,Elenco note anagrafiche del fornitore,menu_fornote,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+fornitori,fornitori > Anagrafica,Mailing,mailf,NON_APPLICABILE,,WRITE_SIDE,Utility/manutenzione: gestionale,pattern-refine
+fornitori,fornitori > Contratti fornitori,Aggiornamento,menu_con000,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Contratti fornitori,Annullo con selezione,menu_conannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Documenti da fornitori,Annullo con selezione,menu_bfoannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Documenti da fornitori,Annullo per periodo,menu_bfoeli,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Documenti da fornitori,Carico da fornitore,menu_bfo000,MIGRATO,/ddt-fornitore,,Consultazione web agganciata via FORM_TO_URL,FORM_TO_URL
+fornitori,fornitori > Documenti da fornitori,Carico da fornitore con pesatura merce,menu_bfopes,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Documenti da fornitori,Controllo bolle/fatture,menu_ctrlbf,MANCANTE,,,,default
+fornitori,fornitori > Documenti da fornitori,Controllo fatture/bolle,menu_stafatt_acq,MANCANTE,,,,default
+fornitori,fornitori > Documenti da fornitori,Difformità del peso delle bobine caricate da forn.,menu_discbfo,MANCANTE,,,,default
+fornitori,fornitori > Documenti da fornitori,Elenco documenti,menu_bfoelen,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+fornitori,fornitori > Documenti da fornitori,Gestione visione dich. conformità in accettazione,menu_vismcda,MANCANTE,,,,default
+fornitori,fornitori > Documenti da fornitori,Statistica dettagli docum. di carico da fornitore,menu_statbfo,MANCANTE,,,,default
+fornitori,fornitori > Documenti di conto lavoro > Gestione c.lavoro con compon. presso il fornitore,Aggiornamento ordini per conto lavoro,menu_orf000,MIGRATO,/ordini-fornitore,,Consultazione web agganciata via FORM_TO_URL,FORM_TO_URL
+fornitori,fornitori > Documenti di conto lavoro > Gestione c.lavoro con compon. presso il fornitore,Carico magazzino esterno da conto lavoro,menu_bfo000,MIGRATO,/ddt-fornitore,,Consultazione web agganciata via FORM_TO_URL,FORM_TO_URL
+fornitori,fornitori > Documenti di conto lavoro > Gestione c.lavoro con consegna da mag. interno,Aggiornamento DDT per conto lavoro,menu_bcl000,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Documenti di conto lavoro > Gestione c.lavoro con consegna da mag. interno,Annullo ddt per conto lavoro con selezione,menu_bclannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Documenti di conto lavoro > Gestione c.lavoro con consegna da mag. interno,Creazione ordini a fornitore da DDT per c.lavoro,menu_bcltoorf,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Documenti di conto lavoro > Gestione c.lavoro con consegna da mag. interno,Gestione flag di creazione ordini a fornitore,menu_bclflgs,NON_APPLICABILE,,WRITE_SIDE,Utility/manutenzione: gestionale,pattern-refine
+fornitori,fornitori > Documenti di conto lavoro > Gestione c.lavoro con consegna da mag. interno,Rientro materiale in conto lavoro,menu_bfo000,MIGRATO,/ddt-fornitore,,Consultazione web agganciata via FORM_TO_URL,FORM_TO_URL
+fornitori,fornitori > Documenti di conto lavoro > Gestione ordini in conto lavoro (classico),Aggiornamento,menu_lavo000,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Documenti di conto lavoro > Gestione ordini in conto lavoro (classico),Annullo ordini con selezione,menu_lavoannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Documenti di conto lavoro > Gestione ordini in conto lavoro (classico),Annullo per periodo,menu_lavoeli,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Documenti di conto lavoro > Gestione ordini in conto lavoro (classico),Chiusura/apertura ordini,menu_lavoevas,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Documenti di conto lavoro > Gestione ordini in conto lavoro (classico),Rientro materiale da conto lavoro,menu_lavmcar,MANCANTE,,,,default
+fornitori,fornitori > Documenti di conto lavoro > Gestione ordini in conto lavoro (classico),Situazione ordini,menu_venlav00,MANCANTE,,,,default
+fornitori,fornitori > Documenti di conto lavoro > Gestione ordini in conto lavoro (classico),Uscita materiale per conto lavoro,menu_bolfor,MANCANTE,,,,default
+fornitori,fornitori > Documenti di reso a fornitori,Aggiornamento,menu_bolresfor,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Documenti di reso a fornitori,Annullo con selezione,menu_resannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Documenti di reso a fornitori,Annullo per periodo,menu_reseli,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Listini fornitori > Gestione listini fornitori azienda/articolo,Aggiornamento,menu_lis000aa,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Listini fornitori > Gestione listini fornitori azienda/articolo,Annullo listini  di acquisto azienda/articoli,menu_lisannaa,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Listini fornitori > Gestione listini fornitori azienda/articolo,Cambio codice listino in anagrafica fornitori,menu_fortlisti,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Listini fornitori > Gestione listini fornitori azienda/articolo,Duplica listini di acquisto azienda/articolo,menu_lisdupaa,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Listini fornitori > Gestione listini fornitori azienda/articolo,Stampa listini di acquisto azienda/articoli,menu_lisstaaa,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+fornitori,fornitori > Listini fornitori > Gestione listini per fornitore/articolo,Aggiornamento,menu_lif000,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Listini fornitori > Gestione listini per fornitore/articolo,Annullo listini fornitore,menu_lifann,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Listini fornitori > Gestione listini per fornitore/articolo,Duplica listini fornitore / articolo,menu_lifdup,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Listini fornitori > Gestione listini per fornitore/articolo,Importazione listini da file excel,menu_lif_import_xls,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Listini fornitori > Gestione listini per fornitore/articolo,Stampa listino,menu_lifsta,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+fornitori,fornitori > Ordini di acquisto,Aggiornamento ordini di acquisto,menu_orf000,MIGRATO,/ordini-fornitore,,Consultazione web agganciata via FORM_TO_URL,FORM_TO_URL
+fornitori,fornitori > Ordini di acquisto,Annullo ordine fornit. tramite assegnaz. Tipologia,menu_orfannu_tpo,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Ordini di acquisto,Annullo ordini con selezione,menu_orfannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Ordini di acquisto,Annullo per periodo,menu_orfeli,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Ordini di acquisto,Duplicazione ordine a fornitore,menu_duplordorf,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Ordini di acquisto,Gestione blocco/sblocco riga ordine fornitore,menu_disimporf,NON_APPLICABILE,,WRITE_SIDE,Utility/manutenzione: gestionale,pattern-refine
+fornitori,fornitori > Ordini di acquisto,Gestione blocco/sblocco testata ordine fornitore,menu_orfdisimpordtes,NON_APPLICABILE,,WRITE_SIDE,Utility/manutenzione: gestionale,pattern-refine
+fornitori,fornitori > Ordini di acquisto,Situazione ordinato passivo con scadenze pagamenti,menu_ordinato_passivo,MANCANTE,,,,default
+fornitori,fornitori > Ordini di acquisto,Situazione ordini,menu_venfor00,MANCANTE,,,,default
+fornitori,fornitori > Ordini di acquisto,Statistiche ordini acquisto,menu_statord,MANCANTE,,,,default
+fornitori,fornitori > Ordini di acquisto > Portafoglio ordini acquisto,Creazione ordini secondo fabbisogno,menu_creorf,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Ordini di acquisto > Portafoglio ordini acquisto,Riprogrammazione scadenze di consegna e dettagli,menu_red001,NON_APPLICABILE,,WRITE_SIDE,Utility/manutenzione: gestionale,pattern-refine
+fornitori,fornitori > Ordini di acquisto > Procedure di supporto,Difformità del peso delle bobine caricate da forn.,menu_discbfo,MANCANTE,,,,default
+fornitori,fornitori > Ordini di acquisto > Procedure di supporto,Generazione ordine a fornitore da ordine cliente,menu_ordtoorf,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Ordini di acquisto > Procedure di supporto,Situazione ordini a fornitori con produzione,statord,MANCANTE,,,,default
+fornitori,fornitori > Ordini di acquisto > Procedure di supporto > Verifica situazione per riordino fornitori,Verifica riordino fornitori confrontato con giac.,menu_riorforn_sint,MANCANTE,,,,default
+fornitori,fornitori > Ordini di acquisto > Procedure di supporto > Verifica situazione per riordino fornitori,Verifica riordino fornitori confrontato con stat.,menu_riorforn,MANCANTE,,,,default
+fornitori,fornitori > Proposte ordini a fornitore,Aggiornamento,menu_orf000,MIGRATO,/ordini-fornitore,,Consultazione web agganciata via FORM_TO_URL,FORM_TO_URL
+fornitori,fornitori > Proposte ordini a fornitore,Annullo per periodo,menu_orfeli,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Proposte ordini a fornitore,Annullo proposte ordini a fornitori con selezione,menu_orfannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Proposte ordini a fornitore,Chiusura/apertura proposte ordini a fornitori,menu_orfevas,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Proposte ordini a fornitore,Creazione proposte d'ordine della sede ai pdv,menu_crepro,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Proposte ordini a fornitore,Generazione archivio transitorio delle proposte,menu_maggiapro,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Proposte ordini a fornitore,Situazione proposte ordini,menu_venpro01,MANCANTE,,,,default
+fornitori,fornitori > Richieste di acquisto,Aggiornamento richiesta di acquisto,,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Richieste di acquisto,Annullo richieste di acquisto con selezione,menu_rdaannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Richieste di acquisto,Creazione ordini di acquisto da rda autorizzate,menu_rdatoorf,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Richieste di acquisto,Sblocco rda per la ricreazione ordini acquisto,menu_rdasblock,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Richieste di acquisto,Tracciabilità delle richieste di acquisto,menu_rdaelen,MANCANTE,,,"Catena ordine-DDT-fattura: le chiavi di tracciabilita sono gia mappate (sessione 1, U_BOL_DD); vista dedicata da costruire",default
+fornitori,fornitori > Ristampa documenti,Ristampa documenti,menu_ristampa_doc,MIGRATO,/documenti,,Consultazione web agganciata via FORM_TO_URL,FORM_TO_URL
+fornitori,fornitori > Ristampa documenti,Tracciabilità documenti,menu_tracdoc,MANCANTE,,,"Catena ordine-DDT-fattura: le chiavi di tracciabilita sono gia mappate (sessione 1, U_BOL_DD); vista dedicata da costruire",default
+fornitori,fornitori > Ristampa documenti,Tracciabilità documenti passivi,menu_tracdoc_forn,MANCANTE,,,"Catena ordine-DDT-fattura: le chiavi di tracciabilita sono gia mappate (sessione 1, U_BOL_DD); vista dedicata da costruire",default
+fornitori,fornitori > Sconti in base ai listini di acquisto > Gestione sconti per fornitore tipo listino,Aggiornamento sconti sul listino fornitore,menu_lifsco,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Sconti in base ai listini di acquisto > Gestione sconti per fornitore tipo listino,Elenco sconti su listini fornitori,menu_lifscoelen,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+fornitori,fornitori > Sconti in base ai listini di acquisto > Sconti maggiorazioni per famiglia prodotto,Aggiornamento massivo listini per tipo listino,menu_lifbanc,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Sconti in base ai listini di acquisto > Sconti maggiorazioni per famiglia prodotto,Aggiornamento sconti sul listino,menu_lifban,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Sconti in base ai listini di acquisto > Sconti maggiorazioni per famiglia prodotto,Elenco sconti per tipo listino,menu_lifscbelen,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+fornitori,fornitori > Trasporti > Parametri,Pesi,menu_trasppesi,MANCANTE,,,,default
+fornitori,fornitori > Trasporti > Parametri,Province,menu_province,MANCANTE,,,,default
+fornitori,fornitori > Trasporti > Parametri,Vettori,paragest,MIGRATO,/parametri/{categoria},,Categoria PARA coperta dal modulo parametri,paragest
+fornitori,fornitori > Trasporti > Spedizioni campionature,Cancellazione contratti,menu_canc_contratti_camp,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Trasporti > Spedizioni campionature,Contratti,menu_traspcontratti_camp,MANCANTE,,,,default
+fornitori,fornitori > Trasporti > Spedizioni campionature,Costi dei trasporti,menu_traspcosti_camp,MANCANTE,,,,default
+fornitori,fornitori > Trasporti > Spedizioni campionature,Determina il vettore che costa meno,menu_traspclass_camp,MANCANTE,,,,default
+fornitori,fornitori > Trasporti > Spedizioni campionature,Duplicazione contratti,menu_dupl_contratti_camp,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Trasporti > Spedizioni standard,Cancellazione contratti,menu_canc_contratti,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+fornitori,fornitori > Trasporti > Spedizioni standard,Contratti,menu_traspcontratti,MANCANTE,,,,default
+fornitori,fornitori > Trasporti > Spedizioni standard,Costi dei trasporti,menu_traspcosti,MANCANTE,,,,default
+fornitori,fornitori > Trasporti > Spedizioni standard,Determina il vettore che costa meno,menu_traspclass,MANCANTE,,,,default
+fornitori,fornitori > Trasporti > Spedizioni standard,Duplicazione contratti,menu_dupl_contratti,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+help,help,Help,,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+help,help,Informazioni su Aquarius,infover,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+help,help,"Privacy D.Lgs 196/2003 - UE n. 679/2016 ""GDPR""",,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+magazzino,magazzino > Anagrafica articoli,Aggiornamento,menu_art000,MIGRATO,/articoli,,Consultazione web agganciata via FORM_TO_URL,FORM_TO_URL
+magazzino,magazzino > Anagrafica articoli,Annullo con selezione,menu_artannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+magazzino,magazzino > Anagrafica articoli,Duplicazione anagrafica articoli,menu_artdup,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+magazzino,magazzino > Anagrafica articoli,Elenco articoli con giacenza a zero,menu_artze,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+magazzino,magazzino > Anagrafica articoli,Elenco articoli per fornitore,menu_artprzf,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+magazzino,magazzino > Anagrafica articoli,Elenco articoli per i 5 possibili fornitori,menu_artprza,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+magazzino,magazzino > Anagrafica articoli,Elenco ultimi articoli inseriti,menu_artdatin,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+magazzino,magazzino > Anagrafica articoli,Stampa articoli sottoscorta,menu_scormi_sta,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+magazzino,magazzino > Anagrafica articoli,Stampa etichette per articolo,menu_arteti,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+magazzino,magazzino > Anagrafica articoli > Procedure di supporto,Caricamento anagrafica articoli,menu_carartic,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+magazzino,magazzino > Anagrafica articoli > Procedure di supporto,Elenco anagrafica articoli ammortizzabili,menu_anace,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+magazzino,magazzino > Anagrafica articoli > Procedure di supporto,Elenco articoli in anagrafica (produzione),menu_elenprod,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+magazzino,magazzino > Anagrafica articoli > Procedure di supporto,Elenco bobine non corrette in anagrafica (doppie),menu_staartdupl,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+magazzino,magazzino > Anagrafica articoli > Procedure di supporto,Importazione anagrafica articoli da file excel,menu_art_import_xls,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+magazzino,magazzino > Anagrafica articoli > Procedure di supporto,Importazione specifiche articoli da files excel,menu_sp_import_xls,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+magazzino,magazzino > Anagrafica articoli > Procedure di supporto,Organizzazione gerarchica categorie articolo,albero_categorie,NON_APPLICABILE,,WRITE_SIDE,Utility/manutenzione: gestionale,pattern-refine
+magazzino,magazzino > Anagrafica articoli > Procedure di supporto,Ricerca editoriale,ricart2,MANCANTE,,,,default
+magazzino,magazzino > Anagrafica articoli > Procedure di supporto,Sincronizzazione dati con Cardioline Italia,menu_cardioline_fr_sync,NON_APPLICABILE,,WRITE_SIDE,Utility/manutenzione: gestionale,pattern-refine
+magazzino,magazzino > Anagrafica articoli > Procedure di supporto,Utility di aggiornamento dati ultime movimentaz.,menu_artuld,NON_APPLICABILE,,WRITE_SIDE,Utility/manutenzione: gestionale,pattern-refine
+magazzino,magazzino > Anagrafica articoli > Procedure di supporto,Utilità di assegnazione categoria/tipo imballo,articoli_multi,NON_APPLICABILE,,WRITE_SIDE,Utility/manutenzione: gestionale,pattern-refine
+magazzino,magazzino > Anagrafica articoli > Procedure di supporto,Utilità di modifica prezzi,utilart,NON_APPLICABILE,,WRITE_SIDE,Utility/manutenzione: gestionale,pattern-refine
+magazzino,magazzino > Anagrafica articoli > Procedure di supporto,Utilità di valorizzazione prz. costo da produzione,pfp_valorizza_costo_prodotti,NON_APPLICABILE,,WRITE_SIDE,Utility/manutenzione: gestionale,pattern-refine
+magazzino,magazzino > Controllo e gestione del magazzino,Analisi costi di produzione,costi_produzione,MANCANTE,,,,default
+magazzino,magazzino > Controllo e gestione del magazzino,Controllo e gestione del magazzino,menu_controllo_magazzino,MANCANTE,,,,default
+magazzino,magazzino > Controllo e gestione del magazzino,Controllo materiale entrato fornitori,menu_entrato_fornitori,MANCANTE,,,,default
+magazzino,magazzino > Controllo e gestione del magazzino,Situazione riepilogata giacenze con disp. teorica,menu_giac_magartforn,MANCANTE,,,,default
+magazzino,magazzino > Controllo e gestione del magazzino > Slow moving del magazzino,Statistica per prodotti in ritardo di consegna,menu_ritardi_cons,MANCANTE,,,,default
+magazzino,magazzino > Controllo e gestione del magazzino > Slow moving del magazzino,Statistica per slow moving,menu_slowmoving,MANCANTE,,,,default
+magazzino,magazzino > Inventario di magazzino,Conferma,mag_inventario_conf,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+magazzino,magazzino > Inventario di magazzino,Consultazione,mag_inventario_sta,MANCANTE,,,,default
+magazzino,magazzino > Inventario di magazzino,Inserimento,mag_inventario,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+magazzino,magazzino > Magazzino a locazioni,Configuratore locazioni predefinite,art_maga_config,NON_APPLICABILE,,WRITE_SIDE,Utility/manutenzione: gestionale,pattern-refine
+magazzino,magazzino > Magazzino a locazioni,Generazione struttura magazzino logistico,menu_maglog_gen,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+magazzino,magazzino > Magazzino a locazioni,Gestione grafica magazzino logistico,menu_maglog_gui,MANCANTE,,,,default
+magazzino,magazzino > Magazzino a locazioni,Gestione struttura magazzino logistico,menu_maglog_ges,MANCANTE,,,,default
+magazzino,magazzino > Magazzino a locazioni,Spostamento giacenze tra magazzini interni,menu_spomat,MANCANTE,,,,default
+magazzino,magazzino > Magazzino cartelle sanitarie,Anagrafica delle matricole,menu_mat000,MANCANTE,,,,default
+magazzino,magazzino > Magazzino cartelle sanitarie,Annulla cartella,menu_casannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+magazzino,magazzino > Magazzino cartelle sanitarie,Carico/scarico magazzino a locazioni,menu_casloca,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+magazzino,magazzino > Magazzino cartelle sanitarie,Crea file in formato dos,menu_casdos,MANCANTE,,,,default
+magazzino,magazzino > Magazzino cartelle sanitarie,Registrazione cartella,menu_cas000,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+magazzino,magazzino > Magazzino cartelle sanitarie,Ricerca cartella,menu_cassitu,MANCANTE,,,,default
+magazzino,magazzino > Magazzino cartelle sanitarie,Sfoltimento cartelle,menu_cassfol,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+magazzino,magazzino > Magazzino cartelle sanitarie > Gestione parametri,Centri di costo,paragest,MIGRATO,/parametri/{categoria},,Categoria PARA coperta dal modulo parametri,paragest
+magazzino,magazzino > Magazzino cartelle sanitarie > Gestione parametri,Tipi documento,paragest,MIGRATO,/parametri/{categoria},,Categoria PARA coperta dal modulo parametri,paragest
+magazzino,magazzino > Magazzino documenti cartacei,Annulla scheda,menu_astannu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+magazzino,magazzino > Magazzino documenti cartacei,Carico/scarico magazzino a locazioni,menu_astloca,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+magazzino,magazzino > Magazzino documenti cartacei,Crea file in formato dos,menu_astdos,MANCANTE,,,,default
+magazzino,magazzino > Magazzino documenti cartacei,Registrazione scheda,menu_ast000,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+magazzino,magazzino > Magazzino documenti cartacei,Ricerca scheda,menu_astsitu,MANCANTE,,,,default
+magazzino,magazzino > Magazzino documenti cartacei,Sfoltimento schede,menu_astsfol,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+magazzino,magazzino > Magazzino documenti cartacei > Gestione parametri,Centri di costo,paragest,MIGRATO,/parametri/{categoria},,Categoria PARA coperta dal modulo parametri,paragest
+magazzino,magazzino > Magazzino documenti cartacei > Gestione parametri,Tipi documento,paragest,MIGRATO,/parametri/{categoria},,Categoria PARA coperta dal modulo parametri,paragest
+magazzino,magazzino > Movimenti di magazzino,Scarico prodotti / vendita al banco,menu_scaricamaga,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+magazzino,magazzino > Movimenti di magazzino,Situazione giacenze di magazzino,,MANCANTE,,,,default
+magazzino,magazzino > Movimenti di magazzino,Situazione movimenti di magazzino,menu_movimenti_mag,MIGRATO,/magazzino/movimenti,,Consultazione web agganciata via FORM_TO_URL,FORM_TO_URL
+magazzino,magazzino > Movimenti di magazzino > Carichi / scarichi,Carichi/scarichi magazzino,menu_movimaga,MANCANTE,,,,default
+magazzino,magazzino > Movimenti di magazzino > Carichi / scarichi,Carico/scarico componenti distinta base,menu_magadis,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+magazzino,magazzino > Movimenti di magazzino > Carichi / scarichi > Carichi/scarichi da distinta base,Carico componenti della distinta base con caric,menu_magadis,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+magazzino,magazzino > Movimenti di magazzino > Carichi / scarichi > Carichi/scarichi da distinta base,Carico componenti della distinta base senza caric,menu_magadis,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+magazzino,magazzino > Movimenti di magazzino > Carichi / scarichi > Carichi/scarichi da distinta base,Scarico componenti della distinta base con caric,menu_magadis,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+magazzino,magazzino > Movimenti di magazzino > Carichi / scarichi > Carichi/scarichi da distinta base,Scarico componenti della distinta base senza caric,menu_magadis,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+magazzino,magazzino > Movimenti di magazzino > Gestione stampe di magazzino con taglia/colore,Stampa dei movimenti per taglia e colori,menu_tagcolmo,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+magazzino,magazzino > Movimenti di magazzino > Gestione stampe di magazzino con taglia/colore,Stampa delle giacenze per taglia e colore,menu_tagcolgi,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+magazzino,magazzino > Movimenti di magazzino > Interrogazioni di magazzino,Interrogazioni di magazzino,menu_controllo_magazzino,MANCANTE,,,,default
+magazzino,magazzino > Movimenti di magazzino > Interrogazioni di magazzino,Interrogazioni impegnato di magazzino,menu_magimpe,MANCANTE,,,,default
+magazzino,magazzino > Movimenti di magazzino > Interrogazioni di magazzino,Visualizza disponibilità,menu_dispon,MANCANTE,,,,default
+magazzino,magazzino > Movimenti di magazzino > Magazzino fiscale a costi specifici,Giornale di magazzino,menu_magafisc_giorn,MANCANTE,,,,default
+magazzino,magazzino > Movimenti di magazzino > Magazzino fiscale a costi specifici,Scheda di magazzino,menu_magafisc_scheda,MANCANTE,,,,default
+magazzino,magazzino > Movimenti di magazzino > Movimenti dei magazzini di produzione,"Analisi saldo magazzino m.p. , s.l.  e  p.f.",menu_scarti_slpf,MANCANTE,,,,default
+magazzino,magazzino > Movimenti di magazzino > Movimenti dei magazzini di produzione,Ristampa etichette articoli in giacenza,menu_magastaeti,MANCANTE,,,,default
+magazzino,magazzino > Movimenti di magazzino > Movimenti dei magazzini di produzione,Spostamento giacenze tra magazzini interni,menu_spomat,MANCANTE,,,,default
+magazzino,magazzino > Movimenti di magazzino > Movimenti dei magazzini di produzione,Stampa prodotti sottoscorta,menu_scormi_sta,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+magazzino,magazzino > Movimenti di magazzino > Movimenti dei magazzini di produzione,Verifica bobine di spalmato da ribobinare,menu_verbobspa,MANCANTE,,,,default
+magazzino,magazzino > Movimenti di magazzino > Stampe di magazzino,Stampa sottoscorta,menu_magsotsc,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+magazzino,magazzino > Movimenti di magazzino > Stampe di magazzino > Stampa dei movimenti,Elenco articoli non movimentati dalla data ...,menu_magnomov,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+magazzino,magazzino > Movimenti di magazzino > Stampe di magazzino > Stampa dei movimenti,Stampa dei movimenti di magazzino,menu_elemaga,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+magazzino,magazzino > Movimenti di magazzino > Stampe di magazzino > Stampa dei movimenti,Stampa dei movimenti per periodo,menu_magamovi,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+magazzino,magazzino > Movimenti di magazzino > Stampe di magazzino > Stampa delle giacenze,Elenco materiali in giacenza,menu_filgia,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+magazzino,magazzino > Movimenti di magazzino > Stampe di magazzino > Stampa delle giacenze,Stampa delle giacenze con impegnato e valore costo,menu_elegiace,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+magazzino,magazzino > Movimenti di magazzino > Stampe di magazzino > Stampa delle giacenze,Stampa delle giacenze in sofferenza,menu_giacsoff,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+magazzino,magazzino > Movimenti di magazzino > Stampe di magazzino > Stampa delle giacenze,Stampa delle giacenze per categoria merceologica,menu_maggiacm,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+magazzino,magazzino > Movimenti di magazzino > Stampe di magazzino > Stampa delle giacenze,Stampa delle giacenze per deposito,menu_giac000,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+magazzino,magazzino > Movimenti di magazzino > Stampe di magazzino > Stampa delle giacenze,Stampa delle giacenze per linea di prodotto,menu_maggiac,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+magazzino,magazzino > Movimenti di magazzino > Stampe di magazzino > Stampa delle giacenze,Stampa delle giacenze per magazzino sede,menu_giacsed,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+magazzino,magazzino > Movimenti di magazzino > Stampe di magazzino > Stampa delle giacenze,Stampa delle giacenze per periodo,menu_magagiac,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+magazzino,magazzino > Movimenti di magazzino > Stampe di magazzino > Stampa delle giacenze,Stampa delle giacenze per periodo,menu_maggiace,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+magazzino,magazzino > Movimenti di magazzino > Storicizza movimenti di magazzino,Storicizza movimenti di magazzino,menu_storicizza_mov_mag,MANCANTE,,,,default
+opzioni,opzioni,Utilità,submenu,NON_APPLICABILE,,WRITE_SIDE,Utility/manutenzione: gestionale,pattern-refine
+opzioni,opzioni > Agenda telefonica,Gestione agenda,menu_agn000,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Configurazione,Configurazione tabella società,configura_dbsocieta_da_aquarius,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Configurazione,Creazione script sql per aggiornamento multi-dbase,menu_script,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+opzioni,opzioni > Configurazione,Gestione carica/scarica tabelle,menu_utilarc,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Configurazione,Gestione collegamenti ftp,ftp000,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Configurazione,Gestione form personalizzati,form_exe,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Configurazione,Gestione tabella dei menù,menu000,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Conversioni,Conversione archivi,menu_convdati,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Conversioni,Conversione archivi applicazione Arca,menu_convarca,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Conversioni,Conversione archivi applicazione Assolo Eurocont,menu_convassolo,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Conversioni,Conversione archivi as400,menu_convxilo,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Conversioni,Conversione archivi da applicazione Onda,menu_convonda,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Conversioni,Conversione archivi da applicazioni zucchetti,menu_convzucc,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Conversioni,Conversione archivi dbf viewer,menu_convdati_sop,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Conversioni,Conversione archivi settore medicale,menu_convcard,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Conversioni,Conversione archivi studi professionali,menu_convspro,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Conversioni,Conversione dati dbf -> sql con selezione anno,menu_convdati_sel,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Conversioni,Startup sede centrale,menu_startupsede,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Documenti > Gestione documenti,Inserimento descrizione in lingua,menu_lingue,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+opzioni,opzioni > Documenti > Gestione documenti,Inserimento testi standard,menu_note,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+opzioni,opzioni > Documenti > Gestione legami tra documenti,Annullo documenti legati,menu_legdann,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+opzioni,opzioni > Documenti > Gestione legami tra documenti,Gestione documenti legati,menu_legd000,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Documenti > Gestione legami tra documenti,Ricerche documenti legati,menu_legdvis,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Documenti > Gestione report,Gestione report personalizzati,tiporep,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Documenti > Gestione report,Gestione stampanti,gessta,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Documenti > Gestione report,Impostazioni report di stampa,menu_imposta_report,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Documenti > Gestione report,Modifica report,modrep,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Menù/Procedure,Analisi archivi,sqlfind000,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Menù/Procedure,Monitoraggio procedure,menu_loggen,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Menù/Procedure,Monitoraggio rete,menu_logrgen,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Menù/Procedure > Black box,Configurazione black box,elenco_x_blackbox,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Menù/Procedure > Black box,Statistica black box,menu_blackbox,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Utenti,Autorizzazione all'uso della licenza aquarius,licenza,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Utenti,Definizione ruoli aziendali,organigramma,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Utenti,Gestione utenti,menu_resmenu,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Utenti > Configura utenti,Configura utenti per inibizione prezzi su di.ba.,menu_mutoper,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Utenti > Configura utenti,Configurazione utenti per visualizzazione messaggi,menu_ope000,NON_APPLICABILE,,VFP_ONLY,Opzioni/utility di sistema del client VFP,pattern-refine
+opzioni,opzioni > Utenti > Gestione client aquarius,Blocco client manuale per manutenzione,menu_manute,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+parametri,parametri > Gestione parametri,Definizione dati azienda,menu_azi000,MIGRATO,/parametri-aziendali,,Consultazione web agganciata via FORM_TO_URL,FORM_TO_URL
+parametri,parametri > Gestione parametri,Parametri del sistema,,MANCANTE,,,,default
+parametri,parametri > Gestione parametri,Tipi operazioni,paragest,MIGRATO,/parametri/{categoria},,Categoria PARA coperta dal modulo parametri,paragest
+parametri,parametri > Gestione parametri,Trasferimento parametri tra databases,menu_para_copy,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione,Scambio dati macchinari Industry 4.0,submenu,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Cicli di lavoro,Aggiornamento ciclo,menu_cic000,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Cicli di lavoro,Annulla ciclo,menu_cicann,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Cicli di lavoro,Duplica ciclo,menu_cicdup,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Controllo qualità > Controllo qualità film protettivi,Analisi sui prodotti della concorrenza,menu_prc000,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Controllo qualità > Controllo qualità film protettivi,Difformità del peso delle bobine caricate da forn.,menu_discbfo,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Controllo qualità > Controllo qualità film protettivi,Gestione certificati di conformità,menu_cer000,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Controllo qualità > Controllo qualità film protettivi,Risposta al commerciale in rif. alle campionature,menu_camp,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Controllo qualità > Controllo qualità film protettivi,Stato avanzamento ordini prodotti,prd_statoordini,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Controllo qualità > Controllo qualità film protettivi,Tracciabilità produzione,prd_tracciabilita,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Controllo qualità > Controllo qualità prodotti in legno,Analisi sulle materie prime acquistate,menu_richmp,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Controllo qualità > Controllo qualità prodotti in legno,Elenco delle analisi eseguite sulle m.p.,menu_analmp,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+produzione,produzione > Distinte base,Aggiornamento distinta base,menu_dis000,MIGRATO,/distinte,,Consultazione web agganciata via FORM_TO_URL,FORM_TO_URL
+produzione,produzione > Distinte base,Annulla distinta base,menu_disann,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Distinte base,Configuratore di.ba.,menu_config_diba,NON_APPLICABILE,,WRITE_SIDE,Utility/manutenzione: gestionale,pattern-refine
+produzione,produzione > Distinte base,Dove è usato,menu_disdove,MANCANTE,,,,default
+produzione,produzione > Distinte base,Duplica distinta base,menu_disdup,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Distinte base,Elenco con esplosione,menu_diselen,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+produzione,produzione > Distinte base,Eliminazione e sostituzione massiva componenti,menu_dissost,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Distinte base,Esplosione della distinta base,menu_disesp,MANCANTE,,,,default
+produzione,produzione > Distinte base,Inserimento massivo componenti,menu_disins,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Produzione bombole ossigeno e altri gas,Gestione collaudo,pbg_collaudo,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione bombole ossigeno e altri gas > Gestione piani di trasporto,Annullo piani di trasporto,pbg_packing_da_ord_annu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Produzione bombole ossigeno e altri gas > Gestione piani di trasporto,Annullo verifica consegne e ritiri,pbg_consegne_ddt_annu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Produzione bombole ossigeno e altri gas > Gestione piani di trasporto,Creazione ddt da piani di trasporto,pbg_pck_da_ord_toddt,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Produzione bombole ossigeno e altri gas > Gestione piani di trasporto,Gestione piani di trasporto,pbg_packing_da_ordini,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione bombole ossigeno e altri gas > Gestione piani di trasporto,Statistica piani di trasporto,pbg_pck_da_ord_stat,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione bombole ossigeno e altri gas > Gestione piani di trasporto,Verifica consegne/ritiri per conferma fatturazione,pbg_consegne_ddt,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione bombole ossigeno e altri gas > Programmazione della produzione bombole piene,Fattibilità e prelievo materiali per la produzione,pbg_prelievo,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione bombole ossigeno e altri gas > Programmazione della produzione bombole piene,Pianificazione acquisti,pbg_pianificaz_orfgen,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione bombole ossigeno e altri gas > Programmazione della produzione bombole piene,Pianificazione della produzione,pbg_pianificazione,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione bombole ossigeno e altri gas > Programmazione della produzione bombole piene,Programmi di produzione,pbg_programmazione,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione bombole ossigeno e altri gas > Programmazione della produzione bombole piene,Versamento di produzione interna,pbg_avanza,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione bombole ossigeno e altri gas > Programmazione della produzione bombole piene > Statistiche di produzione,Statistica sulle quantità prodotte per periodo,std_statqtaper,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione dadi pressati,Avanzamento produzione,dad_avanza,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione dadi pressati,Programmazione della produzione,dad_programmazione,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione dadi pressati > Gestione spedizioni,Annullo packing list,ppt_packing_da_ord_annu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Produzione dadi pressati > Gestione spedizioni,Creazione ddt da packing list,ppt_pck_da_ord_toddt,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Produzione dadi pressati > Gestione spedizioni,Packing list,ppt_packing_da_ordini,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione dadi pressati > Gestione spedizioni,Statistica packing list,ppt_pck_da_ord_stat,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione dadi pressati > Statistiche di produzione,Statistica su consumo carte impregnate per periodo,consumo_carte_impregnate,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione dadi pressati > Statistiche di produzione,Statistica sulle quantità prodotte per periodo,std_statqtaper,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione dadi pressati > Utilità,Riciclo da scarti di produzione dadi pressati,dad_ricicla_scarti,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione dadi pressati > Utilità,Trasform. automatica bancali di 1° scelta in 2°,dad_trasforma_1_in_2,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione dispositivi industriali,Fattibilità e prelievo materiali per la produzione,pmi_prelievo,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione dispositivi industriali,Programmazione acquisti per gruppi di prodotti,pmi_giacxprod,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione dispositivi industriali,Programmazione della produzione,pmi_programmazione,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione dispositivi industriali,Versamento produzione esterna,pmi_avanza,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione dispositivi industriali,Versamento produzione interna,pmi_avanza,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione dispositivi industriali > Gestione spedizioni,Check list di spedizione,pmi_checklist,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione dispositivi industriali > Statistiche di produzione,Statistica sulle quantità prodotte per periodo,std_statqtaper,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione dispositivi medicali,Check list di spedizione da ordini e creazione ddt,pdm_checklist,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione dispositivi medicali,Configuratore Di.Ba. per fascicolo tecnico,pdm_config_diba_fascicolo_tecnico,NON_APPLICABILE,,WRITE_SIDE,Utility/manutenzione: gestionale,pattern-refine
+produzione,produzione > Produzione dispositivi medicali,Creazione e trasferimento doc. per firma digitale,trasf_doc_prod_firma_digitale,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Produzione dispositivi medicali,Fattibilità e prelievo materiali per la produzione,pdm_prelievo,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione dispositivi medicali,Gestione visione dich. conformità in produzione,pdm_vismcdp,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione dispositivi medicali,Pianificazione acquisti,pdm_pianificaz_orfgen,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione dispositivi medicali,Pianificazione della produzione,pdm_pianificazione,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione dispositivi medicali,Programmi di produzione,pdm_programmazione,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione dispositivi medicali,Situazione DDT per conto visione,pdm_visioni,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione dispositivi medicali,Situazione DDT per garanzie,pdm_garanzie,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione dispositivi medicali,Situazione giacenze di magazzino,pdm_sitgiac,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione dispositivi medicali,Situazione ordini con la produzione (SIT 100),pdm_sitord,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione dispositivi medicali,Utility di smontaggio prodotti finiti,prod_smontaggio,NON_APPLICABILE,,WRITE_SIDE,Utility/manutenzione: gestionale,pattern-refine
+produzione,produzione > Produzione dispositivi medicali,Versamento di produzione interna,pdm_avanza,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione dispositivi medicali,Versamento produzione esterna,pdm_avanza,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione dispositivi medicali > Statistiche di produzione,Statistica sulle quantità prodotte per periodo,std_statqtaper,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione dispositivi medicali > Statistiche di produzione,Tracciabilità articoli di produzione,prod_tracking,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con pianificazione,Pianificazione della produzione,pfp_pianif_spalma,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con pianificazione,Prelievo materiali per il taglio,pfp_prelievo,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con pianificazione,Prelievo materiali per la ribobinatura,pfp_prelievo,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con pianificazione,Prelievo materiali per la spalmatura,pfp_prelievo,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con pianificazione,Programmi di produzione,pfp_programmazione,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con pianificazione,Programmi ribobinatura e taglio da ordini,pfp_ordtoprod,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con pianificazione > Avanzamenti di produzione,Versamento produzione ribobinatura,pfp_avanza,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con pianificazione > Avanzamenti di produzione,Versamento produzione spalmatura,pfp_avanza,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con pianificazione > Avanzamenti di produzione,Versamento produzione taglio,pfp_avanza,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con pianificazione > Imballaggio e spedizione,Annullo packing list,pfp_packinglist_annu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Produzione film protettivi con pianificazione > Imballaggio e spedizione,Creazione bolle da programma manuale,pfp_ordtobol,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Produzione film protettivi con pianificazione > Imballaggio e spedizione,Generazione ddt tramite packing list,pfp_pcktoddt,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Produzione film protettivi con pianificazione > Imballaggio e spedizione,Gestione bancali,,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con pianificazione > Imballaggio e spedizione,Imballaggio bancali,pfp_imballaggio,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con pianificazione > Imballaggio e spedizione,Preparazione bancali con packing list,pfp_packing,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con pianificazione > Statistiche di produzione,Statistica sulle quantità prodotte per periodo,std_statqtaper,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con pianificazione > Statistiche di produzione,Tracciabilità articoli di produzione,prod_tracking,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con tappeto prod. > Avanzamenti produzione,Avanzamento spalmatura,prd_avanzaspalmatura,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con tappeto prod. > Avanzamenti produzione,Avanzamento taglio,prd_taglio,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con tappeto prod. > Avanzamenti produzione,Controllo avanzamento produzione,prd_statoordini,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con tappeto prod. > Gestione dei fabbisogni,Riprogrammazione scadenze di consegna e dettagli,menu_riprog_orf,NON_APPLICABILE,,WRITE_SIDE,Utility/manutenzione: gestionale,pattern-refine
+produzione,produzione > Produzione film protettivi con tappeto prod. > Gestione spedizioni con imballaggio automatizzato,Annullo packing list,prd_packinglist_annu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Produzione film protettivi con tappeto prod. > Gestione spedizioni con imballaggio automatizzato,Generazione ddt tramite packing list,prd_pcktoddt,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Produzione film protettivi con tappeto prod. > Gestione spedizioni con imballaggio automatizzato,Imballaggio bancali,prd_imballaggio,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con tappeto prod. > Gestione spedizioni con imballaggio automatizzato,Preparazione bancali con packing list,prd_packing,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con tappeto prod. > Gestione spedizioni manuale,Annullo packing list,prd_packinglist_annu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Produzione film protettivi con tappeto prod. > Gestione spedizioni manuale,Generazione ddt tramite packing list,prd_pcktoddt,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Produzione film protettivi con tappeto prod. > Gestione spedizioni manuale,Gestione dettagliata packing list,prd_packinglist,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con tappeto prod. > Preparazione risorse produttive per spalmatura,Associazione bobine madri alla produzione,prd_associa_bobine,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con tappeto prod. > Preparazione risorse produttive per spalmatura,Gestione consumo adesivi,prd_consade,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con tappeto prod. > Preparazione risorse produttive per spalmatura,Gestione dei turni di lavoro,prd_turni,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con tappeto prod. > Preparazione risorse produttive per spalmatura,Modifica / ripristina stato sequenze programmate,prd_staseq_modi,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con tappeto prod. > Preparazione risorse produttive per spalmatura,Preparazione materie prime per spalmatura,prd_preparaspalmatura,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con tappeto prod. > Preparazione risorse produttive per spalmatura,Preparazione ricette macchina per spalmatrice,prd_ricemac,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con tappeto prod. > Preparazione risorse produttive per spalmatura,Stampa commesse produttive per spalmatura,prd_comlav,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+produzione,produzione > Produzione film protettivi con tappeto prod. > Preparazione risorse produttive per spalmatura,Stampa dettagliata turni di lavoro,prd_turni_sta,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+produzione,produzione > Produzione film protettivi con tappeto prod. > Preparazione risorse produttive per taglio,Annullo programma di taglio,prd_prgtaglio_annu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Produzione film protettivi con tappeto prod. > Preparazione risorse produttive per taglio,Generazione programma di taglio,prd_prepara_taglio,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Produzione film protettivi con tappeto prod. > Preparazione risorse produttive per taglio,Situazione barre tagliate già programmate,prd_stato_prgtaglio,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con tappeto prod. > Preparazione risorse produttive per taglio,Verifica non conformità da spalmatura,prd_statobarre,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con tappeto prod. > Preparazione risorse produttive per taglio > Gestione barre scorta e ribobinatura,Aggiungi nuova barra scorta alla produzione,prd_aggbarrescorta,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con tappeto prod. > Preparazione risorse produttive per taglio > Gestione barre scorta e ribobinatura,Attribuzione barre scorta ad ordine,prd_attribuzione_barre,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Produzione film protettivi con tappeto prod. > Preparazione risorse produttive per taglio > Gestione barre scorta e ribobinatura,Formattazione in lunghezza barre scorta,prd_barre_daribo,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con tappeto prod. > Preparazione risorse produttive per taglio > Gestione barre scorta e ribobinatura,Ribobinatura,prd_ribobinatura,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con tappeto prod. > Programmazione della produzione,Programmazione tappeto produttivo,prd_tappeto,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con tappeto prod. > Programmazione della produzione,Riprogrammazione date di produzione,prd_riprog_tappeto,NON_APPLICABILE,,WRITE_SIDE,Utility/manutenzione: gestionale,pattern-refine
+produzione,produzione > Produzione film protettivi con tappeto prod. > Scarichi materie prime,Scarico jumbi dopo spalmatura,prd_scaricamp,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Produzione film protettivi con tappeto prod. > Statistiche di produzione,Statistiche di produzione su file excel,prd_statistica,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con tappeto prod. > Statistiche di produzione,Tracciabilità,prd_tracciabilita,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con tappeto prod. > Utilità,Chiusura forzata programma di produzione,prd_chiusura_prod_spa,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Produzione film protettivi con tappeto prod. > Utilità,Modifica bancale di appartenenza rotoli,prd_idbanc_modi,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con tappeto prod. > Utilità,Ristampe etichette di produzione,prd_ristampa_etichette,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione film protettivi con tappeto prod. > Utilità,Sblocco barre e rotoli prodotti,prd_sblocca_prenot_ord,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Produzione pannelli truciolari,Programmazione della produzione,ppt_programmazione,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione pannelli truciolari,Stato avanzamento ordini con la produzione,ppt_stato_ordini,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione pannelli truciolari > Avanzamenti produzione,Avanzamento produzione levigatura,ppt_avanza_leviga,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione pannelli truciolari > Avanzamenti produzione,Avanzamento produzione nobilitatura,ppt_avanza_nobilita,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione pannelli truciolari > Avanzamenti produzione,Avanzamento produzione pressatura,ppt_avanza_pressa,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione pannelli truciolari > Gestione spedizioni,Annullo packing list,ppt_packing_da_ord_annu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Produzione pannelli truciolari > Gestione spedizioni,Creazione ddt da packing list,ppt_pck_da_ord_toddt,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Produzione pannelli truciolari > Gestione spedizioni,Packing list,ppt_packing_da_ordini,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione pannelli truciolari > Gestione spedizioni,Statistica packing list,ppt_pck_da_ord_stat,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione pannelli truciolari > Statistiche di produzione,Statistica su consumo carte impregnate per periodo,consumo_carte_impregnate,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione pannelli truciolari > Statistiche di produzione,Statistica sulle quantità prodotte per periodo,std_statqtaper,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione pannelli truciolari > Utilità,Generazione automatica di.ba. pannelli nobilitati,ppt_crea_diba_nobilitato,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Produzione pannelli truciolari > Utilità,Riciclo da scarti di produzione pannelli,ppt_ricicla_scarti,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione pannelli truciolari > Utilità,Scarto massivo pannelli grezzi da levigare,ppt_scarto_grezzo,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione pannelli truciolari > Utilità,Trasformaz. automatica pannelli di 1° in 2°scelta,ppt_trasforma_1_in_2,MANCANTE,,NEEDS_DOMAIN,Verticale produzione specifica: verificare se in uso a Impresind (il web copre la produzione STANDARD),pattern-refine
+produzione,produzione > Produzione standard,Abilitazione ordini per log produzione,std_abilita_prod,MANCANTE,,,,default
+produzione,produzione > Produzione standard,Annullo packing list,std_packing_da_ord_annu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Produzione standard,Avanzamento produzione,std_avanza,MANCANTE,,,,default
+produzione,produzione > Produzione standard,Creazione DDT da packing list,std_pck_da_ord_toddt,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Produzione standard,Gestione packing list da ordini clienti,std_packing_da_ordini,MANCANTE,,,,default
+produzione,produzione > Produzione standard,Pianificazione acquisti,std_pianificaz_orfgen,MANCANTE,,,,default
+produzione,produzione > Produzione standard,Pianificazione della produzione,std_pianificazione,MANCANTE,,,,default
+produzione,produzione > Produzione standard,Programmazione acquisti per gruppi di prodotti,std_giacxprod,MANCANTE,,,,default
+produzione,produzione > Produzione standard,Programmazione acquisti per singolo prodotto,std_giacxprod_singolo,MANCANTE,,,,default
+produzione,produzione > Produzione standard,Programmazione della produzione,std_programmazione,MIGRATO,/produzione,,Consultazione web agganciata via FORM_TO_URL,FORM_TO_URL
+produzione,produzione > Produzione standard > Statistiche di produzione,Importazione file da schiumatrice,std_import_dati_schiumatrice,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+produzione,produzione > Produzione standard > Statistiche di produzione,Statistica dati schiumatrice,std_statistica_dati_schiumatrice,MANCANTE,,,,default
+produzione,produzione > Produzione standard > Statistiche di produzione,Statistica log produzione,std_logprd_stat,MANCANTE,,,,default
+produzione,produzione > Produzione standard > Statistiche di produzione,Statistica sulle quantità prodotte per periodo,std_statqtaper,MANCANTE,,,,default
+statistich,statistich > Statistiche varie,Portafoglio ordini,menu_portaford,MANCANTE,,,,default
+statistich,statistich > Statistiche varie,Statistica sugli acquisti (doc. carico fornitori),menu_statbfo,MANCANTE,,,,default
+statistich,statistich > Statistiche varie,Statistiche sul fatturato per altezza e lunghezza,menu_stafatt,MANCANTE,,,,default
+statistich,statistich > Statistiche varie,Statistiche sull'acquistato e fatturato,menu_statacqmov1,MANCANTE,,,,default
+statistich,statistich > Statistiche varie,Statistiche varie per periodo,menu_statgene,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Estrazione dati per altri sistemi,Estrazione dati per fogli excell,menu_ricexcel,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Scheda clienti,Creazione archivio scheda clienti,menu_creasche,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+statistich,statistich > Statistiche varie > Scheda clienti,Sblocco stampa scheda clienti,menu_sblosch,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+statistich,statistich > Statistiche varie > Scheda clienti,Stampa scheda clienti da archivio,menu_scheda,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+statistich,statistich > Statistiche varie > Scheda clienti,Venduto con confronto anno precedente,menu_scheclin,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Statistiche anagrafica,Elenco clienti con c.pagamento ri.ba.,menu_cliriba,NON_APPLICABILE,,PRINT_REPORT,Stampa/report legacy,pattern-label
+statistich,statistich > Statistiche varie > Statistiche sintetiche,Analisi fatturato su più anni,menu_fatriep_anno,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Statistiche sintetiche,Controllo del guadagno,menu_guadagno,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Statistiche sintetiche,Fatturato clienti,menu_fattucli,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Statistiche sintetiche,Fatturato mensile agenti,menu_mesage,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Statistiche sintetiche,Fatturato mensile clienti,menu_mescli,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Statistiche sintetiche,Fatturato mensile per nazione,menu_mesnaz,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Statistiche sintetiche,Fatturato mensile per nazione / agente,menu_mesnaz01,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Statistiche sintetiche,Fatturato mensile per valuta,menu_mesnaz02,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Statistiche sintetiche,Ricarico clienti,menu_ricacli,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Statistiche sintetiche > Statistiche commerciali sul budget,Aggiornamento budget annuale,menu_bdg000,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+statistich,statistich > Statistiche varie > Statistiche sintetiche > Statistiche commerciali sul budget,Consuntivi su foglio excel,menu_bdgstat,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Statistiche sintetiche > Statistiche commerciali sul budget,Duplicazione budget annuale,menu_bdgdupl,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+statistich,statistich > Statistiche varie > Statistiche varie,Clienti che non acquistano da,menu_ritiri,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Statistiche varie,In ordine di abc su qta per articolo,menu_venabcqa,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Statistiche varie,In ordine di abc su qta per articolo / cliente,menu_venabcq1,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Statistiche varie,In ordine di abc sul valore venduto,menu_venabcv1,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Statistiche varie,Media per agente,menu_venagme1,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Statistiche varie,Media sul venduto,menu_venmed1,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Statistiche varie,Venduto in quantità per linea,menu_venqtal1,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Statistiche varie,Venduto in valore per linea,menu_venvall1,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Statistiche varie,Venduto per articolo / cliente,menu_venart1,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Statistiche varie,Venduto per cliente / articolo,menu_vencli1,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Statistiche varie,Venduto per cliente / linea,menu_venlin1,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Statistiche varie,Venduto per linea / cliente,menu_venlinc1,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Statistiche varie,Venduto per societa' / articolo,menu_vensoc1,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Statistiche varie > Statistiche sul fatturato in u.m.,Statistica sul fatturato con quantità MQ / MC,menu_stat_mcmq,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Statistiche varie > Statistiche sul fatturato in u.m.,Statistica sul fatturato x cliente/art. (mc/mq),menu_stat_mcmq0,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Statistiche varie > Statistiche sul fatturato in u.m.,Statistiche sul fatturato a metri cubi,menu_statmc,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Statistiche varie > Statistiche sul fatturato in u.m.,Statistiche sul fatturato a metri quadri,menu_statmq,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Statistiche varie > Venduto per agente,Venduto per agente / articolo,menu_venage1,MANCANTE,,,,default
+statistich,statistich > Statistiche varie > Statistiche varie > Venduto per agente,Venduto per agente / cliente,menu_venacli1,MANCANTE,,,,default
+web,web,Importazioni/Esportazioni WooCommerce,submenu,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+web,web > Importazioni/Esportazioni E-commerce,Esporta disponibilità prodotti,ecommerce_esporta_disponibilita_prodotti_card,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+web,web > Importazioni/Esportazioni E-commerce,Importa anagrafiche clienti,ecommerce_importa_clienti_card,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+web,web > Importazioni/Esportazioni E-commerce,Importa ordini clienti e anagrafiche,ecommerce_importa_ordini_clienti_card,NON_APPLICABILE,,WRITE_SIDE,Scrittura: riservata a slice Opus,pattern-label
+web,web > Sincronizzazione con salesforce,Sincronizzazione dati con salesforce,menu_salesforce_sync,NON_APPLICABILE,,WRITE_SIDE,Utility/manutenzione: gestionale,pattern-refine

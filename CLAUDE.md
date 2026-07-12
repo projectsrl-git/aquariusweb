@@ -171,8 +171,11 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
     più evidenti, sfumature leggere distinte SP (blu) / CE (verde).
   - 0.14.0 — log di sistema attività web (interceptor +
     logback) + tempo di elaborazione bilancio; tolti titoli sezione ridondanti.
-  - **0.15.0 (corrente)** — bilancio Fase 2: periodo mese dal/al (movimenti,
+  - 0.15.0 — bilancio Fase 2: periodo mese dal/al (movimenti,
     da riconciliare per dal>1); ricerca in-linea; timer progressivo nel loader.
+  - **0.16.0 (corrente)** — audit di copertura della migrazione:
+    menu_coverage_audit.csv (1051 voci classificate) + COVERAGE_REPORT.md
+    con priorita per Opus (+ viewer /utilita/copertura).
 
 ## 4c. Migration tracker (.scx logic ↔ web)
 

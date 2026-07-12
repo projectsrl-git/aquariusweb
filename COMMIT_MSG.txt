@@ -1,15 +1,34 @@
-Bilancio phase 2: month range + inline search + progressive loader timer
+Add migration coverage audit: per-entry map + report
 
-- Month range (mese dal/al): options form gains "Mese dal"/"Mese al" (1..12,
-  default 1/12). New findBilancioPeriodo() aggregates the same movements filtered
-  by month (SUBSTRING(registrationDate,6,2) BETWEEN dal AND al). Full year (1..12)
-  keeps the original query so the default result is unchanged; a "Periodo mese X-Y"
-  badge shows when narrowed. NOTE: this is the movement period only - opening
-  balances for dal>1, previous-year/forecast options still to come and to be
-  reconciled with the gestionale.
-- Inline search: a "search account or description" box highlights matching rows,
-  counts them, activates the tab of the first match and scrolls to it.
-- Progressive timer in the global loading overlay: shows elapsed seconds ticking
-  up while waiting.
+Capstone session. Complete coverage map of the legacy Aquarius menu vs
+AquariusWeb, for Opus's roadmap. Version bump 0.15.0 -> 0.16.0 (rebased
+on HEAD ebf1c44, which took 0.15.0 for bilancio phase 2).
 
-Version 0.15.0. Sandbox checks only.
+METHOD: authoritative function list = tbl_menu full tree (1529 rows ->
+1051 executable entries reachable from the 11 first-level menus; ~120
+entries in ORPHAN groups referenced by no L1 are excluded and flagged
+as likely dismissed) + user screenshots of all 19 Contabilita submenus
+(131 entries classified BY HAND, entry-by-entry, with evidence) + web
+coverage index (FORM_TO_URL, synthetic MenuService entries, GET
+controller routes). Other areas classified by rule engine (form match
+-> cited route; write/print/utility label patterns) with refinement;
+residual uncertainty carried as NEEDS_DOMAIN with a precise question.
+
+RESULT: 36 MIGRATO / 4 PARZIALE / 418 MANCANTE / 593 NON_APPLICABILE.
+Counts are per menu ENTRY, not functional weight. Two large MANCANTE
+blocks are actually domain questions for the user: the produzione
+"film protettivi" vertical (107 entries - Impresind STANDARD-only?)
+and the Consulenza area (66 entries).
+
+DELIVERABLES
+- resources/migration/menu_coverage_audit.csv: one row per menu entry
+  (area, path, voce, form/prg, copertura, evidenza web, reason, note,
+  classification method) - RFC-4180, 1051 rows.
+- resources/migration/COVERAGE_REPORT.md: per-area and per-submenu
+  matrices + 12 prioritized missing items with rationale + NEEDS_DOMAIN
+  questions + open observations for Opus (CEE reconciliation,
+  MOV_NREGIS vs MOV_NUMPRO).
+- Tracker: +9 audit rows at group level; per-entry map lives in the
+  dedicated audit CSV (declared deviation).
+
+No functional module added; read-only audit. Applies on HEAD ebf1c44.
