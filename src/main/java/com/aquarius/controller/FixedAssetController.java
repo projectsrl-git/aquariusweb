@@ -96,6 +96,23 @@ public class FixedAssetController {
         return "cespiti/list";
     }
 
+    @GetMapping("/categorie")
+    @Transactional(transactionManager = "tenantTransactionManager", readOnly = true)
+    public String categorie(Model model,
+                            @AuthenticationPrincipal AquariusPrincipal principal) {
+        List<FixedAssetCategory> categorie = categoryRepository.findAllOrdered();
+        // riepilogo per categoria: [codcat, count, valsto, totamm, valres]
+        Map<String, Object[]> summary = assetRepository.summaryByCategory().stream()
+            .collect(Collectors.toMap(
+                r -> r[0] == null ? "" : r[0].toString().trim(),
+                r -> r, (a, b) -> a));
+        model.addAttribute("categorie", categorie);
+        model.addAttribute("summary", summary);
+        model.addAttribute("breadcrumbs",
+            breadcrumbService.forUrl("/cespiti/categorie", principal.getUsername()));
+        return "cespiti/categorie";
+    }
+
     @GetMapping("/{id}")
     @Transactional(transactionManager = "tenantTransactionManager", readOnly = true)
     public String detail(@PathVariable String id, Model model,

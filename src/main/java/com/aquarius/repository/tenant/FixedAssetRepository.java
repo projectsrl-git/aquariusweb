@@ -26,4 +26,20 @@ public interface FixedAssetRepository extends JpaRepository<FixedAsset, String> 
         """)
     Page<FixedAsset> search(@Param("q") String q, @Param("cat") String cat,
                             @Param("stato") String stato, Pageable pageable);
+
+    /**
+     * Riepilogo per categoria: numero cespiti e somme di valore storico,
+     * ammortizzato e residuo (somme semplici delle colonne anagrafiche,
+     * nessuna logica fiscale). Righe: [categoryCode, count, sumValsto,
+     * sumTotamm, sumValres].
+     */
+    @Query("""
+        SELECT a.categoryCode, COUNT(a),
+               COALESCE(SUM(a.historicalValue), 0),
+               COALESCE(SUM(a.totalDepreciated), 0),
+               COALESCE(SUM(a.residualValue), 0)
+        FROM FixedAsset a
+        GROUP BY a.categoryCode
+        """)
+    java.util.List<Object[]> summaryByCategory();
 }

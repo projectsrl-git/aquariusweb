@@ -1,39 +1,12 @@
-Add fixed assets register (cespiti read-only consultation)
+Add cespiti categories view with per-category summary
 
-Part 1 of 2. Priority #2 of the coverage audit: read-only consultation
-of the fixed-assets register. All write/calculation logic (quota
-generation, simulation, GL transfer, IRES parameter, popolamento)
-stays on the VFP client - fiscal logic reserved to Opus. Version bump
-0.16.0 -> 0.17.0. Applies on HEAD 3b54f20.
+Part 2 of 2 - apply AFTER the register patch. /cespiti/categorie:
+category list (u_amm_ca) enriched with a per-category aggregate
+computed live from u_amm_at via JPQL GROUP BY: asset count, total
+historical value, total depreciated, total residual. Plain sums of the
+anagrafica columns - no netting, no fiscal math - and the subtitle says
+so. Each row links to the register filtered by that category; the
+register gains the "Categorie" button.
 
-ANALYSIS (resources/cespiti/README.md, facts verified in the sources):
-- tables: u_amm_at anagrafica (28 col), u_amm_ca categorie, U_QUO_AM
-  quote per year, u_amm_ad linked accounting movements;
-- GOTCHA: the cespiti archive has NO company dimension - in
-  MENU_stat_cesp / MENU_AMMCES the PUB_CODSOC filter is applied ONLY to
-  the CONTI queries, never to the asset tables. Single archive per
-  installation; the page states it and applies no soc filter;
-- legacy order: amm_codcat, amm_codces (verbatim query);
-- AMM_DATCES non-empty = disposed (VALCES + PLUMIN plus/minus);
-- three parallel depreciation channels (ordinario/anticipato/
-  accelerato); QUO_FLGCGE = quota transferred to general ledger;
-- u_amm_ad carries AMD_NREGIS/AMD_ANNO -> drill to
-  /contabilita/primanota/{nreg}, with the declared caveat that the
-  route resolves in the fiscal year of the session.
-
-MODULE: /cespiti list (JPA entities+repos; whitelist sort via
-ListParams; LOCAL sortable headers and pager that propagate
-q+cat+stato+size+sort+dir) with category/state filters and
-Attivo/Ceduto badges; /cespiti/{id} detail (full anagrafica, quote per
-year with Trasferita/Da trasferire badges and total, linked movements
-with primanota drill). Synthetic menu entry "Cespiti" under
-contabilita, indexes renumbered. Tracker: +14 rows (stat_cesp/anace
-MIGRATED, ammcat/ammces PARTIAL consultazione, quote/trasferimenti/
-popolamento WRITE_SIDE, bollato PRINT_REPORT); audit CSV row
-"Visualizzazione e stampa cespiti" promoted to MIGRATO and audit
-tracker row marked EVASO.
-
-Verification (sandbox only): brace/paren with literal stripping;
-duplicate @Column check; div/table balance; menu add() sequence; CSV 12
-cols; chain verified on fresh clone of HEAD 3b54f20. Maven build and
-SQL Server 2012 execution to be confirmed at first deploy.
+Verification (sandbox only): checks as in part 1; chain verified on
+fresh clone of HEAD 3b54f20.

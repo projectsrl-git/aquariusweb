@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Categorie cespiti – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-tags',
+        title='Categorie cespiti',
+        subtitle='Categorie di ammortamento (u_amm_ca) con riepilogo cespiti: somme semplici delle colonne anagrafiche, nessuna logica fiscale',
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <div class="d-flex gap-2 mb-3">
+        <a th:href="@{/cespiti}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i>Torna al registro
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-sm mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Codice</th><th>Descrizione</th>
+                            <th class="text-end">% ammortamento</th>
+                            <th class="text-end">Cespiti</th>
+                            <th class="text-end">Val. storico</th>
+                            <th class="text-end">Ammortizzato</th>
+                            <th class="text-end">Residuo</th>
+                            <th>Conto contabile</th><th>Contropartita</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="c : ${categorie}">
+                            <td class="font-monospace small" th:text="${c.code != null ? c.code.trim() : ''}">CAT01</td>
+                            <td class="small">
+                                <span th:text="${c.description1 ?: ''}"></span>
+                                <div class="text-muted" th:if="${c.description2 != null and !c.description2.trim().isEmpty()}" th:text="${c.description2}"></div>
+                                <div class="text-muted" th:if="${c.description3 != null and !c.description3.trim().isEmpty()}" th:text="${c.description3}"></div>
+                            </td>
+                            <td class="text-end font-monospace small"
+                                th:text="${c.depreciationPct != null ? #numbers.formatDecimal(c.depreciationPct, 1, 'POINT', 2, 'COMMA') + ' %' : '—'}">—</td>
+                            <th:block th:with="s=${summary.get(c.code != null ? c.code.trim() : '')}">
+                            <td class="text-end font-monospace small" th:text="${s != null ? s[1] : 0}">0</td>
+                            <td class="text-end font-monospace small"
+                                th:text="${s != null ? #numbers.formatDecimal(s[2], 1, 'POINT', 2, 'COMMA') : '—'}">—</td>
+                            <td class="text-end font-monospace small"
+                                th:text="${s != null ? #numbers.formatDecimal(s[3], 1, 'POINT', 2, 'COMMA') : '—'}">—</td>
+                            <td class="text-end font-monospace small"
+                                th:text="${s != null ? #numbers.formatDecimal(s[4], 1, 'POINT', 2, 'COMMA') : '—'}">—</td>
+                            </th:block>
+                            <td class="font-monospace small" th:text="${c.accountingAccount != null and !c.accountingAccount.trim().isEmpty() ? c.accountingAccount.trim() : '—'}">—</td>
+                            <td class="font-monospace small" th:text="${c.counterpartAccount != null and !c.counterpartAccount.trim().isEmpty() ? c.counterpartAccount.trim() : '—'}">—</td>
+                            <td>
+                                <a th:href="@{/cespiti(cat=${c.code != null ? c.code.trim() : ''})}"
+                                   class="btn btn-sm btn-outline-primary py-0 px-2" title="Cespiti della categoria">
+                                    <i class="bi bi-search"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(categorie)}">
+                            <td colspan="10" class="text-center text-muted py-5">
+                                <i class="bi bi-inbox" style="font-size:2rem"></i>
+                                <p class="mt-2 mb-0">Nessuna categoria definita.</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</section></body>
+</html>

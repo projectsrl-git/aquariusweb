@@ -34,6 +34,9 @@
         <button type="submit" class="btn btn-primary btn-sm">Filtra</button>
         <a th:href="@{/cespiti}" class="btn btn-outline-secondary btn-sm"
            th:if="${q != '' or cat != '' or stato != ''}"><i class="bi bi-x"></i></a>
+        <a th:href="@{/cespiti/categorie}" class="btn btn-outline-primary btn-sm ms-auto">
+            <i class="bi bi-tags me-1"></i>Categorie
+        </a>
     </form>
 
     <!-- header ordinabili LOCALI: propagano anche cat e stato -->
