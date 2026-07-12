@@ -1,34 +1,31 @@
-Add sales revenue statistics with multi-year comparison
+Add sales document controls: unpaired DDT, number sequences
 
-Patch A of session 10. /vendite/statistiche built ON TOP of the
-existing invoice tables (no document list rebuilt): web equivalent of
-menu_fatturato / "Analisi fatturato su piu anni". Version bump
-0.18.1 -> 0.19.0. Applies on HEAD bb97ba5.
+Patch B of session 10 - apply AFTER patch A (shares the clienti menu
+case and version log). /vendite/controlli: three read-only checks with
+DECLARED criteria, anomaly-panel pattern (anomalies surfaced, never
+corrected). Version bump 0.19.0 -> 0.20.0.
 
-DATA: VenditeStatsDao (native, tenantDataSource) on U_FAT_TT heads
-(measure = ORD_IMPONIB alongside t_netto) and U_FAT_DD rows (per
-article: ORD_QTAORD + ORD_VALORE = row value net of discounts; head-row
-join TAGGANCIO=DAGGANCIO as in InvoiceRowRepository). Month derived
-from ORD_DATORD 'yyyy/MM/dd' SUBSTRING(6,2); multi-year scan guarded
-with TRY_CONVERT(INT, ORD_ANNO).
+1. DDT non/parzialmente fatturati - grounded on the session-1 verified
+   mechanism: invoicing STAMPS the DDT ROWS with MOV_NUMFAT/MOV_DATFAT
+   on U_BOL_DD. LEFT JOIN U_BOL_TT->DD, HAVING stamped < total rows;
+   stato NON_FATTURATO / PARZIALE; causale column shown because some
+   causali legitimately never invoice (resi, omaggi, c/lavoro) -
+   exclusion list is a NEEDS_DOMAIN question in the tracker.
+2. Invoice number sequence - gaps via LEAD() over distinct
+   TRY_CONVERT(INT, ORD_NUMORD) per year; duplicates listed with the
+   TIPORD series involved (different series may be legitimate);
+   non-numeric numbers surfaced as a data-quality note, not silently
+   dropped. All series together: per-TIPORD refinement pending domain
+   confirmation.
+3. IVA sales register protocol gaps - LEAD() over IVA_CHIAVE (U_IVA_CL,
+   non-corrispettivi rows) per year. The legacy PRNPROT checks MOV_CONT
+   instead (MOV_NDOC = protocollo, verbatim comments) - tracked as
+   NEEDS_DOMAIN on which sequence is fiscally authoritative.
 
-VIEWS: KPI cards (fatture, imponibile totale); per month (with optional
-month-range filter); multi-year anno x mese matrix (last 5 years) +
-totals per year; per customer (top 100 by imponibile); per article
-(top 100 by row value). Excel export via VenditeStatsExcelExporter
-(SXSSF pattern from BilancioExcelExporter): sheets Per mese /
-Per cliente / Per articolo.
+CONTROLLO_BOLLEFATTURE turned out to target FTP/punto-vendita archives
+(u_ftp_an, casse): different domain, precise NEEDS_DOMAIN question
+filed for Erasmo. Menu: "Controlli vendite" added to the clienti case.
 
-HONESTY: note di accredito are NOT netted nor excluded (no sign
-assumptions - counts and amounts as stored); the per-article measure
-is labelled "valore righe"; legacy filters causale/zona/operatore/
-c.costo not reproduced (tracker notes them as future extension).
-Menu: NEW synthetic case "clienti" with "Statistiche vendite".
-FATTURATO_ARTICOLI_PROD_CARDIOLINE tracked NOT_APPLICABLE (vertical of
-another customer).
-
-Verification (sandbox only): brace/paren with literal stripping,
-div/table balance, SQL alias<->mapper coherence, CSV 12 cols; chain
-verified with git apply --check + apply on fresh clone of HEAD bb97ba5.
-Maven build and SQL Server 2012 execution to be confirmed at first
-deploy.
+Verification (sandbox only): as patch A; chain verified on fresh clone
+of HEAD bb97ba5. LEAD() window and FOR XML PATH aggregation to be
+confirmed on SQL Server 2012 at first deploy.

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Controlli vendite – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-shield-check',
+        title='Controlli documenti vendite',
+        subtitle='Verifiche read-only sull&#39;anno ' + ${anno} + ': DDT non fatturati, sequenza numeri fattura, protocolli registro IVA. Le anomalie sono evidenziate, mai corrette',
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <!-- sintesi -->
+    <div class="row g-3 mb-3">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100"><div class="card-body">
+                <div class="small text-muted">DDT non/parz. fatturati</div>
+                <div class="fs-4 fw-semibold font-monospace"
+                     th:classappend="${#lists.isEmpty(ddt)} ? 'text-success' : 'text-warning'"
+                     th:text="${#lists.size(ddt)}">0</div>
+            </div></div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100"><div class="card-body">
+                <div class="small text-muted">Buchi numerazione fatture</div>
+                <div class="fs-4 fw-semibold font-monospace"
+                     th:classappend="${#lists.isEmpty(gaps)} ? 'text-success' : 'text-danger'"
+                     th:text="${#lists.size(gaps)} + ' (' + ${mancantiTot} + ' nr.)'">0</div>
+            </div></div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100"><div class="card-body">
+                <div class="small text-muted">Numeri fattura duplicati</div>
+                <div class="fs-4 fw-semibold font-monospace"
+                     th:classappend="${#lists.isEmpty(duplicates)} ? 'text-success' : 'text-danger'"
+                     th:text="${#lists.size(duplicates)}">0</div>
+            </div></div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100"><div class="card-body">
+                <div class="small text-muted">Buchi protocollo IVA vendite</div>
+                <div class="fs-4 fw-semibold font-monospace"
+                     th:classappend="${#lists.isEmpty(ivaGaps)} ? 'text-success' : 'text-danger'"
+                     th:text="${#lists.size(ivaGaps)}">0</div>
+            </div></div>
+        </div>
+    </div>
+
+    <!-- DDT spaiati -->
+    <div class="card shadow-sm border-0 mb-3">
+        <div class="card-header bg-white d-flex align-items-center">
+            <h6 class="detail-card-title mb-0"><i class="bi bi-truck me-1"></i>DDT non o parzialmente fatturati</h6>
+            <span class="small text-muted ms-2">criterio: righe DDT senza MOV_NUMFAT (la fatturazione timbra le righe). La causale può giustificare l'assenza: giudizio all'utente</span>
+        </div>
+        <div class="card-body p-0"><div class="table-responsive">
+            <table class="table table-sm mb-0">
+                <thead class="table-light"><tr>
+                    <th>Numero</th><th>Data</th><th>Cliente</th><th>Causale</th>
+                    <th class="text-end">Imponibile</th>
+                    <th class="text-end">Righe fatt./tot.</th><th>Stato</th></tr></thead>
+                <tbody>
+                    <tr th:each="d : ${ddt}">
+                        <td class="font-monospace small" th:text="${d.numero}">1</td>
+                        <td class="small"><span th:replace="~{fragments/list-tools :: itDate(${d.data})}"></span></td>
+                        <td class="small"><span class="font-monospace" th:text="${d.codCli}"></span>
+                            <span th:text="' ' + ${d.ragSoc}"></span></td>
+                        <td class="small"><span class="badge bg-light text-dark border" th:text="${d.causale != '' ? d.causale : '—'}">—</span></td>
+                        <td class="text-end font-monospace small"
+                            th:text="${d.imponibile != null ? #numbers.formatDecimal(d.imponibile, 1, 'POINT', 2, 'COMMA') : '—'}">0,00</td>
+                        <td class="text-end font-monospace small" th:text="${d.righeFatturate} + '/' + ${d.righe}">0/0</td>
+                        <td>
+                            <span class="badge bg-danger-subtle text-danger-emphasis" th:if="${d.stato == 'NON_FATTURATO'}">Non fatturato</span>
+                            <span class="badge bg-warning-subtle text-warning-emphasis" th:if="${d.stato == 'PARZIALE'}">Parziale</span>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(ddt)}">
+                        <td colspan="7" class="text-center text-success py-4">
+                            <i class="bi bi-check-circle me-1"></i>Tutte le righe DDT dell'anno risultano fatturate.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div></div>
+    </div>
+
+    <div class="row g-3">
+        <!-- buchi fatture -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white"><h6 class="detail-card-title mb-0">
+                    <i class="bi bi-123 me-1"></i>Buchi numerazione fatture</h6>
+                    <div class="small text-muted">tutte le serie insieme — se le serie sono separate per tipo, raffinare</div></div>
+                <div class="card-body p-0"><div class="table-responsive">
+                    <table class="table table-sm mb-0">
+                        <thead class="table-light"><tr>
+                            <th class="text-end">Dopo il nr.</th><th class="text-end">Riprende dal</th>
+                            <th class="text-end">Mancanti</th></tr></thead>
+                        <tbody>
+                            <tr th:each="g : ${gaps}">
+                                <td class="text-end font-monospace small" th:text="${g.dopoNumero}">10</td>
+                                <td class="text-end font-monospace small" th:text="${g.primaNumero}">13</td>
+                                <td class="text-end font-monospace small text-danger" th:text="${g.mancanti}">2</td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(gaps)}">
+                                <td colspan="3" class="text-center text-success py-4">
+                                    <i class="bi bi-check-circle me-1"></i>Numerazione continua.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div></div>
+            </div>
+        </div>
+
+        <!-- duplicati -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white"><h6 class="detail-card-title mb-0">
+                    <i class="bi bi-files me-1"></i>Numeri fattura duplicati</h6>
+                    <div class="small text-muted">con le serie (TIPORD) coinvolte: serie diverse possono essere legittime</div></div>
+                <div class="card-body p-0"><div class="table-responsive">
+                    <table class="table table-sm mb-0">
+                        <thead class="table-light"><tr>
+                            <th>Numero</th><th class="text-end">Occorrenze</th><th>Serie</th></tr></thead>
+                        <tbody>
+                            <tr th:each="d : ${duplicates}">
+                                <td class="font-monospace small" th:text="${d.numero}">1</td>
+                                <td class="text-end font-monospace small text-danger" th:text="${d.occorrenze}">2</td>
+                                <td class="small" th:text="${d.tipi}">FT,NC</td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(duplicates)}">
+                                <td colspan="3" class="text-center text-success py-4">
+                                    <i class="bi bi-check-circle me-1"></i>Nessun duplicato.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="p-2 small text-muted border-top" th:if="${!#lists.isEmpty(nonNumeric)}">
+                        <i class="bi bi-exclamation-triangle me-1 text-warning"></i>Numeri non numerici
+                        (esclusi dal controllo buchi, qualità dati):
+                        <span class="font-monospace" th:text="${#strings.listJoin(nonNumeric, ', ')}"></span>
+                    </div>
+                </div></div>
+            </div>
+        </div>
+
+        <!-- buchi protocollo IVA -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white"><h6 class="detail-card-title mb-0">
+                    <i class="bi bi-journal-check me-1"></i>Buchi protocollo registro IVA vendite</h6>
+                    <div class="small text-muted">IVA_CHIAVE del bollato (righe non corrispettivi), come caricato</div></div>
+                <div class="card-body p-0"><div class="table-responsive">
+                    <table class="table table-sm mb-0">
+                        <thead class="table-light"><tr>
+                            <th class="text-end">Dopo il prot.</th><th class="text-end">Riprende dal</th>
+                            <th class="text-end">Mancanti</th></tr></thead>
+                        <tbody>
+                            <tr th:each="g : ${ivaGaps}">
+                                <td class="text-end font-monospace small" th:text="${g.dopoNumero}">10</td>
+                                <td class="text-end font-monospace small" th:text="${g.primaNumero}">13</td>
+                                <td class="text-end font-monospace small text-danger" th:text="${g.mancanti}">2</td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(ivaGaps)}">
+                                <td colspan="3" class="text-center text-success py-4">
+                                    <i class="bi bi-check-circle me-1"></i>Numerazione protocollo continua.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div></div>
+            </div>
+        </div>
+    </div>
+
+</section></body>
+</html>

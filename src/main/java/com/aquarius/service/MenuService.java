@@ -317,7 +317,13 @@ public class MenuService {
                     .url("/vendite/statistiche")
                     .hasReachableLeaf(true)
                     .build());
-                children.add(1, MenuNode.builder().separator(true).build());
+                children.add(1, MenuNode.builder()
+                    .label("Controlli vendite")
+                    .icon("bi-shield-check")
+                    .url("/vendite/controlli")
+                    .hasReachableLeaf(true)
+                    .build());
+                children.add(2, MenuNode.builder().separator(true).build());
             }
             case "magazzino" -> {
                 children.add(0, MenuNode.builder()
