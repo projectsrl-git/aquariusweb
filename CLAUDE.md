@@ -169,8 +169,10 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
     due voci di menu, contrapposte ad albero, regole coerenza R1/R2.
   - 0.13.1 — bilancio: TAB marcate + sotto-TAB, box totali
     più evidenti, sfumature leggere distinte SP (blu) / CE (verde).
-  - **0.14.0 (corrente)** — log di sistema attività web (interceptor +
+  - 0.14.0 — log di sistema attività web (interceptor +
     logback) + tempo di elaborazione bilancio; tolti titoli sezione ridondanti.
+  - **0.15.0 (corrente)** — bilancio Fase 2: periodo mese dal/al (movimenti,
+    da riconciliare per dal>1); ricerca in-linea; timer progressivo nel loader.
 
 ## 4c. Migration tracker (.scx logic ↔ web)
 

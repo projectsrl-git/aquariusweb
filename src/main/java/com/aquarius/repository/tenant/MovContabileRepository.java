@@ -53,6 +53,26 @@ public interface MovContabileRepository extends JpaRepository<MovContabile, Stri
     List<BilancioRow> findBilancio(@Param("soc") String soc,
                                    @Param("anno") String anno);
 
+    /**
+     * BILANCIO per PERIODO — come findBilancio ma limitato ai movimenti dei mesi
+     * [meseDal, meseAl] (mese estratto dalla data yyyy/MM/dd). meseDal/meseAl vanno
+     * passati come stringhe zero-padded ("01".."12").
+     */
+    @Query("""
+        SELECT m.account AS account,
+               SUM(CASE WHEN m.movementType = 'D' THEN m.amount ELSE 0 END) AS totDare,
+               SUM(CASE WHEN m.movementType = 'A' THEN m.amount ELSE 0 END) AS totAvere
+        FROM MovContabile m
+        WHERE m.societyCode = :soc AND m.fiscalYear = :anno
+          AND SUBSTRING(m.registrationDate, 6, 2) BETWEEN :meseDal AND :meseAl
+        GROUP BY m.account
+        ORDER BY m.account ASC
+        """)
+    List<BilancioRow> findBilancioPeriodo(@Param("soc") String soc,
+                                          @Param("anno") String anno,
+                                          @Param("meseDal") String meseDal,
+                                          @Param("meseAl") String meseAl);
+
 
     /**
      * PRIMANOTA raggruppata — numeri di registrazione DISTINTI dell'anno,

@@ -1,15 +1,15 @@
-Web activity log + bilancio elaboration time; drop redundant section titles
+Bilancio phase 2: month range + inline search + progressive loader timer
 
-(1) Removed the redundant section-title header from the balance section
-    fragments: the sub-tabs (Attivita/Passivita, Costi/Ricavi) already title them.
-(2) The controller measures the balance computation time (elaborazioneMs) and the
-    page shows it after Elabora ("Elaborato in X,XX s (N ms)").
-(3) Web-only system activity log: ActivityLoggingInterceptor records per request
-    user, method, uri+query, HTTP status and duration (ms); registered in
-    WebMvcConfig for /** excluding static assets. logback-spring.xml gets a
-    dedicated ACTIVITY_FILE appender (aquarius-web-activity.log, daily+10MB
-    rotation, 90 days, gzip) and an AQUARIUS_ACTIVITY logger (additivity=false).
-    File-based, no DB overhead; an in-app viewer + aq_web_activity_log table can
-    follow if browsing from the app is needed.
+- Month range (mese dal/al): options form gains "Mese dal"/"Mese al" (1..12,
+  default 1/12). New findBilancioPeriodo() aggregates the same movements filtered
+  by month (SUBSTRING(registrationDate,6,2) BETWEEN dal AND al). Full year (1..12)
+  keeps the original query so the default result is unchanged; a "Periodo mese X-Y"
+  badge shows when narrowed. NOTE: this is the movement period only - opening
+  balances for dal>1, previous-year/forecast options still to come and to be
+  reconciled with the gestionale.
+- Inline search: a "search account or description" box highlights matching rows,
+  counts them, activates the tab of the first match and scrolls to it.
+- Progressive timer in the global loading overlay: shows elapsed seconds ticking
+  up while waiting.
 
-Version 0.14.0. Sandbox checks only.
+Version 0.15.0. Sandbox checks only.

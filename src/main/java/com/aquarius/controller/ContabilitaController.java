@@ -267,6 +267,8 @@ public class ContabilitaController {
                            @RequestParam(value = "contiOrdine", defaultValue = "true") boolean contiOrdine,
                            @RequestParam(value = "nonZero", defaultValue = "true") boolean nonZero,
                            @RequestParam(value = "soloSottogruppi", defaultValue = "false") boolean soloSottogruppi,
+                           @RequestParam(value = "meseDal", defaultValue = "1") int meseDal,
+                           @RequestParam(value = "meseAl", defaultValue = "12") int meseAl,
                            Model model,
                            @AuthenticationPrincipal AquariusPrincipal principal) {
         String soc = fiscalContext.getSocietyCode();
@@ -278,12 +280,19 @@ public class ContabilitaController {
         // R1: showCF (mostra le foglie C/F) è falso solo con "nodettaglio".
         boolean showCF = !"nodettaglio".equals(cfMode);
 
+        // Periodo mese dal/al (clamp 1..12, dal<=al)
+        if (meseDal < 1) meseDal = 1; if (meseDal > 12) meseDal = 12;
+        if (meseAl < 1) meseAl = 1;   if (meseAl > 12) meseAl = 12;
+        if (meseDal > meseAl) { int t = meseDal; meseDal = meseAl; meseAl = t; }
+
         model.addAttribute("vista", vistaN);
         model.addAttribute("elabora", elabora);
         model.addAttribute("cfMode", cfMode);
         model.addAttribute("contiOrdine", contiOrdine);
         model.addAttribute("nonZero", nonZero);
         model.addAttribute("soloSottogruppi", soloSottogruppi);
+        model.addAttribute("meseDal", meseDal);
+        model.addAttribute("meseAl", meseAl);
         model.addAttribute("anno", anno);
         model.addAttribute("breadcrumbs",
             breadcrumbService.forUrl("/contabilita/bilancio", principal.getUsername()));
@@ -299,7 +308,12 @@ public class ContabilitaController {
 
         // Righe di bilancio (saldo per conto dai movimenti), arricchite con
         // sezione (CON_POSBIL: P/E) e tipo conto (CON_TIPOCO: C/F).
-        List<BilancioLine> all = movRepository.findBilancio(soc, anno).stream()
+        boolean tuttoAnno = (meseDal <= 1 && meseAl >= 12);
+        List<com.aquarius.repository.tenant.MovContabileRepository.BilancioRow> righeMov = tuttoAnno
+            ? movRepository.findBilancio(soc, anno)
+            : movRepository.findBilancioPeriodo(soc, anno,
+                  String.format("%02d", meseDal), String.format("%02d", meseAl));
+        List<BilancioLine> all = righeMov.stream()
             .map(r -> {
                 String code = r.getAccount() != null ? r.getAccount().trim() : "";
                 Account a = accByCode.get(code);

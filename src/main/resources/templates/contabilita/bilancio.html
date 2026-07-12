@@ -24,6 +24,8 @@
         .bil-subtabs .nav-link { font-weight:500; color:#6b7684; padding:.4rem 1rem; }
         #tab-sp .bil-subtabs .nav-link.active { color:#2c4a77; border-bottom:2px solid #3f6098; }
         #tab-ce .bil-subtabs .nav-link.active { color:#256048; border-bottom:2px solid #2f7d59; }
+        /* Evidenziazione ricerca in-linea */
+        tr.search-hit > td { background:#fff3cd !important; }
     </style>
 
     <div th:replace="~{fragments/page-header :: pageHeader(
@@ -39,6 +41,16 @@
         <input type="hidden" name="elabora" value="true">
         <div class="card-header bg-light py-2 fw-semibold"><i class="bi bi-sliders me-1"></i>Opzioni di elaborazione</div>
         <div class="card-body">
+            <div class="row g-2 mb-3">
+                <div class="col-auto">
+                    <label class="form-label small mb-0 text-muted">Mese dal</label>
+                    <input type="number" name="meseDal" min="1" max="12" class="form-control form-control-sm" style="width:90px" th:value="${meseDal}">
+                </div>
+                <div class="col-auto">
+                    <label class="form-label small mb-0 text-muted">Mese al</label>
+                    <input type="number" name="meseAl" min="1" max="12" class="form-control form-control-sm" style="width:90px" th:value="${meseAl}">
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-6">
                     <div class="fw-semibold small text-muted text-uppercase mb-1">Conti clienti / fornitori</div>
@@ -75,7 +87,7 @@
                 </div>
             </div>
             <div class="text-muted small mt-2">
-                <i class="bi bi-info-circle me-1"></i>Opzioni di periodo (mese dal/al), saldi d'apertura e previsionali in arrivo.
+                <i class="bi bi-info-circle me-1"></i>Saldi d'apertura e movimenti previsionali in arrivo (da riconciliare col gestionale).
             </div>
         </div>
         <div class="card-footer bg-white d-flex gap-2">
@@ -91,6 +103,18 @@
         <i class="bi bi-stopwatch me-1"></i>Elaborato in
         <span class="fw-semibold" th:text="${#numbers.formatDecimal(elaborazioneMs / 1000.0,1,'POINT',2,'COMMA')}">0,00</span> s
         <span class="text-muted">(<span th:text="${elaborazioneMs}">0</span> ms)</span>
+    </div>
+
+    <div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
+        <div class="input-group input-group-sm" style="max-width:380px">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" id="bilSearch" class="form-control" placeholder="Cerca conto o descrizione…" autocomplete="off">
+            <button class="btn btn-outline-secondary" type="button" id="bilSearchClear" title="Pulisci"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <span class="small text-muted" id="bilSearchCount"></span>
+        <span class="badge bg-secondary-subtle text-secondary-emphasis ms-auto" th:unless="${meseDal == 1 and meseAl == 12}">
+            <i class="bi bi-calendar-range me-1"></i>Periodo: mese <span th:text="${meseDal}">1</span>–<span th:text="${meseAl}">12</span>
+        </span>
     </div>
 
     <div class="row g-3 mb-3">
@@ -207,6 +231,36 @@
             if (solo && noDett.checked) { document.getElementById('cfNormale').checked = true; }
         }
         applyR2();
+
+        // Ricerca in-linea: evidenzia e punta al conto/descrizione
+        (function () {
+            var input = document.getElementById('bilSearch');
+            if (!input) return;
+            var countEl = document.getElementById('bilSearchCount');
+            var clearBtn = document.getElementById('bilSearchClear');
+            function run() {
+                var q = input.value.trim().toLowerCase();
+                document.querySelectorAll('tr.search-hit').forEach(function (r) { r.classList.remove('search-hit'); });
+                if (!q) { countEl.textContent = ''; return; }
+                var rows = document.querySelectorAll('.card-tint-sp tr, .card-tint-ce tr');
+                var hits = [];
+                rows.forEach(function (r) {
+                    if (r.textContent.toLowerCase().indexOf(q) !== -1) { r.classList.add('search-hit'); hits.push(r); }
+                });
+                countEl.textContent = hits.length + (hits.length === 1 ? ' risultato' : ' risultati');
+                if (hits.length) {
+                    var pane = hits[0].closest('.tab-pane');
+                    while (pane) {
+                        var btn = document.querySelector('[data-bs-target="#' + pane.id + '"]');
+                        if (btn && !pane.classList.contains('active')) { btn.click(); }
+                        pane = pane.parentElement ? pane.parentElement.closest('.tab-pane') : null;
+                    }
+                    setTimeout(function () { hits[0].scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 180);
+                }
+            }
+            input.addEventListener('input', run);
+            clearBtn.addEventListener('click', function () { input.value = ''; run(); input.focus(); });
+        })();
     </script>
 
 </section>

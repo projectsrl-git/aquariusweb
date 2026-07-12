@@ -376,7 +376,7 @@
             align-items:center; justify-content:center;">
     <div class="text-center">
         <div class="spinner-border text-primary" style="width:2.5rem;height:2.5rem" role="status"></div>
-        <div class="mt-2 fw-semibold text-secondary">Caricamento in corso…</div>
+        <div class="mt-2 fw-semibold text-secondary">Caricamento in corso… <span id="pageLoaderTimer"></span></div>
     </div>
 </div>
 
@@ -597,7 +597,22 @@ function renderNode(node, depth) {
 (function () {
     var loader = document.getElementById('pageLoader');
     if (!loader) return;
-    function show() { loader.style.display = 'flex'; }
+    var timerEl = document.getElementById('pageLoaderTimer');
+    var timerId = null;
+    function show() {
+        loader.style.display = 'flex';
+        if (timerEl && timerId === null) {
+            var t0 = Date.now();
+            timerEl.textContent = '0,0 s';
+            timerId = setInterval(function () {
+                timerEl.textContent = ((Date.now() - t0) / 1000).toFixed(1).replace('.', ',') + ' s';
+            }, 100);
+        }
+    }
+    function hide() {
+        loader.style.display = 'none';
+        if (timerId !== null) { clearInterval(timerId); timerId = null; }
+    }
     function isNav(a) {
         if (!a) return false;
         var href = a.getAttribute('href');
@@ -614,7 +629,7 @@ function renderNode(node, depth) {
         if (!e.target.hasAttribute('data-no-loader')) show();
     });
     // Nasconde l'overlay quando la nuova pagina è pronta (anche da bfcache/back)
-    window.addEventListener('pageshow', function () { loader.style.display = 'none'; });
+    window.addEventListener('pageshow', function () { hide(); });
 })();
 </script>
 </body>
