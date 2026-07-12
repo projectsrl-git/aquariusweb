@@ -1,20 +1,12 @@
-Bilancio di verifica: options form + Elabora, two menu voices (phase 1)
+Bilancio: bolder tabs, sub-tabs, stronger totals, SP/CE tints
 
-Consolidation modelled on the legacy "Stampa bilancio di verifica" form.
+Styling only (no logic changed), to make the balance sheet less sterile.
+- Stato Patrimoniale / Conto Economico main tabs are bolder and larger, with a
+  section-coloured active underline.
+- Attivita/Passivita and Costi/Ricavi are now sub-tabs (nav-tabs) instead of pills.
+- Totals summary cards are more prominent (shadow + coloured side accent).
+- Two light, distinct tints applied to both the totals boxes and the grid below:
+  Stato Patrimoniale = slate blue, Conto Economico = sage green (via .card-tint-*
+  classes and a tint param on the sezioneTree/sezioneTreeCompact fragments).
 
-- Two synthetic menu voices: "Bilancio di Verifica" (vista=mastri) and
-  "...a sezioni contrapposte" (vista=contrapposte).
-- Two-step flow: the page first shows the options form; the balance is computed
-  and shown only after "Elabora" (like the legacy print button). The global
-  loading overlay fires on submit.
-- Sezioni contrapposte now shows the mastro/subgroup tree (compact, saldo-only,
-  two columns) instead of a flat list.
-- Display options with legacy coherence rules decoded from menu_stbilanc:
-  cfMode radio (normal | only C/F | no C/F detail) = R1 mutual exclusion;
-  "non-zero accounts", "order accounts" (mastro 04); "only subgroups" (R2:
-  disables the no-C/F-detail radio via JS, stops at subgroup level).
-- Calculation options (month range, opening balances, forecasts) deferred to
-  phase 2 (need reconciliation with the gestionale).
-
-CLAUDE.md gains cross-cutting UI principles (option interdependencies, global
-loader) for all future sessions. Version 0.13.0. Sandbox checks only.
+Version 0.13.1. Sandbox checks only.

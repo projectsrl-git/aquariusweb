@@ -165,8 +165,10 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
   - 0.12.0 — registri IVA (bollati) vendite/acquisti/
     corrispettivi in consultazione, con filtro periodo e totali per
     aliquota.
-  - **0.13.0 (corrente)** — bilancio di verifica: form opzioni + Elabora,
+  - 0.13.0 — bilancio di verifica: form opzioni + Elabora,
     due voci di menu, contrapposte ad albero, regole coerenza R1/R2.
+  - **0.13.1 (corrente)** — bilancio: TAB marcate + sotto-TAB, box totali
+    più evidenti, sfumature leggere distinte SP (blu) / CE (verde).
 
 ## 4c. Migration tracker (.scx logic ↔ web)
 
