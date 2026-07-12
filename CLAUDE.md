@@ -182,10 +182,12 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
   - 0.17.0 — bilancio di verifica: confronto anno precedente (Saldo N-1 + Variazione).
   - 0.18.0 — scadenziario clienti/fornitori con aging
     (partite aperte, fasce a scadere/0-30/31-60/61-90/oltre 90).
-  - **0.18.1 (corrente)** — quote cespiti: semantica verificata dai PRG
+  - 0.18.1 — quote cespiti: semantica verificata dai PRG
     (FONORD=fondo progressivo, TOTAMM=quote esercizio, VARFIS=quota
     anticipata, IMPDIF=VARFIS x IRES); colonne fondo/variazioni nel
     dettaglio.
+  - **0.19.0 (corrente)** — statistiche fatturato vendite: per mese/
+    cliente/articolo + confronto pluriennale + export Excel.
 
 ## 4c. Migration tracker (.scx logic ↔ web)
 

@@ -1,40 +1,34 @@
-Verify quota semantics from PRGs; add fund and fiscal columns
+Add sales revenue statistics with multi-year comparison
 
-Short session on top of the cespiti module. The session-9 mandate asked
-for the asset detail with quota history - already delivered in session
-8 and applied on HEAD - so this delivers the residual value: the quota
-FIELD SEMANTICS verified in the calculation sources, plus the columns
-the mandate asked for that the detail was missing. PATCH bump
-0.18.0 -> 0.18.1. Applies on HEAD 7af5de1. MenuService untouched
-(mandate: Opus scadenziario patch coordination).
+Patch A of session 10. /vendite/statistiche built ON TOP of the
+existing invoice tables (no document list rebuilt): web equivalent of
+menu_fatturato / "Analisi fatturato su piu anni". Version bump
+0.18.1 -> 0.19.0. Applies on HEAD bb97ba5.
 
-SEMANTICS (appended to cespiti/README.md with file:line evidence,
-from ALLINEA_CESPITI_QUOTE_AMM.PRG + MENU_quo_am_gen/simu.SCX):
-- QUO_VALORD/ANT/ACC = quota DELL'ESERCIZIO per channel;
-  QUO_FONORD/ANT/ACC = fondo PROGRESSIVO a fine esercizio
-  (gen: _X_QUO_FONORD = _X_QUO_VALORD + QUO_FONORD; first year =
-  VALORD);
-- QUO_TOTAMM = total of the YEAR's quotas, NOT the progressive
-  (allinea r.80: TOTAMM = VALORD+VALANT+VALACC) -> the detail column
-  was ambiguously labelled "Totale ammortizzato": relabelled "Quote
-  esercizio" with explanatory tooltip;
-- the alignment PRG checks anagrafica progressives (AMM_VALORD/ANT/ACC,
-  VALRES) against the LAST quota row (order annrif DESC) and realigns
-  quota+fund deltas on that row (r.52-81);
-- QUO_VARFIS = variazione fiscale = the ANTICIPATED quota of the year
-  (gen: _X_QUO_VARFIS = _X_QUO_VALANT - anticipato is a fiscal-only,
-  off-balance variation);
-- QUO_IMPDIF = imposte differite = VARFIS x IRES rate
-  (_X_QUO_IMPDIF = VARFIS * _W_PERC_IRES / 100, parameter from
-  MENU_para_ires).
+DATA: VenditeStatsDao (native, tenantDataSource) on U_FAT_TT heads
+(measure = ORD_IMPONIB alongside t_netto) and U_FAT_DD rows (per
+article: ORD_QTAORD + ORD_VALORE = row value net of discounts; head-row
+join TAGGANCIO=DAGGANCIO as in InvoiceRowRepository). Month derived
+from ORD_DATORD 'yyyy/MM/dd' SUBSTRING(6,2); multi-year scan guarded
+with TRY_CONVERT(INT, ORD_ANNO).
 
-UI (cespiti/detail.html): quota table gains "Fondo ord. progr."
-(QUO_FONORD) and "Var. fisc. / Imp. diff." (muted when zero); footer
-relabelled "Totale quote esercizio". Entity DepreciationQuota gains
-fiscalVariation/deferredTaxes mappings. Tracker: +1 row for
-ALLINEA_CESPITI_QUOTE_AMM.PRG (WRITE_SIDE, semantics documented).
+VIEWS: KPI cards (fatture, imponibile totale); per month (with optional
+month-range filter); multi-year anno x mese matrix (last 5 years) +
+totals per year; per customer (top 100 by imponibile); per article
+(top 100 by row value). Excel export via VenditeStatsExcelExporter
+(SXSSF pattern from BilancioExcelExporter): sheets Per mese /
+Per cliente / Per articolo.
 
-Verification (sandbox only): brace/paren, duplicate @Column, div/table
-balance, header column count, CSV 12 cols; verified with git apply
---check + apply on fresh clone of HEAD 7af5de1. Maven build and SQL
-Server 2012 execution to be confirmed at first deploy.
+HONESTY: note di accredito are NOT netted nor excluded (no sign
+assumptions - counts and amounts as stored); the per-article measure
+is labelled "valore righe"; legacy filters causale/zona/operatore/
+c.costo not reproduced (tracker notes them as future extension).
+Menu: NEW synthetic case "clienti" with "Statistiche vendite".
+FATTURATO_ARTICOLI_PROD_CARDIOLINE tracked NOT_APPLICABLE (vertical of
+another customer).
+
+Verification (sandbox only): brace/paren with literal stripping,
+div/table balance, SQL alias<->mapper coherence, CSV 12 cols; chain
+verified with git apply --check + apply on fresh clone of HEAD bb97ba5.
+Maven build and SQL Server 2012 execution to be confirmed at first
+deploy.

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head><title>Statistiche vendite – Aquarius</title></head>
+<body><section>
+
+    <div th:replace="~{fragments/page-header :: pageHeader(
+        icon='bi-graph-up-arrow',
+        title='Statistiche fatturato',
+        subtitle='Aggregazioni sulle fatture emesse — anno ' + ${anno} + '. Misura principale: imponibile di testata; per articolo: valore riga netto sconti. Le note di accredito non sono compensate',
+        crumbs=${breadcrumbs}
+    )}"></div>
+
+    <form method="get" th:action="@{/vendite/statistiche}" class="d-flex gap-2 flex-wrap align-items-center mb-3">
+        <label class="small text-muted">Mese</label>
+        <select name="meseDa" class="form-select form-select-sm" style="width:auto" onchange="this.form.submit()">
+            <option value="" th:selected="${meseDa == ''}">dal 01</option>
+            <option th:each="m : ${#numbers.sequence(1, 12)}" th:value="${m < 10 ? '0' + m : '' + m}"
+                    th:text="'dal ' + ${m < 10 ? '0' + m : '' + m}" th:selected="${meseDa == (m < 10 ? '0' + m : '' + m)}"></option>
+        </select>
+        <select name="meseA" class="form-select form-select-sm" style="width:auto" onchange="this.form.submit()">
+            <option value="" th:selected="${meseA == ''}">al 12</option>
+            <option th:each="m : ${#numbers.sequence(1, 12)}" th:value="${m < 10 ? '0' + m : '' + m}"
+                    th:text="'al ' + ${m < 10 ? '0' + m : '' + m}" th:selected="${meseA == (m < 10 ? '0' + m : '' + m)}"></option>
+        </select>
+        <a th:href="@{/vendite/statistiche}" class="btn btn-outline-secondary btn-sm"
+           th:if="${meseDa != '' or meseA != ''}"><i class="bi bi-x"></i></a>
+        <a th:href="@{/vendite/statistiche/excel(meseDa=${meseDa},meseA=${meseA})}"
+           class="btn btn-success btn-sm ms-auto">
+            <i class="bi bi-file-earmark-excel me-1"></i>Esporta Excel
+        </a>
+    </form>
+
+    <!-- KPI -->
+    <div class="row g-3 mb-3">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100"><div class="card-body">
+                <div class="small text-muted">Fatture nel periodo</div>
+                <div class="fs-4 fw-semibold font-monospace" th:text="${totFatture}">0</div>
+            </div></div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100"><div class="card-body">
+                <div class="small text-muted">Imponibile totale</div>
+                <div class="fs-4 fw-semibold font-monospace"
+                     th:text="${#numbers.formatDecimal(totImponibile, 1, 'POINT', 2, 'COMMA')}">0,00</div>
+            </div></div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100"><div class="card-body">
+                <div class="small text-muted">Clienti / articoli mostrati</div>
+                <div class="fs-6">Top <span th:text="${top}">100</span> per imponibile / valore</div>
+            </div></div>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <!-- per mese -->
+        <div class="col-lg-5">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white"><h6 class="detail-card-title mb-0">
+                    <i class="bi bi-calendar3 me-1"></i>Per mese</h6></div>
+                <div class="card-body p-0"><div class="table-responsive">
+                    <table class="table table-sm mb-0">
+                        <thead class="table-light"><tr>
+                            <th>Mese</th><th class="text-end">Fatture</th>
+                            <th class="text-end">Imponibile</th><th class="text-end">Totale netto</th></tr></thead>
+                        <tbody>
+                            <tr th:each="b : ${byMonth}">
+                                <td class="small" th:text="${b.key}">01</td>
+                                <td class="text-end font-monospace small" th:text="${b.documenti}">0</td>
+                                <td class="text-end font-monospace small"
+                                    th:text="${b.imponibile != null ? #numbers.formatDecimal(b.imponibile, 1, 'POINT', 2, 'COMMA') : '—'}">0,00</td>
+                                <td class="text-end font-monospace small"
+                                    th:text="${b.totale != null ? #numbers.formatDecimal(b.totale, 1, 'POINT', 2, 'COMMA') : '—'}">0,00</td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(byMonth)}">
+                                <td colspan="4" class="text-center text-muted py-4">Nessuna fattura nel periodo.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div></div>
+            </div>
+        </div>
+
+        <!-- confronto pluriennale -->
+        <div class="col-lg-7">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white"><h6 class="detail-card-title mb-0">
+                    <i class="bi bi-bar-chart-steps me-1"></i>Confronto pluriennale (imponibile per mese)</h6></div>
+                <div class="card-body p-0"><div class="table-responsive">
+                    <table class="table table-sm mb-0">
+                        <thead class="table-light"><tr>
+                            <th>Anno</th>
+                            <th class="text-end" th:each="m : ${#numbers.sequence(1, 12)}"
+                                th:text="${m < 10 ? '0' + m : '' + m}">01</th>
+                        </tr></thead>
+                        <tbody>
+                            <tr th:each="y : ${matrix}">
+                                <td class="font-monospace small" th:text="${y.key}">2026</td>
+                                <td class="text-end font-monospace small" th:each="m : ${#numbers.sequence(1, 12)}"
+                                    th:with="v=${y.value.get(m < 10 ? '0' + m : '' + m)}"
+                                    th:text="${v != null ? #numbers.formatDecimal(v, 1, 'POINT', 0, 'COMMA') : '—'}"
+                                    th:classappend="${v == null} ? 'text-muted' : ''">—</td>
+                            </tr>
+                            <tr th:if="${#maps.isEmpty(matrix)}">
+                                <td colspan="13" class="text-center text-muted py-4">Nessun dato.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div></div>
+            </div>
+        </div>
+
+        <!-- per cliente -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white"><h6 class="detail-card-title mb-0">
+                    <i class="bi bi-people me-1"></i>Per cliente <span class="text-muted small">(top per imponibile)</span></h6></div>
+                <div class="card-body p-0"><div class="table-responsive">
+                    <table class="table table-sm mb-0">
+                        <thead class="table-light"><tr>
+                            <th>Cliente</th><th class="text-end">Fatture</th>
+                            <th class="text-end">Imponibile</th><th class="text-end">Totale netto</th></tr></thead>
+                        <tbody>
+                            <tr th:each="b : ${byCustomer}">
+                                <td class="small">
+                                    <span class="font-monospace" th:text="${b.key}"></span>
+                                    <span th:text="' ' + ${b.label}"></span>
+                                </td>
+                                <td class="text-end font-monospace small" th:text="${b.documenti}">0</td>
+                                <td class="text-end font-monospace small"
+                                    th:text="${b.imponibile != null ? #numbers.formatDecimal(b.imponibile, 1, 'POINT', 2, 'COMMA') : '—'}">0,00</td>
+                                <td class="text-end font-monospace small"
+                                    th:text="${b.totale != null ? #numbers.formatDecimal(b.totale, 1, 'POINT', 2, 'COMMA') : '—'}">0,00</td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(byCustomer)}">
+                                <td colspan="4" class="text-center text-muted py-4">Nessuna fattura nel periodo.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div></div>
+            </div>
+        </div>
+
+        <!-- per articolo -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white"><h6 class="detail-card-title mb-0">
+                    <i class="bi bi-box-seam me-1"></i>Per articolo <span class="text-muted small">(top per valore righe)</span></h6></div>
+                <div class="card-body p-0"><div class="table-responsive">
+                    <table class="table table-sm mb-0">
+                        <thead class="table-light"><tr>
+                            <th>Articolo</th><th class="text-end">Righe</th>
+                            <th class="text-end">Quantità</th><th class="text-end">Valore righe</th></tr></thead>
+                        <tbody>
+                            <tr th:each="b : ${byArticle}">
+                                <td class="small">
+                                    <span class="font-monospace" th:text="${b.key}"></span>
+                                    <span class="text-muted" th:text="' ' + ${#strings.abbreviate(b.label, 60)}"></span>
+                                </td>
+                                <td class="text-end font-monospace small" th:text="${b.documenti}">0</td>
+                                <td class="text-end font-monospace small"
+                                    th:text="${b.quantita != null ? #numbers.formatDecimal(b.quantita, 1, 'POINT', 2, 'COMMA') : '—'}">0</td>
+                                <td class="text-end font-monospace small"
+                                    th:text="${b.totale != null ? #numbers.formatDecimal(b.totale, 1, 'POINT', 2, 'COMMA') : '—'}">0,00</td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(byArticle)}">
+                                <td colspan="4" class="text-center text-muted py-4">Nessuna riga articolo nel periodo.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div></div>
+            </div>
+        </div>
+    </div>
+
+</section></body>
+</html>

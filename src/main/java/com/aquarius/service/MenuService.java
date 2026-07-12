@@ -310,6 +310,15 @@ public class MenuService {
     private void injectSyntheticEntries(String l1Menu, List<MenuNode> children) {
         if (l1Menu == null) return;
         switch (l1Menu) {
+            case "clienti" -> {
+                children.add(0, MenuNode.builder()
+                    .label("Statistiche vendite")
+                    .icon("bi-graph-up-arrow")
+                    .url("/vendite/statistiche")
+                    .hasReachableLeaf(true)
+                    .build());
+                children.add(1, MenuNode.builder().separator(true).build());
+            }
             case "magazzino" -> {
                 children.add(0, MenuNode.builder()
                     .label("Valorizzazione a data")
