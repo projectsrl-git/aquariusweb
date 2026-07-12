@@ -293,6 +293,7 @@ public class ContabilitaController {
             return "contabilita/bilancio";
         }
 
+        long tElaboraStart = System.nanoTime();
         // Anagrafica conti: codice → Account (per sezione bilancio + tipo conto)
         Map<String, Account> accByCode = accountByCode();
 
@@ -384,6 +385,7 @@ public class ContabilitaController {
         model.addAttribute("quadraturaSP", quadraturaSP.abs());
         model.addAttribute("sbilancio", sbilancio.abs());
         model.addAttribute("quadraturaOk", quadraturaOk);
+        model.addAttribute("elaborazioneMs", (System.nanoTime() - tElaboraStart) / 1_000_000L);
         return "contabilita/bilancio";
     }
 

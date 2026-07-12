@@ -87,6 +87,12 @@
     <!-- ═══════════ RISULTATO (solo dopo Elabora) ═══════════ -->
     <div th:if="${elabora}">
 
+    <div class="text-end text-muted small mb-2" th:if="${elaborazioneMs != null}">
+        <i class="bi bi-stopwatch me-1"></i>Elaborato in
+        <span class="fw-semibold" th:text="${#numbers.formatDecimal(elaborazioneMs / 1000.0,1,'POINT',2,'COMMA')}">0,00</span> s
+        <span class="text-muted">(<span th:text="${elaborazioneMs}">0</span> ms)</span>
+    </div>
+
     <div class="row g-3 mb-3">
         <div class="col-lg-6">
             <div class="card shadow border-0 border-2 h-100 card-tint-sp">
@@ -208,7 +214,6 @@
 
 <!-- ═══════════ FRAGMENT: sezioneTree (full, Prog. Dare/Avere/Saldo) ═══════════ -->
 <div th:fragment="sezioneTree(titolo, mastri, totale, tint)" class="card shadow-sm border-0 mb-3" th:classappend="${'card-tint-' + tint}">
-    <div class="card-header py-2 fw-semibold" th:text="${titolo}">Sezione</div>
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-sm mb-0 align-middle">
@@ -262,7 +267,6 @@
 
 <!-- ═══════════ FRAGMENT: sezioneTreeCompact (contrapposte, solo Saldo) ═══════════ -->
 <div th:fragment="sezioneTreeCompact(titolo, mastri, totale, tint)" class="card shadow-sm border-0 h-100" th:classappend="${'card-tint-' + tint}">
-    <div class="card-header py-2 fw-semibold" th:text="${titolo}">Sezione</div>
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-sm mb-0 align-middle">
