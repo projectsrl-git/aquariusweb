@@ -1,31 +1,38 @@
-Add sales document controls: unpaired DDT, number sequences
+Add cash flow situation from open items (read-only)
 
-Patch B of session 10 - apply AFTER patch A (shares the clienti menu
-case and version log). /vendite/controlli: three read-only checks with
-DECLARED criteria, anomaly-panel pattern (anomalies surfaced, never
-corrected). Version bump 0.19.0 -> 0.20.0.
+/contabilita/cashflow: the forward pendant of the scadenziario, built
+on the SAME open-items repositories (PartitaCliente/Fornitore
+Repository.findAperte; residuo = PAR_TOTIM - PAR_PAGATO, scadenza
+PAR_DTSCAD) - no new decoding, per mandate. MINOR bump 0.20.0 ->
+0.21.0. Applies on HEAD 6679902.
 
-1. DDT non/parzialmente fatturati - grounded on the session-1 verified
-   mechanism: invoicing STAMPS the DDT ROWS with MOV_NUMFAT/MOV_DATFAT
-   on U_BOL_DD. LEFT JOIN U_BOL_TT->DD, HAVING stamped < total rows;
-   stato NON_FATTURATO / PARZIALE; causale column shown because some
-   causali legitimately never invoice (resi, omaggi, c/lavoro) -
-   exclusion list is a NEEDS_DOMAIN question in the tracker.
-2. Invoice number sequence - gaps via LEAD() over distinct
-   TRY_CONVERT(INT, ORD_NUMORD) per year; duplicates listed with the
-   TIPORD series involved (different series may be legitimate);
-   non-numeric numbers surfaced as a data-quality note, not silently
-   dropped. All series together: per-TIPORD refinement pending domain
-   confirmation.
-3. IVA sales register protocol gaps - LEAD() over IVA_CHIAVE (U_IVA_CL,
-   non-corrispettivi rows) per year. The legacy PRNPROT checks MOV_CONT
-   instead (MOV_NDOC = protocollo, verbatim comments) - tracked as
-   NEEDS_DOMAIN on which sequence is fiscally authoritative.
+VIEW: KPI (incassi attesi / pagamenti attesi / saldo netto); per-band
+summary with netto and progressive CUMULATO (expected liquidity curve);
+per-customer and per-supplier tables with per-band columns. Bands
+coherent with the scadenziario widths, forward direction: Scaduto/oggi,
+1-30, 31-60, 61-90, oltre 90, PLUS a dedicated "Senza data" band for
+missing/malformed due dates - surfaced, excluded from the cumulato,
+never corrected. Evidence this band is real: MENU_CASH_OUTFLOW.SCX
+runs "UPDATE PART_FOR SET PAR_DTSCAD = DBO.RIBALTA2(PAR_DTSCAD)..."
+at load (verbatim) - the legacy REWRITES anomalous dates in place; the
+web only shows them. Negative residuals (note di accredito, anticipi)
+kept with their sign, as in the legacy grids.
 
-CONTROLLO_BOLLEFATTURE turned out to target FTP/punto-vendita archives
-(u_ftp_an, casse): different domain, precise NEEDS_DOMAIN question
-filed for Erasmo. Menu: "Controlli vendite" added to the clienti case.
+DECLARED LIMIT vs legacy (stated in the page subtitle): the legacy
+Situazione Cash Inflow/Outflow also projects ordini da evadere
+(ORD/ORF) and DDT non fatturati (BOL/BFO) simulating payment terms.
+ecashlib.prg is EMPTY in the repo (0 bytes) and tesoreria.PRG is a
+35-byte stub: the projection rules are NOT reconstructible from the
+available sources, so v1 ships the FAT/FAF (open items) component
+only. cashflow/README.md documents the legacy model (from the user's
+screenshots), the verbatim evidence, and 4 precise NEEDS_DOMAIN
+questions (ORD/BOL projection rules; effetti/RiBa split PRGs; split
+payment; payment-condition filter column). Tracker +3 rows.
 
-Verification (sandbox only): as patch A; chain verified on fresh clone
-of HEAD bb97ba5. LEAD() window and FOR XML PATH aggregation to be
-confirmed on SQL Server 2012 at first deploy.
+Menu: "Cash flow" synthetic entry right after Scadenziario in the
+contabilita case, indexes renumbered coherently.
+
+Verification (sandbox only): brace/paren with literal stripping,
+div/table balance, menu add() sequence, CSV 12 cols; verified with git
+apply --check + apply on fresh clone of HEAD 6679902. Maven build and
+SQL Server 2012 execution to be confirmed at first deploy.

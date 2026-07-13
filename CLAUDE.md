@@ -188,9 +188,12 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
     dettaglio.
   - 0.19.0 — statistiche fatturato vendite: per mese/
     cliente/articolo + confronto pluriennale + export Excel.
-  - **0.20.0 (corrente)** — controlli documenti vendite: DDT non
+  - 0.20.0 — controlli documenti vendite: DDT non
     fatturati (righe senza MOV_NUMFAT), buchi/duplicati numerazione
     fatture, buchi protocollo registro IVA vendite.
+  - **0.21.0 (corrente)** — situazione cash flow da partite aperte:
+    fasce coerenti con lo scadenziario, netto+cumulato, fascia "senza
+    data" per scadenze anomale (esposte, non corrette).
 
 ## 4c. Migration tracker (.scx logic ↔ web)
 

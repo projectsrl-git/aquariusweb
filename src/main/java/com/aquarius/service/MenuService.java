@@ -408,21 +408,27 @@ public class MenuService {
                     .url("/contabilita/scadenziario")
                     .hasReachableLeaf(true)
                     .build());
-                children.add(9, MenuNode.builder().separator(true).build());
+                children.add(9, MenuNode.builder()
+                    .label("Cash flow")
+                    .icon("bi-cash-coin")
+                    .url("/contabilita/cashflow")
+                    .hasReachableLeaf(true)
+                    .build());
+                children.add(10, MenuNode.builder().separator(true).build());
                 // Shortcut diretti al piano dei conti (web feature, non in VFP)
-                children.add(10, MenuNode.builder()
+                children.add(11, MenuNode.builder()
                     .label("Piano dei conti (albero)")
                     .icon("bi-diagram-3")
                     .url("/conti/tree")
                     .hasReachableLeaf(true)
                     .build());
-                children.add(11, MenuNode.builder()
+                children.add(12, MenuNode.builder()
                     .label("Piano dei conti (lista)")
                     .icon("bi-list-ul")
                     .url("/conti")
                     .hasReachableLeaf(true)
                     .build());
-                children.add(12, MenuNode.builder().separator(true).build());
+                children.add(13, MenuNode.builder().separator(true).build());
             }
             // Si possono aggiungere altre top-section sintetiche qui in futuro
         }
