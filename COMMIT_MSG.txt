@@ -1,38 +1,28 @@
-Add cash flow situation from open items (read-only)
+Add program objects catalog and link graph CSVs
 
-/contabilita/cashflow: the forward pendant of the scadenziario, built
-on the SAME open-items repositories (PartitaCliente/Fornitore
-Repository.findAperte; residuo = PAR_TOTIM - PAR_PAGATO, scadenza
-PAR_DTSCAD) - no new decoding, per mandate. MINOR bump 0.20.0 ->
-0.21.0. Applies on HEAD 6679902.
+Part 1 of 2. Object catalog + parent->child link graph of the legacy
+codebase, menu-reachable closure (read-only source analysis, no
+execution). Applies on HEAD 64cf132.
 
-VIEW: KPI (incassi attesi / pagamenti attesi / saldo netto); per-band
-summary with netto and progressive CUMULATO (expected liquidity curve);
-per-customer and per-supplier tables with per-band columns. Bands
-coherent with the scadenziario widths, forward direction: Scaduto/oggi,
-1-30, 31-60, 61-90, oltre 90, PLUS a dedicated "Senza data" band for
-missing/malformed due dates - surfaced, excluded from the cumulato,
-never corrected. Evidence this band is real: MENU_CASH_OUTFLOW.SCX
-runs "UPDATE PART_FOR SET PAR_DTSCAD = DBO.RIBALTA2(PAR_DTSCAD)..."
-at load (verbatim) - the legacy REWRITES anomalous dates in place; the
-web only shows them. Negative residuals (note di accredito, anticipi)
-kept with their sign, as in the legacy grids.
+PERIMETER: 885 forms referenced by tbl_menu (Caption + METHODS memos
+parsed), forms they open, 366 called PRGs - 123 of which are LIBRARIES
+decomposed into 975 PROCEDURE/FUNCTION nodes (id prg:<file>::<NAME>,
+description = adjacent comment), FRX print targets, 1050 menu-voce
+nodes (type MENU - declared deviation from the mandate enum: the
+viewer needs labelled menu parents), 62 WEB endpoint nodes.
+TOTALS: 3925 objects, 5618 links.
 
-DECLARED LIMIT vs legacy (stated in the page subtitle): the legacy
-Situazione Cash Inflow/Outflow also projects ordini da evadere
-(ORD/ORF) and DDT non fatturati (BOL/BFO) simulating payment terms.
-ecashlib.prg is EMPTY in the repo (0 bytes) and tesoreria.PRG is a
-35-byte stub: the projection rules are NOT reconstructible from the
-available sources, so v1 ships the FAT/FAF (open items) component
-only. cashflow/README.md documents the legacy model (from the user's
-screenshots), the verbatim evidence, and 4 precise NEEDS_DOMAIN
-questions (ORD/BOL projection rules; effetti/RiBa split PRGs; split
-payment; payment-condition filter column). Tracker +3 rows.
+LINK TYPES: MENU_TO_FORM (1007), OPENS_FORM (1623, DO FORM),
+CALLS_PRG (1570, DO x + SET PROCEDURE/LIBRARY), CALLS_PROC (1315:
+direct DO resolved to unique library procedures + name() calls with
+name >= 5 chars to avoid false positives), PRINTS_REPORT (32),
+MIGRATED_TO (64, from tracker new_location + audit evidenza_web),
+UNRESOLVED (7, &macro/EXECSCRIPT - never invented). ~603 DO targets
+matching neither a disk PRG nor a unique library procedure were NOT
+forced into links (local form procedures or out-of-closure): counted
+and explained in migration/README.md.
 
-Menu: "Cash flow" synthetic entry right after Scadenziario in the
-contabilita case, indexes renumbered coherently.
-
-Verification (sandbox only): brace/paren with literal stripping,
-div/table balance, menu add() sequence, CSV 12 cols; verified with git
-apply --check + apply on fresh clone of HEAD 6679902. Maven build and
-SQL Server 2012 execution to be confirmed at first deploy.
+FILES: migration/program_objects.csv (object_id, file, object_type,
+name, description, new_location - RFC-4180), program_links.csv
+(parent_id, child_id, link_type, evidence), README.md updated with
+the schema, link types and library-decomposition logic.

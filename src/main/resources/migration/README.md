@@ -27,3 +27,27 @@ da sistemare) · `VFP_ONLY` (focus/tasti/OLE senza equivalente) · `NOT_APPLICAB
 Per ogni form analizzato: parsa l'.scx (ricetta in CLAUDE.md §4b), e per ogni
 metodo con codice / proprietà rilevante aggiungi UNA riga. Non cancellare righe:
 aggiorna `status`/`new_location` quando un pezzo viene migrato in seguito.
+
+
+## Catalogo oggetti e grafo dei legami (sessione 12)
+
+- `program_objects.csv` — `object_id,file,object_type,name,description,new_location`.
+  Tipi: `FORM` (descrizione = Caption), `PRG` (descrizione = commento di testa),
+  `PROCEDURE` (una riga per ogni PROCEDURE/FUNCTION di un PRG-libreria, id
+  `prg:<file>::<NOME>`, descrizione = commento adiacente), `FRX`, `MENU`
+  (le voci di menu come nodi genitore; deviazione dichiarata rispetto all'enum
+  del mandato: servono al viewer per mostrare i genitori con etichetta), `WEB`
+  (endpoint AquariusWeb, target dei MIGRATED_TO). `new_location` = ponte
+  legacy→web quando presente.
+- `program_links.csv` — `parent_id,child_id,link_type,evidence` con
+  `link_type` ∈ MENU_TO_FORM, OPENS_FORM, CALLS_PRG (DO x / SET PROCEDURE),
+  CALLS_PROC (chiamata a procedura di libreria: DO diretto o `nome()` con
+  nome ≥5 caratteri per evitare falsi positivi), PRINTS_REPORT, MIGRATED_TO
+  (dal tracker `new_location` e dall'audit `evidenza_web`), UNRESOLVED
+  (chiamate dinamiche &macro/EXECSCRIPT — mai inventate).
+
+Perimetro: chiusura raggiungibile dal menu (885 form referenziati dalle voci +
+form aperti da questi + 366 PRG chiamati, di cui 123 librerie scomposte in 975
+procedure). I ~603 target `DO <nome>` che non corrispondono a file su disco né
+a procedure di libreria univoche (nomi locali al form, o fuori chiusura) NON
+sono stati forzati a legami. Viewer: `/utilita/legami`.
