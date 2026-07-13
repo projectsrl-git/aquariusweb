@@ -1,28 +1,27 @@
-Add program objects catalog and link graph CSVs
+Add navigable program-links graph viewer with CSV downloads
 
-Part 1 of 2. Object catalog + parent->child link graph of the legacy
-codebase, menu-reachable closure (read-only source analysis, no
-execution). Applies on HEAD 64cf132.
+Part 2 of 2 - apply AFTER the CSV patch. /utilita/legami: node-centric
+navigable graph (migrazione-viewer pattern, server-side Thymeleaf, no
+heavy JS dependency per mandate). MINOR bump 0.21.0 -> 0.22.0.
 
-PERIMETER: 885 forms referenced by tbl_menu (Caption + METHODS memos
-parsed), forms they open, 366 called PRGs - 123 of which are LIBRARIES
-decomposed into 975 PROCEDURE/FUNCTION nodes (id prg:<file>::<NAME>,
-description = adjacent comment), FRX print targets, 1050 menu-voce
-nodes (type MENU - declared deviation from the mandate enum: the
-viewer needs labelled menu parents), 62 WEB endpoint nodes.
-TOTALS: 3925 objects, 5618 links.
+- Node card: type badge, description (with an explicit "no description
+  in source - not invented" note when empty), file, MIGRATED_TO bridge
+  highlighted.
+- "Usato da": parents including menu voci rendered with their full
+  path; empty = "Orfano" badge (dismissal candidate).
+- Children grouped by link_type with evidence column.
+- EVERY node is clickable and RE-CENTERS the view; a navigation
+  breadcrumb (trail param, capped at 10 hops) tracks the walked path.
+- Search box (name/description/id, max 80) + orphans view (max 300).
+- Download endpoints (whitelist, Content-Disposition: attachment,
+  text/csv): program_objects.csv, program_links.csv AND the existing
+  scx_migration_tracker.csv / menu_coverage_audit.csv - so the user
+  can edit them and pass them back in chat to steer migration scope.
+- ProgramGraphService: lazy immutable load, id index + reverse index,
+  reuses the shared RFC-4180 parser. Sidebar entry "Legami programmi"
+  next to the existing migration tools.
 
-LINK TYPES: MENU_TO_FORM (1007), OPENS_FORM (1623, DO FORM),
-CALLS_PRG (1570, DO x + SET PROCEDURE/LIBRARY), CALLS_PROC (1315:
-direct DO resolved to unique library procedures + name() calls with
-name >= 5 chars to avoid false positives), PRINTS_REPORT (32),
-MIGRATED_TO (64, from tracker new_location + audit evidenza_web),
-UNRESOLVED (7, &macro/EXECSCRIPT - never invented). ~603 DO targets
-matching neither a disk PRG nor a unique library procedure were NOT
-forced into links (local form procedures or out-of-closure): counted
-and explained in migration/README.md.
-
-FILES: migration/program_objects.csv (object_id, file, object_type,
-name, description, new_location - RFC-4180), program_links.csv
-(parent_id, child_id, link_type, evidence), README.md updated with
-the schema, link types and library-decomposition logic.
+Verification (sandbox only): brace/paren with literal stripping,
+div/table/block balance; chain verified with git apply --check + apply
+on fresh clone of HEAD 64cf132. Maven build and first-load performance
+of the graph to be confirmed at deploy.

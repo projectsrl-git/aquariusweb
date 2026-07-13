@@ -438,6 +438,11 @@
             <span class="menu-icon"><i class="bi bi-diagram-2"></i></span>
             <span class="menu-label">Tracciamento migrazione</span>
         </a>
+        <a class="menu-item" th:href="@{/utilita/legami}" th:title="'Legami programmi'"
+           th:classappend="${#httpServletRequest.requestURI.startsWith('/utilita/legami')} ? 'active'">
+            <span class="menu-icon"><i class="bi bi-diagram-3"></i></span>
+            <span class="menu-label">Legami programmi</span>
+        </a>
         <a class="menu-item" th:href="@{/utilita/copertura}" th:title="'Copertura migrazione'"
            th:classappend="${#httpServletRequest.requestURI.startsWith('/utilita/copertura')} ? 'active'">
             <span class="menu-icon"><i class="bi bi-clipboard-data"></i></span>

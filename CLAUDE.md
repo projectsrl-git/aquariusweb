@@ -191,9 +191,12 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
   - 0.20.0 — controlli documenti vendite: DDT non
     fatturati (righe senza MOV_NUMFAT), buchi/duplicati numerazione
     fatture, buchi protocollo registro IVA vendite.
-  - **0.21.0 (corrente)** — situazione cash flow da partite aperte:
+  - 0.21.0 — situazione cash flow da partite aperte:
     fasce coerenti con lo scadenziario, netto+cumulato, fascia "senza
     data" per scadenze anomale (esposte, non corrette).
+  - **0.22.0 (corrente)** — catalogo oggetti legacy + grafo dei legami
+    (program_objects/links.csv) e viewer navigabile /utilita/legami con
+    download CSV.
 
 ## 4c. Migration tracker (.scx logic ↔ web)
 
