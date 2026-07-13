@@ -1,27 +1,16 @@
-Add navigable program-links graph viewer with CSV downloads
+Legami viewer: full-data grid, clickable-counter filters, pagination, SVG graph
 
-Part 2 of 2 - apply AFTER the CSV patch. /utilita/legami: node-centric
-navigable graph (migrazione-viewer pattern, server-side Thymeleaf, no
-heavy JS dependency per mandate). MINOR bump 0.21.0 -> 0.22.0.
+Enhancements to /utilita/legami (ProgramGraphController + ProgramGraphService +
+legami.html):
+- Landing shows all data immediately: type counters on top + grid below (no search
+  needed). Counters are clickable and act as type filters (+ an "All" card).
+- Grid is paginated with configurable page size (20/50/100/200, default 20).
+- Inline search over any field (name/description/file/id/new_location), across the
+  whole dataset, via ProgramGraphService.filter(type, q).
+- MENUs are no longer treated as orphans: they are entry nodes (invoked by the menu
+  management root) - shown as "ingresso" instead of the orphan warning.
+- Node detail gains a 1-hop neighborhood SVG graph (center + parents left + children
+  right), with clickable nodes that recenter the view - server-side SVG, no heavy lib.
+- Forms always show their title/description (Caption) next to name and file.
 
-- Node card: type badge, description (with an explicit "no description
-  in source - not invented" note when empty), file, MIGRATED_TO bridge
-  highlighted.
-- "Usato da": parents including menu voci rendered with their full
-  path; empty = "Orfano" badge (dismissal candidate).
-- Children grouped by link_type with evidence column.
-- EVERY node is clickable and RE-CENTERS the view; a navigation
-  breadcrumb (trail param, capped at 10 hops) tracks the walked path.
-- Search box (name/description/id, max 80) + orphans view (max 300).
-- Download endpoints (whitelist, Content-Disposition: attachment,
-  text/csv): program_objects.csv, program_links.csv AND the existing
-  scx_migration_tracker.csv / menu_coverage_audit.csv - so the user
-  can edit them and pass them back in chat to steer migration scope.
-- ProgramGraphService: lazy immutable load, id index + reverse index,
-  reuses the shared RFC-4180 parser. Sidebar entry "Legami programmi"
-  next to the existing migration tools.
-
-Verification (sandbox only): brace/paren with literal stripping,
-div/table/block balance; chain verified with git apply --check + apply
-on fresh clone of HEAD 64cf132. Maven build and first-load performance
-of the graph to be confirmed at deploy.
+Version 0.23.0. Sandbox syntactic checks only (no Maven build).

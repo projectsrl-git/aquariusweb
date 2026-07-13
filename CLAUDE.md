@@ -194,9 +194,11 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
   - 0.21.0 — situazione cash flow da partite aperte:
     fasce coerenti con lo scadenziario, netto+cumulato, fascia "senza
     data" per scadenze anomale (esposte, non corrette).
-  - **0.22.0 (corrente)** — catalogo oggetti legacy + grafo dei legami
+  - 0.22.0 — catalogo oggetti legacy + grafo dei legami
     (program_objects/links.csv) e viewer navigabile /utilita/legami con
     download CSV.
+  - **0.23.0 (corrente)** — viewer legami: griglia con tutti i dati,
+    contatori-filtro, paginazione, ricerca in-linea, grafo SVG del vicinato, fix menu-orfani.
 
 ## 4c. Migration tracker (.scx logic ↔ web)
 

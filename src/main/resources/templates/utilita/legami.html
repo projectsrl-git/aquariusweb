@@ -1,200 +1,213 @@
 <!DOCTYPE html>
 <html lang="it" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout :: layout(~{::title}, ~{::section})}">
-<head><title>Legami programmi – Aquarius</title></head>
+<head><title>Legami tra programmi – Aquarius</title></head>
 <body><section>
 
     <div th:replace="~{fragments/page-header :: pageHeader(
         icon='bi-diagram-3',
         title='Legami tra programmi',
-        subtitle='Catalogo degli oggetti legacy raggiungibili dal menu e dei loro legami (chi usa cosa), con i ponti verso AquariusWeb. Clicca un nodo per ri-centrare la vista',
+        subtitle='Catalogo degli oggetti legacy e dei loro legami (chi usa cosa), con i ponti verso AquariusWeb',
         crumbs=${breadcrumbs}
     )}"></div>
 
-    <!-- ricerca + download -->
-    <div class="d-flex gap-2 flex-wrap align-items-center mb-3">
-        <form method="get" th:action="@{/utilita/legami}" class="d-flex gap-2 align-items-center">
-            <div class="input-group input-group-sm" style="width:360px">
-                <span class="input-group-text"><i class="bi bi-search"></i></span>
-                <input type="text" name="q" th:value="${q}" class="form-control"
-                       placeholder="Cerca oggetto (nome, descrizione, id)…">
-            </div>
-            <button type="submit" class="btn btn-primary btn-sm">Cerca</button>
-        </form>
-        <a th:href="@{/utilita/legami(orfani=1)}" class="btn btn-outline-warning btn-sm">Orfani</a>
+    <!-- Barra: ricerca in-linea (su qualunque campo) + orfani + download -->
+    <form method="get" th:action="@{/utilita/legami}" class="d-flex align-items-center gap-2 mb-3 flex-wrap">
+        <input type="hidden" name="tipo" th:value="${tipo}">
+        <div class="input-group input-group-sm" style="max-width:420px">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" name="q" th:value="${q}" class="form-control" autocomplete="off"
+                   placeholder="Cerca su nome, descrizione, file, id, destinazione web…">
+            <button type="submit" class="btn btn-primary">Cerca</button>
+        </div>
+        <a th:if="${q != '' or tipo != null or soloOrfani}" class="btn btn-outline-secondary btn-sm"
+           th:href="@{/utilita/legami}"><i class="bi bi-x-lg me-1"></i>Azzera filtri</a>
+        <a class="btn btn-sm" th:classappend="${soloOrfani ? 'btn-warning' : 'btn-outline-warning'}"
+           th:href="@{/utilita/legami(orfani=1, tipo=${tipo}, q=${q})}">Orfani</a>
         <div class="dropdown ms-auto">
-            <button class="btn btn-outline-success btn-sm dropdown-toggle" data-bs-toggle="dropdown">
-                <i class="bi bi-download me-1"></i>Scarica CSV
-            </button>
+            <button class="btn btn-outline-success btn-sm dropdown-toggle" data-bs-toggle="dropdown" type="button">
+                <i class="bi bi-download me-1"></i>Scarica CSV</button>
             <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" th:href="@{/utilita/legami/download/program_objects.csv}">Catalogo oggetti</a></li>
-                <li><a class="dropdown-item" th:href="@{/utilita/legami/download/program_links.csv}">Legami (archi)</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" th:href="@{/utilita/legami/download/scx_migration_tracker.csv}">Migration tracker</a></li>
-                <li><a class="dropdown-item" th:href="@{/utilita/legami/download/menu_coverage_audit.csv}">Audit copertura</a></li>
+                <li><a class="dropdown-item" th:href="@{/utilita/legami/download/program_objects.csv}">program_objects.csv</a></li>
+                <li><a class="dropdown-item" th:href="@{/utilita/legami/download/program_links.csv}">program_links.csv</a></li>
             </ul>
         </div>
-    </div>
+    </form>
 
-    <!-- statistiche (landing) -->
-    <div class="row g-2 mb-3" th:if="${node == null and results == null and orfani == null}">
-        <div class="col-6 col-md-2" th:each="s : ${stats}">
-            <div class="card shadow-sm border-0 text-center"><div class="card-body py-2">
-                <div class="small text-muted" th:text="${s.key}">FORM</div>
-                <div class="fs-5 fw-semibold font-monospace" th:text="${s.value}">0</div>
-            </div></div>
-        </div>
-        <div class="col-12">
-            <p class="small text-muted mb-0 mt-2">
-                Cerca un form (es. <span class="font-monospace">menu_cee000</span>), un PRG
-                (es. <span class="font-monospace">bollati</span>) o una procedura di libreria per iniziare a
-                navigare. I legami MIGRATED_TO portano ai moduli AquariusWeb corrispondenti.
-                CSV modificabili e ripassabili in chat per cambiare scope/priorità.
-            </p>
-        </div>
-    </div>
-
-    <!-- risultati ricerca -->
-    <div class="card shadow-sm border-0" th:if="${results != null}">
-        <div class="card-header bg-white"><h6 class="detail-card-title mb-0">
-            Risultati per «<span th:text="${q}"></span>» <span class="text-muted small">(max 80)</span></h6></div>
-        <div class="card-body p-0"><div class="table-responsive">
-            <table class="table table-hover table-sm mb-0">
-                <thead class="table-light"><tr><th>Tipo</th><th>Nome</th><th>Descrizione</th><th>File</th></tr></thead>
-                <tbody>
-                    <tr th:each="o : ${results}">
-                        <td><span class="badge bg-light text-dark border" th:text="${o.type}">FORM</span></td>
-                        <td><a class="text-decoration-none font-monospace small"
-                               th:href="@{/utilita/legami(id=${o.id})}" th:text="${o.name}">nome</a></td>
-                        <td class="small" th:text="${#strings.abbreviate(o.description, 90)}">—</td>
-                        <td class="small text-muted font-monospace" th:text="${o.file}">—</td>
-                    </tr>
-                    <tr th:if="${#lists.isEmpty(results)}">
-                        <td colspan="4" class="text-center text-muted py-4">Nessun oggetto trovato.</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div></div>
-    </div>
-
-    <!-- orfani -->
-    <div class="card shadow-sm border-0" th:if="${orfani != null}">
-        <div class="card-header bg-white"><h6 class="detail-card-title mb-0">
-            Oggetti orfani <span class="text-muted small">(FORM/PRG del perimetro senza alcun genitore mappato — candidati dismessi, max 300)</span></h6></div>
-        <div class="card-body p-0"><div class="table-responsive">
-            <table class="table table-hover table-sm mb-0">
-                <thead class="table-light"><tr><th>Tipo</th><th>Nome</th><th>Descrizione</th></tr></thead>
-                <tbody>
-                    <tr th:each="o : ${orfani}">
-                        <td><span class="badge bg-warning-subtle text-warning-emphasis" th:text="${o.type}">FORM</span></td>
-                        <td><a class="text-decoration-none font-monospace small"
-                               th:href="@{/utilita/legami(id=${o.id})}" th:text="${o.name}">nome</a></td>
-                        <td class="small" th:text="${#strings.abbreviate(o.description, 90)}">—</td>
-                    </tr>
-                    <tr th:if="${#lists.isEmpty(orfani)}">
-                        <td colspan="3" class="text-center text-success py-4">Nessun orfano nel perimetro.</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div></div>
-    </div>
-
-    <!-- scheda nodo -->
+    <!-- ══════════ DETTAGLIO NODO ══════════ -->
     <th:block th:if="${node != null}">
-        <!-- breadcrumb di navigazione -->
         <nav class="small mb-2" th:if="${!#lists.isEmpty(trailNodes)}">
-            <span class="text-muted">Percorso:</span>
-            <th:block th:each="t, st : ${trailNodes}">
-                <a class="text-decoration-none" th:href="@{/utilita/legami(id=${t.id})}"
-                   th:text="${t.name}">n</a><span th:unless="${st.last}" class="text-muted"> → </span>
+            <a th:href="@{/utilita/legami}">Tutti</a>
+            <th:block th:each="t : ${trailNodes}">
+                <span class="text-muted"> → </span>
+                <a th:href="@{/utilita/legami(id=${t.id})}" class="font-monospace" th:text="${t.name}">nodo</a>
             </th:block>
-            <span class="text-muted"> → </span><strong th:text="${node.name}">corrente</strong>
+            <span class="text-muted"> → </span><strong class="font-monospace" th:text="${node.name}">corrente</strong>
         </nav>
 
-        <div class="card shadow-sm border-0 mb-3">
+        <div class="card shadow-sm border mb-3">
             <div class="card-header bg-white d-flex align-items-center gap-2">
                 <span class="badge bg-primary-subtle text-primary-emphasis" th:text="${node.type}">FORM</span>
-                <h6 class="detail-card-title mb-0 font-monospace" th:text="${node.name}">nome</h6>
+                <h6 class="mb-0 font-monospace" th:text="${node.name}">nome</h6>
                 <span class="small text-muted ms-auto font-monospace" th:text="${node.file}">file</span>
             </div>
             <div class="card-body">
-                <p class="mb-1" th:if="${node.description != ''}" th:text="${node.description}">descrizione</p>
-                <p class="mb-1 text-muted small" th:if="${node.description == ''}">Nessuna descrizione nel sorgente (non inventata).</p>
+                <p class="mb-1" th:if="${node.description != ''}"><strong th:text="${node.description}">titolo/descrizione</strong></p>
+                <p class="mb-1 text-muted small" th:if="${node.description == ''}">Nessun titolo/descrizione nel sorgente (non inventato).</p>
                 <p class="mb-0 small" th:if="${node.newLocation != ''}">
-                    <i class="bi bi-arrow-right-circle text-success me-1"></i>
-                    <strong>Migrato in:</strong>
-                    <span class="font-monospace" th:text="${node.newLocation}">/rotta</span>
+                    <span class="badge bg-success-subtle text-success-emphasis me-1">MIGRATO</span>
+                    <span class="text-muted">→ </span><span class="font-monospace" th:text="${node.newLocation}">web</span>
                 </p>
             </div>
         </div>
 
+        <!-- Grafo SVG del vicinato (1 hop), nodi cliccabili -->
+        <div class="card shadow-sm border mb-3">
+            <div class="card-header bg-light py-2 small fw-semibold text-uppercase">Vicinato (1 hop) — clicca un nodo per navigare</div>
+            <div class="card-body" th:utext="${graphSvg}">[svg]</div>
+        </div>
+
         <div class="row g-3">
-            <!-- genitori -->
+            <!-- USATO DA (genitori) -->
             <div class="col-lg-5">
-                <div class="card shadow-sm border-0 h-100">
-                    <div class="card-header bg-white"><h6 class="detail-card-title mb-0">
-                        <i class="bi bi-arrow-up-circle me-1"></i>Usato da
-                        <span class="badge bg-light text-dark border ms-1" th:text="${#lists.size(parents)}">0</span></h6></div>
-                    <div class="card-body p-0"><div class="table-responsive">
-                        <table class="table table-sm mb-0">
+                <div class="card shadow-sm border h-100">
+                    <div class="card-header bg-light py-2 small fw-semibold text-uppercase">
+                        Usato da <span class="badge bg-secondary" th:text="${#lists.size(parents)}">0</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <!-- I MENU sono nodi di ingresso: mai orfani -->
+                        <div class="p-3 small" th:if="${#lists.isEmpty(parents) and node.type == 'MENU'}">
+                            <span class="badge bg-info-subtle text-info-emphasis">Nodo di ingresso</span>
+                            — voce di menu, richiamata dalla gestione menu (radice).
+                        </div>
+                        <div class="p-3 small" th:if="${#lists.isEmpty(parents) and node.type != 'MENU'}">
+                            <span class="badge bg-warning-subtle text-warning-emphasis">Orfano</span>
+                            — non richiamato da nulla di mappato nel perimetro.
+                        </div>
+                        <table class="table table-sm table-hover mb-0" th:unless="${#lists.isEmpty(parents)}">
                             <tbody>
-                                <tr th:each="pe : ${parents}" th:with="l=${pe[0]}, o=${pe[1]}">
-                                    <td style="width:34%">
-                                        <span class="badge bg-secondary-subtle text-secondary-emphasis" th:text="${l.type}">MENU_TO_FORM</span>
-                                    </td>
+                                <tr th:each="p : ${parents}">
                                     <td>
-                                        <a th:if="${o != null}" class="text-decoration-none small"
-                                           th:href="@{/utilita/legami(id=${o.id},trail=${trailNext})}">
-                                            <span class="badge bg-light text-dark border" th:text="${o.type}">MENU</span>
-                                            <span th:text="${o.type == 'MENU' ? o.description + ' > ' + o.name : o.name}"
-                                                  class="font-monospace"></span>
-                                        </a>
-                                        <span th:if="${o == null}" class="small text-muted" th:text="${l.parentId}"></span>
-                                    </td>
-                                </tr>
-                                <tr th:if="${#lists.isEmpty(parents)}">
-                                    <td class="text-center py-3">
-                                        <span class="badge bg-warning-subtle text-warning-emphasis">Orfano</span>
-                                        <span class="small text-muted">— non richiamato da nulla di mappato nel perimetro</span>
+                                        <a class="text-decoration-none" th:if="${p[1] != null}"
+                                           th:href="@{/utilita/legami(id=${p[1].id}, trail=${trailNext})}">
+                                            <span class="badge bg-light text-dark border me-1" th:text="${p[1].type}">T</span>
+                                            <span class="font-monospace" th:text="${p[1].name}">nome</span></a>
+                                        <span class="text-muted small ms-1" th:text="${p[0].type}">link</span>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
-                    </div></div>
+                    </div>
                 </div>
             </div>
-
-            <!-- figli -->
+            <!-- APRE / CHIAMA / STAMPA / MIGRA (figli per tipo) -->
             <div class="col-lg-7">
-                <div class="card shadow-sm border-0 h-100">
-                    <div class="card-header bg-white"><h6 class="detail-card-title mb-0">
-                        <i class="bi bi-arrow-down-circle me-1"></i>Apre / chiama / stampa / migra in</h6></div>
+                <div class="card shadow-sm border h-100">
+                    <div class="card-header bg-light py-2 small fw-semibold text-uppercase">Apre / chiama / stampa / migra in</div>
                     <div class="card-body p-0">
-                        <div th:if="${#maps.isEmpty(childrenByType)}" class="text-center text-muted py-4 small">
-                            Nessun legame in uscita rilevato.
-                        </div>
-                        <div class="table-responsive" th:each="ct : ${childrenByType}">
-                            <div class="px-2 pt-2 small fw-semibold text-muted" th:text="${ct.key}">OPENS_FORM</div>
-                            <table class="table table-sm mb-0">
+                        <div class="p-3 small text-muted" th:if="${#maps.isEmpty(childrenByType)}">Nessun legame in uscita.</div>
+                        <th:block th:each="grp : ${childrenByType}">
+                            <div class="px-3 py-1 bg-light small fw-semibold font-monospace" th:text="${grp.key}">CALLS_PRG</div>
+                            <table class="table table-sm table-hover mb-0">
                                 <tbody>
-                                    <tr th:each="ce : ${ct.value}" th:with="l=${ce[0]}, o=${ce[1]}">
+                                    <tr th:each="c : ${grp.value}">
                                         <td>
-                                            <a th:if="${o != null}" class="text-decoration-none small"
-                                               th:href="@{/utilita/legami(id=${o.id},trail=${trailNext})}">
-                                                <span class="badge bg-light text-dark border" th:text="${o.type}">FORM</span>
-                                                <span class="font-monospace" th:text="${o.name}">nome</span>
-                                                <span class="text-muted" th:if="${o.description != ''}"
-                                                      th:text="' — ' + ${#strings.abbreviate(o.description, 60)}"></span>
-                                            </a>
-                                            <span th:if="${o == null}" class="small text-muted" th:text="${l.childId}"></span>
+                                            <a class="text-decoration-none" th:if="${c[1] != null}"
+                                               th:href="@{/utilita/legami(id=${c[1].id}, trail=${trailNext})}">
+                                                <span class="badge bg-light text-dark border me-1" th:text="${c[1].type}">T</span>
+                                                <span class="font-monospace" th:text="${c[1].name}">nome</span></a>
+                                            <span class="text-muted small" th:if="${c[1] != null and c[1].description != ''}"
+                                                  th:text="${' — ' + c[1].description}">descr</span>
+                                            <span class="font-monospace text-muted small" th:if="${c[1] == null}" th:text="${c[0].childId}">id</span>
                                         </td>
-                                        <td class="text-end small text-muted" style="width:30%"
-                                            th:text="${#strings.abbreviate(l.evidence, 40)}">ev</td>
                                     </tr>
                                 </tbody>
                             </table>
-                        </div>
+                        </th:block>
                     </div>
+                </div>
+            </div>
+        </div>
+    </th:block>
+
+    <!-- ══════════ GRIGLIA (default: tutti i dati) ══════════ -->
+    <th:block th:if="${node == null}">
+        <!-- Contatori cliccabili = filtro per tipo -->
+        <div class="row g-2 mb-3">
+            <div class="col-6 col-md-2">
+                <a class="text-decoration-none" th:href="@{/utilita/legami(q=${q})}">
+                    <div class="card shadow-sm text-center" th:classappend="${tipo == null ? 'border-primary border-2' : 'border-0'}">
+                        <div class="card-body py-2">
+                            <div class="text-muted small text-uppercase">Tutti</div>
+                            <div class="fs-5 fw-bold" th:text="${total}">0</div>
+                        </div></div></a>
+            </div>
+            <div class="col-6 col-md-2" th:each="s : ${stats}">
+                <a class="text-decoration-none" th:href="@{/utilita/legami(tipo=${s.key}, q=${q})}">
+                    <div class="card shadow-sm text-center" th:classappend="${tipo == s.key ? 'border-primary border-2' : 'border-0'}">
+                        <div class="card-body py-2">
+                            <div class="text-muted small text-uppercase font-monospace" th:text="${s.key}">TYPE</div>
+                            <div class="fs-5 fw-bold" th:text="${s.value}">0</div>
+                        </div></div></a>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border">
+            <div class="card-header bg-white py-2 small text-muted d-flex align-items-center">
+                <span><strong th:text="${total}">0</strong> oggetti
+                    <span th:if="${tipo != null}">di tipo <span class="font-monospace" th:text="${tipo}">T</span></span>
+                    <span th:if="${q != ''}">che contengono «<span th:text="${q}">q</span>»</span>
+                    <span th:if="${soloOrfani}">— solo orfani</span>
+                </span>
+                <!-- righe per pagina -->
+                <form method="get" th:action="@{/utilita/legami}" class="ms-auto d-flex align-items-center gap-1">
+                    <input type="hidden" name="tipo" th:value="${tipo}"><input type="hidden" name="q" th:value="${q}">
+                    <input th:if="${soloOrfani}" type="hidden" name="orfani" value="1">
+                    <label class="small text-muted">Righe:</label>
+                    <select name="size" class="form-select form-select-sm" style="width:auto" onchange="this.form.submit()">
+                        <option th:each="n : ${ {20,50,100,200} }" th:value="${n}" th:text="${n}" th:selected="${n == size}">20</option>
+                    </select>
+                </form>
+            </div>
+            <div class="card-body p-0"><div class="table-responsive">
+                <table class="table table-hover table-sm mb-0 align-middle">
+                    <thead class="table-light"><tr>
+                        <th style="width:90px">Tipo</th><th>Nome</th><th>Titolo / descrizione</th>
+                        <th style="width:90px" class="text-center">Usato da</th>
+                        <th style="width:90px" class="text-center">Chiama</th>
+                        <th style="width:70px" class="text-center">Web</th>
+                        <th>File</th>
+                    </tr></thead>
+                    <tbody>
+                        <tr th:each="r : ${rows}">
+                            <td><span class="badge bg-light text-dark border" th:text="${r[0].type}">FORM</span></td>
+                            <td><a class="font-monospace text-decoration-none"
+                                   th:href="@{/utilita/legami(id=${r[0].id})}" th:text="${r[0].name}">nome</a></td>
+                            <td class="small" th:text="${r[0].description}">titolo</td>
+                            <td class="text-center small">
+                                <span th:if="${r[0].type == 'MENU'}" class="badge bg-info-subtle text-info-emphasis" title="voce di menu (ingresso)">ingresso</span>
+                                <span th:unless="${r[0].type == 'MENU'}"
+                                      th:classappend="${r[1] == 0 ? 'text-warning fw-bold' : 'text-muted'}" th:text="${r[1]}">0</span>
+                            </td>
+                            <td class="text-center small text-muted" th:text="${r[2]}">0</td>
+                            <td class="text-center">
+                                <i th:if="${r[0].newLocation != ''}" class="bi bi-check-circle-fill text-success" title="migrato"></i>
+                                <span th:if="${r[0].newLocation == ''}" class="text-muted">–</span>
+                            </td>
+                            <td class="small font-monospace text-muted" th:text="${r[0].file}">file</td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(rows)}"><td colspan="7" class="text-center text-muted py-4">Nessun oggetto.</td></tr>
+                    </tbody>
+                </table>
+            </div></div>
+            <!-- Paginazione -->
+            <div class="card-footer bg-white d-flex align-items-center justify-content-between" th:if="${totalPages > 1}">
+                <span class="small text-muted">Pagina <span th:text="${page + 1}">1</span> di <span th:text="${totalPages}">1</span></span>
+                <div class="btn-group btn-group-sm">
+                    <a class="btn btn-outline-secondary" th:classappend="${page == 0 ? 'disabled' : ''}"
+                       th:href="@{/utilita/legami(tipo=${tipo}, q=${q}, size=${size}, page=${page - 1}, orfani=${soloOrfani ? 1 : null})}">‹ Prec.</a>
+                    <a class="btn btn-outline-secondary" th:classappend="${page + 1 >= totalPages ? 'disabled' : ''}"
+                       th:href="@{/utilita/legami(tipo=${tipo}, q=${q}, size=${size}, page=${page + 1}, orfani=${soloOrfani ? 1 : null})}">Succ. ›</a>
                 </div>
             </div>
         </div>

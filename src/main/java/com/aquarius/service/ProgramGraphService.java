@@ -114,6 +114,32 @@ public class ProgramGraphService {
         return out;
     }
 
+    /** Elenco filtrato per tipo (opzionale) e testo su qualunque campo. Ordinato. */
+    public List<GraphObject> filter(String type, String q) {
+        ensureLoaded();
+        String qq = q == null ? "" : q.toLowerCase(Locale.ROOT).trim();
+        List<GraphObject> out = new ArrayList<>();
+        for (GraphObject o : byId.values()) {
+            if (type != null && !type.isBlank() && !type.equals(o.getType())) continue;
+            if (!qq.isEmpty()) {
+                String hay = (nz(o.getName()) + " " + nz(o.getDescription()) + " "
+                    + nz(o.getFile()) + " " + nz(o.getId()) + " " + nz(o.getNewLocation()))
+                    .toLowerCase(Locale.ROOT);
+                if (!hay.contains(qq)) continue;
+            }
+            out.add(o);
+        }
+        out.sort((a, b) -> a.getType().equals(b.getType())
+            ? nz(a.getName()).compareToIgnoreCase(nz(b.getName()))
+            : a.getType().compareTo(b.getType()));
+        return out;
+    }
+
+    private static String nz(String s) { return s == null ? "" : s; }
+
+    public int parentCount(String id) { ensureLoaded(); return parentsOf.getOrDefault(id, List.of()).size(); }
+    public int childCount(String id)  { ensureLoaded(); return childrenOf.getOrDefault(id, List.of()).size(); }
+
     public Map<String, Long> stats() {
         ensureLoaded();
         Map<String, Long> m = new java.util.TreeMap<>();
