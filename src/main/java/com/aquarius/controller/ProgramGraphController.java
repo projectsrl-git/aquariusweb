@@ -73,7 +73,6 @@ public class ProgramGraphController {
                         .add(new Object[]{ l, graph.get(l.getChildId()) });
                 }
                 model.addAttribute("childrenByType", childrenByType);
-                model.addAttribute("graphSvg", neighborhoodSvg(node, parents, childrenByType));
 
                 List<GraphObject> trailNodes = new ArrayList<>();
                 if (trail != null && !trail.isBlank()) {

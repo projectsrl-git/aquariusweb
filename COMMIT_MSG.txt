@@ -1,14 +1,14 @@
-Hotfix legami viewer: empty node detail (malformed inline SVG)
+Legami viewer: remove inline SVG card (node detail still empty)
 
-Opening a node detail (e.g. /utilita/legami?id=prg:aq_browseview) showed an empty
-card (only header + search). Cause: neighborhoodSvg() built clickable-node hrefs
-with an unescaped '&' ("?id=...&trail=..."), making the inline SVG invalid XML;
-the browser's foreign-content parser then swallowed the rest of the node content.
+The previous &amp; fix did not resolve the empty node detail. The inline SVG card
+(th:utext) was the regression vs the working Fable5 node view, so it is removed -
+both the template card and the controller's graphSvg attribute / neighborhoodSvg
+call. The node detail returns to the proven structure (header + "used by" +
+"opens/calls/prints/migrates") with all grid improvements intact (counter filters,
+pagination, inline search, menu-orphan fix, form titles).
 
-Fix:
-- SVG hrefs now use '&amp;trail=' (valid XML; generated SVG verified well-formed).
-- The id branch returns only when the node exists; an unknown id now degrades to
-  the grid with an "object not found" notice instead of falling through to the grid
-  with unset pagination variables.
+The neighborhood graph will be re-added in isolation (an endpoint serving the SVG as
+a separate image/svg+xml resource, embedded via <object>) so a problematic SVG can
+never break the node page.
 
-Version 0.23.1. Sandbox syntactic checks only (no Maven build).
+Version 0.23.2. Sandbox syntactic checks only (no Maven build).
