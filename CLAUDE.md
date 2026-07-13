@@ -197,8 +197,10 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
   - 0.22.0 — catalogo oggetti legacy + grafo dei legami
     (program_objects/links.csv) e viewer navigabile /utilita/legami con
     download CSV.
-  - **0.23.0 (corrente)** — viewer legami: griglia con tutti i dati,
+  - 0.23.0 — viewer legami: griglia con tutti i dati,
     contatori-filtro, paginazione, ricerca in-linea, grafo SVG del vicinato, fix menu-orfani.
+  - **0.23.1 (corrente)** — hotfix viewer legami: vista nodo vuota risolta
+    (SVG con '&' non escapato → XML non valido); id non trovato degrada a griglia.
 
 ## 4c. Migration tracker (.scx logic ↔ web)
 

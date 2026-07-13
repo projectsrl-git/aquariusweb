@@ -132,6 +132,9 @@
 
     <!-- ══════════ GRIGLIA (default: tutti i dati) ══════════ -->
     <th:block th:if="${node == null}">
+        <div class="alert alert-warning py-2" th:if="${notFound != null}">
+            <i class="bi bi-exclamation-triangle me-1"></i>Oggetto «<span class="font-monospace" th:text="${notFound}">id</span>» non trovato nel catalogo.
+        </div>
         <!-- Contatori cliccabili = filtro per tipo -->
         <div class="row g-2 mb-3">
             <div class="col-6 col-md-2">

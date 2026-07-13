@@ -63,8 +63,8 @@ public class ProgramGraphController {
         // ── DETTAGLIO NODO (con grafo SVG del vicinato) ──
         if (id != null && !id.isBlank()) {
             GraphObject node = graph.get(id);
-            model.addAttribute("node", node);
             if (node != null) {
+                model.addAttribute("node", node);
                 List<Object[]> parents = enrich(graph.parents(id), true);
                 model.addAttribute("parents", parents);
                 Map<String, List<Object[]>> childrenByType = new LinkedHashMap<>();
@@ -92,8 +92,10 @@ public class ProgramGraphController {
                 }
                 model.addAttribute("trailNext", newTrail);
                 model.addAttribute("trailCurrent", trail == null ? "" : trail);
+                return "utilita/legami";
             }
-            return "utilita/legami";
+            // id presente ma oggetto non trovato → prosegue alla griglia con avviso
+            model.addAttribute("notFound", id);
         }
 
         // ── GRIGLIA (default): tutti i dati subito, contatori-filtro, ricerca, paginazione ──
@@ -165,7 +167,7 @@ public class ProgramGraphController {
 
     private void node(StringBuilder s, GraphObject o, int x, int y, int w, String trail) {
         nodeBox(s, x, y, w, o.getType(), o.getName(), false,
-            "?id=" + esc(o.getId()) + "&trail=" + esc(trail), null);
+            "?id=" + esc(o.getId()) + "&amp;trail=" + esc(trail), null);
     }
 
     private void nodeBox(StringBuilder s, int x, int y, int w, String type, String name,

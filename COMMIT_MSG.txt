@@ -1,16 +1,14 @@
-Legami viewer: full-data grid, clickable-counter filters, pagination, SVG graph
+Hotfix legami viewer: empty node detail (malformed inline SVG)
 
-Enhancements to /utilita/legami (ProgramGraphController + ProgramGraphService +
-legami.html):
-- Landing shows all data immediately: type counters on top + grid below (no search
-  needed). Counters are clickable and act as type filters (+ an "All" card).
-- Grid is paginated with configurable page size (20/50/100/200, default 20).
-- Inline search over any field (name/description/file/id/new_location), across the
-  whole dataset, via ProgramGraphService.filter(type, q).
-- MENUs are no longer treated as orphans: they are entry nodes (invoked by the menu
-  management root) - shown as "ingresso" instead of the orphan warning.
-- Node detail gains a 1-hop neighborhood SVG graph (center + parents left + children
-  right), with clickable nodes that recenter the view - server-side SVG, no heavy lib.
-- Forms always show their title/description (Caption) next to name and file.
+Opening a node detail (e.g. /utilita/legami?id=prg:aq_browseview) showed an empty
+card (only header + search). Cause: neighborhoodSvg() built clickable-node hrefs
+with an unescaped '&' ("?id=...&trail=..."), making the inline SVG invalid XML;
+the browser's foreign-content parser then swallowed the rest of the node content.
 
-Version 0.23.0. Sandbox syntactic checks only (no Maven build).
+Fix:
+- SVG hrefs now use '&amp;trail=' (valid XML; generated SVG verified well-formed).
+- The id branch returns only when the node exists; an unknown id now degrades to
+  the grid with an "object not found" notice instead of falling through to the grid
+  with unset pagination variables.
+
+Version 0.23.1. Sandbox syntactic checks only (no Maven build).
