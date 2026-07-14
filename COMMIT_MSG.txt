@@ -1,14 +1,21 @@
-Legami viewer: remove inline SVG card (node detail still empty)
+Fix empty node detail in legami viewer (restore th:with pattern)
 
-The previous &amp; fix did not resolve the empty node detail. The inline SVG card
-(th:utext) was the regression vs the working Fable5 node view, so it is removed -
-both the template card and the controller's graphSvg attribute / neighborhoodSvg
-call. The node detail returns to the proven structure (header + "used by" +
-"opens/calls/prints/migrates") with all grid improvements intact (counter filters,
-pagination, inline search, menu-orphan fix, form titles).
+Removing the SVG (0.23.2) did not fix the empty node detail: it was empty for ALL
+nodes (PRG and MENU). Real cause in the template: the 0.23.0 rewrite changed the
+parents/children rendering from the working Fable5 pattern
+  th:each="pe : ${parents}" th:with="l=${pe[0]}, o=${pe[1]}"  ... ${o.id}
+to direct Object[] indexing with property access plus a multi-param link expression
+with a space
+  th:each="p : ${parents}" ... ${p[1].id} ... @{...(id=${p[1].id}, trail=...)}
+That combination broke rendering of the whole node block.
 
-The neighborhood graph will be re-added in isolation (an endpoint serving the SVG as
-a separate image/svg+xml resource, embedded via <object>) so a problematic SVG can
-never break the node page.
+Fix: restore the th:with extraction (l/o and cl/co) for parents and children and
+drop the space after the comma in the link expressions
+(@{/utilita/legami(id=${o.id},trail=${trailNext})}). The grid (r[0].*) is unchanged
+- it uses a single, comma-less parameter and works.
 
-Version 0.23.2. Sandbox syntactic checks only (no Maven build).
+All grid improvements remain (full data, counter filters, pagination, inline search,
+menu-orphan fix, form titles). The neighborhood graph will return as an isolated
+endpoint.
+
+Version 0.23.3. Sandbox syntactic checks only (no Maven build).

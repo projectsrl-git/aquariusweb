@@ -80,13 +80,13 @@
                         </div>
                         <table class="table table-sm table-hover mb-0" th:unless="${#lists.isEmpty(parents)}">
                             <tbody>
-                                <tr th:each="p : ${parents}">
+                                <tr th:each="p : ${parents}" th:with="l=${p[0]}, o=${p[1]}">
                                     <td>
-                                        <a class="text-decoration-none" th:if="${p[1] != null}"
-                                           th:href="@{/utilita/legami(id=${p[1].id}, trail=${trailNext})}">
-                                            <span class="badge bg-light text-dark border me-1" th:text="${p[1].type}">T</span>
-                                            <span class="font-monospace" th:text="${p[1].name}">nome</span></a>
-                                        <span class="text-muted small ms-1" th:text="${p[0].type}">link</span>
+                                        <a class="text-decoration-none" th:if="${o != null}"
+                                           th:href="@{/utilita/legami(id=${o.id},trail=${trailNext})}">
+                                            <span class="badge bg-light text-dark border me-1" th:text="${o.type}">T</span>
+                                            <span class="font-monospace" th:text="${o.name}">nome</span></a>
+                                        <span class="text-muted small ms-1" th:text="${l.type}">link</span>
                                     </td>
                                 </tr>
                             </tbody>
@@ -104,15 +104,15 @@
                             <div class="px-3 py-1 bg-light small fw-semibold font-monospace" th:text="${grp.key}">CALLS_PRG</div>
                             <table class="table table-sm table-hover mb-0">
                                 <tbody>
-                                    <tr th:each="c : ${grp.value}">
+                                    <tr th:each="c : ${grp.value}" th:with="cl=${c[0]}, co=${c[1]}">
                                         <td>
-                                            <a class="text-decoration-none" th:if="${c[1] != null}"
-                                               th:href="@{/utilita/legami(id=${c[1].id}, trail=${trailNext})}">
-                                                <span class="badge bg-light text-dark border me-1" th:text="${c[1].type}">T</span>
-                                                <span class="font-monospace" th:text="${c[1].name}">nome</span></a>
-                                            <span class="text-muted small" th:if="${c[1] != null and c[1].description != ''}"
-                                                  th:text="${' — ' + c[1].description}">descr</span>
-                                            <span class="font-monospace text-muted small" th:if="${c[1] == null}" th:text="${c[0].childId}">id</span>
+                                            <a class="text-decoration-none" th:if="${co != null}"
+                                               th:href="@{/utilita/legami(id=${co.id},trail=${trailNext})}">
+                                                <span class="badge bg-light text-dark border me-1" th:text="${co.type}">T</span>
+                                                <span class="font-monospace" th:text="${co.name}">nome</span></a>
+                                            <span class="text-muted small" th:if="${co != null and co.description != ''}"
+                                                  th:text="${' — ' + co.description}">descr</span>
+                                            <span class="font-monospace text-muted small" th:if="${co == null}" th:text="${cl.childId}">id</span>
                                         </td>
                                     </tr>
                                 </tbody>

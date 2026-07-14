@@ -201,8 +201,10 @@ Legacy `tbl_menu` drives the sidebar. `MenuService`:
     contatori-filtro, paginazione, ricerca in-linea, grafo SVG del vicinato, fix menu-orfani.
   - 0.23.1 — hotfix viewer legami: vista nodo vuota risolta
     (SVG con '&' non escapato → XML non valido); id non trovato degrada a griglia.
-  - **0.23.2 (corrente)** — viewer legami: rimossa card SVG inline (vista nodo
+  - 0.23.2 — viewer legami: rimossa card SVG inline (vista nodo
     vuota); grafo verrà ri-aggiunto isolato via endpoint. Migliorie griglia intatte.
+  - **0.23.3 (corrente)** — fix vista nodo vuota: ripristinato pattern th:with
+    per genitori/figli (l'accesso diretto Object[] + link multi-param con spazio rompeva il render).
 
 ## 4c. Migration tracker (.scx logic ↔ web)
 
